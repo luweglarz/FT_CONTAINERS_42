@@ -1,9 +1,7 @@
-#include "./includes/ft_map.hpp"
-#include "./includes/ft_vector.hpp"
-#include "./includes/ft_stack.hpp"
+#include "ClassVector.hpp"
 
 int main()
 {
-
+	ft::Vector<int> test(2, 5);
 	return (0);
 }
