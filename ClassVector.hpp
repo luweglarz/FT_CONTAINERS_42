@@ -15,10 +15,12 @@ namespace ft
         ---------------------------------------------------------*/
         typedef T                                                  value_type;
         typedef Alloc                                              allocator_type;
-        typedef T                                                  &reference;
-        typedef const T                                            &const_reference;
-        typedef T                                                  *pointer;
-        typedef const T                                            *const_pointer;
+        // allocator_type is dependant on Alloc which is a dynamic type so we need to add typename
+        typedef typename allocator_type::reference                          reference;
+        typedef typename allocator_type::const_reference                    const_reference;
+        typedef typename allocator_type::pointer                            pointer;
+        typedef typename allocator_type::const_pointer                      const_pointer;
+    
         typedef std::iterator<std::random_access_iterator_tag, T>        iterator;
         typedef std::iterator<std::random_access_iterator_tag, const T>  const_iterator;
         typedef std::reverse_iterator<iterator>                     reverse_iterator;
@@ -31,7 +33,8 @@ namespace ft
         Default constructor that creates an empty vector
         alloc: the allocator object
         ---------------------------------------------------------*/
-        explicit Vector(const allocator_type& alloc = allocator_type()){
+        explicit Vector(const allocator_type &alloc = allocator_type()){
+            std::cout << "Default constructor called" << std::endl;
         }
 
         /*-------------------------------------------------------
@@ -40,13 +43,14 @@ namespace ft
         val: the that you the container will be filled with 
         alloc: the allocator object
         ---------------------------------------------------------*/
-        explicit Vector(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()){
-            data = alloc.allocate(n);
-            size = n;
-            std::cout << "test" << std::endl;
+        explicit Vector(size_type n, const value_type& val = value_type(), const allocator_type &alloc = allocator_type()){
+            _vallocator = alloc;
+            _data = _vallocator.allocate(n);
+            _size = n;
+            std::cout << "Constructor with n and val called" << std::endl;
             for (int i = 0; i < n; i++){
-                data[i] = val;
-                std::cout << "data " << data[i] << std::endl;
+                _data[i] = val;
+                std::cout << "data " << _data[i] << std::endl;
             }
         }
 
@@ -58,8 +62,9 @@ namespace ft
         first: iterator that points on the first element of the range
         last: iterator that points on the last element of the range
         ---------------------------------------------------------*/
-        template <class InputIterator>
+        template <typename InputIterator>
         Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()){
+            std::cout << "Range constuctor called" << std::endl;
         }
 
         /*-------------------------------------------------------
@@ -67,11 +72,13 @@ namespace ft
         x: the copied instance
         ---------------------------------------------------------*/
         Vector (const Vector& x){
+            std::cout << "Copy constructor called" << std::endl;
         }
         
     private:
-        value_type  *data;
-        size_type   size;
+        value_type      *_data;
+        allocator_type  _vallocator;
+        size_type       _size;
     };
 
 };
