@@ -1,10 +1,12 @@
-#include "ClassVector.hpp"
+#include "containers/vector/ClassVector.hpp"
 #include <vector>
 int main()
 {
-	std::vector<int>::iterator ibegin;
-	std::vector<int>::iterator ilast;
+	ft::Vector<int>::iterator ibegin;
+	ft::Vector<int>::iterator ilast;
+	ft::Vector<int> test1((size_t)5, 10);
+	ibegin = test1.begin();
+	ilast = test1.end();
 	ft::Vector<int> test(ibegin, ilast);
-	ft::Vector<int> test1(5, 10);
 	return (0);
 }
