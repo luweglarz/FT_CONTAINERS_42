@@ -55,7 +55,6 @@ namespace ft
                 _data[i] = val;
                 std::cout << "data " << _data[i] << std::endl;
             }
-            
         }
 
         /*-------------------------------------------------------
@@ -68,27 +67,8 @@ namespace ft
         ---------------------------------------------------------*/
         template <typename InputIterator>
         Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()){
-            if(std::numeric_limits<InputIterator>::is_integer)
-            {
-                std::cout << "Range constuctor called with an integral" << std::endl;
-                // size_type n = static_cast<size_type>(first);
-                // value_type &val = static_cast<value_type>(last);
-                // _vallocator = alloc;
-                // _data = _vallocator.allocate(n);
-                // _size = n;
-                // for (int i = 0; i < n; i++){
-                //     _data[i] = val;
-                //     std::cout << "data " << _data[i] << std::endl;
-                // }
-                // return ;
-            }
-            // int i = 0;
-            // while (first != last){
-            //     _data[i] = dynamic_cast<T>(*first.pointer);
-            //     i++;
-            //     first++;
-            // }
             std::cout << "Range constuctor called" << std::endl;
+            initialize_range(first,last,alloc);
         }
 
         /*-------------------------------------------------------
@@ -146,7 +126,31 @@ namespace ft
         const_reverse_iterator crend() const {
             return (const_reverse_iterator(_data));
         }
-        
+
+    protected:
+        //Initializators for range constructor
+        /*-------------------------------------------------------
+        Used initializator if parameters are integrals instead of
+        iterators
+        ---------------------------------------------------------*/
+        void initialize_range(size_type n, value_type val, const allocator_type &alloc){
+            std::cout << "initialize n val" << std::endl;
+            _vallocator = alloc;
+            _data = _vallocator.allocate(n);
+            _size = n;
+            for (unsigned int i = 0; i < n; i++){
+                _data[i] = val;
+                std::cout << "data " << _data[i] << std::endl;
+            }
+        }
+
+        /*-------------------------------------------------------
+        Used initializator if parameters are iterators
+        ---------------------------------------------------------*/
+        void initialize_range(iterator n, iterator val, const allocator_type &alloc){
+            std::cout << "initialize it" << std::endl;
+        }
+
     private:
         value_type      *_data;
         allocator_type  _vallocator;
