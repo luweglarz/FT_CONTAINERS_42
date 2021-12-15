@@ -26,8 +26,7 @@ namespace ft
     
         typedef ft::vector_iterator<T>                              iterator;
         typedef ft::vector_iterator<const T>                        const_iterator;
-        typedef std::reverse_iterator<iterator>                     reverse_iterator;
-        typedef std::reverse_iterator<const_iterator>               const_reverse_iterator;
+        typedef ft::reverse_iterator<iterator>                      reverse_iterator;
         typedef std::ptrdiff_t                                      difference_type;
         typedef size_t                                              size_type;
         
@@ -88,9 +87,6 @@ namespace ft
             return (iterator(_data));
         }
 
-        const_iterator cbegin() const {
-            return (const_iterator(_data));
-        }
 
         /*-------------------------------------------------------
         end function that returns an iterator of the end
@@ -100,9 +96,6 @@ namespace ft
             return (iterator(_data + _size));
         }
 
-        const_iterator cend() const {
-            return (const_iterator(_data + _size));
-        }
         /*-------------------------------------------------------
         begin function that returns a reverse_iterator of the beginning
         of the vector
@@ -111,20 +104,12 @@ namespace ft
             return (reverse_iterator(_data + _size));
         }
 
-        const_reverse_iterator crbegin() const {
-            return (const_reverse_iterator(_data + _size));
-        }
-
         /*-------------------------------------------------------
         end function that returns a reverse_iterator of the end
         of the vector
         ---------------------------------------------------------*/
         reverse_iterator rend() const {
             return (reverse_iterator(_data));
-        }
-
-        const_reverse_iterator crend() const {
-            return (const_reverse_iterator(_data));
         }
 
     protected:

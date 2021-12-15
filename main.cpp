@@ -1,5 +1,6 @@
 #include "containers/vector/ClassVector.hpp"
 #include <vector>
+#include "iterators/iterator_trait.hpp"
 int main()
 {
 	ft::Vector<int>::iterator ibegin;
