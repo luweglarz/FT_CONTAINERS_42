@@ -1,6 +1,7 @@
 #include "containers/vector/ClassVector.hpp"
 #include <vector>
 #include "iterators/iterator_trait.hpp"
+#include "is_integral.hpp"
 int main()
 {
 	ft::Vector<int>::iterator ibegin;

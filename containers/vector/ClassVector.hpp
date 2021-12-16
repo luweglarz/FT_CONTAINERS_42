@@ -5,7 +5,7 @@
 #include <memory>
 #include <iterator>
 #include <limits>
-#include "../iterators/reverse_iterator.hpp"
+#include "../../iterators/reverse_iterator.hpp"
 #include "ClassIterators.hpp"
 
 namespace ft
@@ -27,7 +27,7 @@ namespace ft
         typedef ft::vector_iterator<T>                              iterator;
         typedef ft::vector_iterator<const T>                        const_iterator;
         typedef ft::reverse_iterator<iterator>                      reverse_iterator;
-        typedef ft::reverse_iterator<const_iterator> 
+        typedef ft::reverse_iterator<const_iterator>                const_reverse_iterator;
         typedef std::ptrdiff_t                                      difference_type;
         typedef size_t                                              size_type;
         
