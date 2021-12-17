@@ -27,6 +27,7 @@ void	vector_iterator_tests(){
 
 	ft::Vector<int> vec2(50);
 	iota(vec2.begin(), vec2.end(), 1);
+	ft::Vector<int> vec3(vec2.begin(), vec2.end());
 	ft::Vector<int>::iterator v2itbegin = vec2.begin();
 	ft::Vector<int>::iterator v2itend = vec2.end();
 

@@ -7,6 +7,8 @@
 #include <limits>
 #include "../../iterators/reverse_iterator.hpp"
 #include "../../iterators/vector_iterator.hpp"
+#include "../../SFINAE/enable_if.hpp"
+#include "../../SFINAE/is_integral.hpp"
 
 namespace ft
 {
@@ -18,7 +20,7 @@ namespace ft
         ---------------------------------------------------------*/
         typedef T                                                   value_type;
         typedef Alloc                                               allocator_type;
-        // typedef typename means that we say to the compiler that it is a type from alloc
+
         typedef typename allocator_type::reference                  reference;
         typedef typename allocator_type::const_reference            const_reference;
         typedef typename allocator_type::pointer                    pointer;
@@ -65,7 +67,8 @@ namespace ft
         last: iterator that points on the last element of the range
         ---------------------------------------------------------*/
         template <typename InputIterator>
-        Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()){
+        Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+        typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
             std::cout << "Range constuctor called" << std::endl;
             (void)first;
             (void)last;
