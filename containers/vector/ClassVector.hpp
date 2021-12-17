@@ -6,7 +6,7 @@
 #include <iterator>
 #include <limits>
 #include "../../iterators/reverse_iterator.hpp"
-#include "ClassIterators.hpp"
+#include "../../iterators/vector_iterator.hpp"
 
 namespace ft
 {
@@ -51,9 +51,8 @@ namespace ft
             _vallocator = alloc;
             _data = _vallocator.allocate(n);
             _size = n;
-            for (int i = 0; i < n; i++){
+            for (size_type i = 0; i < n; i++){
                 _data[i] = val;
-                std::cout << "data " << _data[i] << std::endl;
             }
         }
 
@@ -68,7 +67,9 @@ namespace ft
         template <typename InputIterator>
         Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()){
             std::cout << "Range constuctor called" << std::endl;
-            initialize_range(first,last,alloc);
+            (void)first;
+            (void)last;
+            (void)alloc;
         }
 
         /*-------------------------------------------------------
@@ -111,30 +112,6 @@ namespace ft
         ---------------------------------------------------------*/
         reverse_iterator rend() const {
             return (reverse_iterator(_data));
-        }
-
-    protected:
-        //Initializators for range constructor
-        /*-------------------------------------------------------
-        Used initializator if parameters are integrals instead of
-        iterators
-        ---------------------------------------------------------*/
-        void initialize_range(size_type n, value_type val, const allocator_type &alloc){
-            std::cout << "initialize n val" << std::endl;
-            _vallocator = alloc;
-            _data = _vallocator.allocate(n);
-            _size = n;
-            for (unsigned int i = 0; i < n; i++){
-                _data[i] = val;
-                std::cout << "data " << _data[i] << std::endl;
-            }
-        }
-
-        /*-------------------------------------------------------
-        Used initializator if parameters are iterators
-        ---------------------------------------------------------*/
-        void initialize_range(iterator n, iterator val, const allocator_type &alloc){
-            std::cout << "initialize it" << std::endl;
         }
 
     private:
