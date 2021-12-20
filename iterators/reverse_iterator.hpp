@@ -27,8 +27,8 @@ namespace ft
         explicit reverse_iterator(iterator_type x): underlying iterator initialized with x
         reverse_iterator(const reverse_iterator<U> &other): underlying iterator initialized with other
         ---------------------------------------------------------*/
-        reverse_iterator() {_underlyingit();};
-        explicit reverse_iterator(iterator_type x) {_underlyingit(x);}
+        reverse_iterator(): _underlyingit() {}
+        explicit reverse_iterator(iterator_type x):_underlyingit(x){}
         template<class U>
         reverse_iterator(const reverse_iterator<U> &other) {_underlyingit(other.base());}
         reverse_iterator &operator=(const reverse_iterator &src){_underlyingit = src.base();return(*this);}
@@ -55,9 +55,9 @@ namespace ft
         increments and decrements operators on _underliyngit
         ---------------------------------------------------------*/
         reverse_iterator    &operator++(){++_underlyingit; return (*this);}//prefix
-		reverse_iterator    operator++(int){reverse_iterator res; res._underlyingit = _underlyingit++; return(res);}
+		reverse_iterator    operator++(int){reverse_iterator res; res._underlyingit = _underlyingit--; return(res);}
 		reverse_iterator    &operator--(){--_underlyingit; return (*this);}//prefix
-		reverse_iterator	operator--(int){reverse_iterator res; res._underlyingit = _underlyingit--; return(res);}
+		reverse_iterator	operator--(int){reverse_iterator res; res._underlyingit = _underlyingit++; return(res);}
 
     private:
         iterator_type _underlyingit;

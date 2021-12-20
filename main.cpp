@@ -24,6 +24,8 @@ void	vector_iterator_tests(){
 	iota(vec1.begin(), vec1.end(), 1);
 	std::vector<int>::iterator v1itbegin = vec1.begin();
 	std::vector<int>::iterator v1itend = vec1.end();
+	vec1.reserve(100);
+	std::cout << "capa " << vec1.size() << std::endl;
 
 	ft::Vector<int> vec2(50);
 	iota(vec2.begin(), vec2.end(), 1);
