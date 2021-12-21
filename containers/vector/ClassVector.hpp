@@ -158,7 +158,7 @@ namespace ft
         void    resize(size_type n, value_type val = value_type()){
             if (n < _size){
                 while (_size != n){
-                    _vallocator.destroy(_data[_size]);
+                    _vallocator.destroy(&(_data[_size]));
                     _size--;
                 }
             }
@@ -190,33 +190,130 @@ namespace ft
                 _data = store;
             }
         }
+        //Element access
+        
+        reference operator[](size_type n){
+            return (_data[n]);
+        }
+
+        const_reference operator[](size_type n) const{
+            return (_data[n]);
+        }
+
         //Modifiers
         template <class InputIterator>
         void    assign(InputIterator first, InputIterator last){
             _vallocator.deallocate(_data, _capacity);
             _size = std::distance(first, last);
-            _capacity = _size;
+            if (_size > _capacity)
+                _capacity = _size;
             _data = _vallocator.allocate(_size);
-            for (size_type i; i < _size; i++){
-                _vallocator.construct(&_data[i], *first);
+            int i = 0;
+            while (first != last){
+                _vallocator.construct(&_data[i], first);
                 first++;
+                i++;
             }
         }
 
         void    assign(size_type n, const value_type &val){
             _vallocator.deallocate(_data, _capacity);
             _size = n;
-            _capacity = _size;
+            if (_size > _capacity)
+                _capacity = _size;
             _data = _vallocator.allocate(_size);
             for (size_type i; i < _size; i++){
                 _vallocator.construct(&_data[i], val);
             }
         }
 
-        void push_back(const value_type &val){
+        void    push_back(const value_type &val){
+            iterator it = end()++;
+            insert(it, val);
+        }
+
+        void    pop_back(){
+            resize(_size - 1);
+        }
+
+        iterator    insert(iterator position, const value_type &val){
+            iterator ret = position;
             if (_size == _capacity)
-                _capacity *= 2;
-            
+                reserve(_capacity * 2);
+            *position = val;
+            _size++;
+            return (ret);
+        }
+
+        iterator    insert(iterator position, size_type n, const value_type &val){
+            int i = 0;
+            iterator ret = position;
+            while (i < n){
+                insert(position, val);
+                position++;
+                i++;
+            }
+            return(ret);
+        }
+
+        template <class InputIterator>
+        iterator    insert(iterator position, InputIterator first, InputIterator last){
+            iterator ret = position;
+            while (first != last){
+                insert(position, *first);
+                first++;
+            }
+            return (ret);
+        }
+
+        iterator erase(iterator position){
+            value_type  tmp_data;
+            size_type   tmp_size = _size - 1;
+            size_type   j = 0;
+            for (size_type i = 0; i < tmp_size; i++){
+                if (&(_data[j]) == position)
+                    j++;
+                tmp_data[i] = _data[j];
+                j++;
+            }
+            clear();
+            iterator begin(&(tmp_data[0]));
+            iterator end(&(tmp_data[tmp_size]));
+            assign(begin, end);
+        }
+
+        iterator erase(iterator first, iterator last){
+            value_type  tmp_data;
+            size_type   tmp_size = _size - 1;
+            size_type   j = 0;
+            for (size_type i = 0; i < tmp_size; i++){
+                if (&(_data[j]) == first){
+                    while (first != last){
+                        first++;
+                        j++;
+                    }
+                }
+                tmp_data[i] = _data[j];
+                j++;
+            }
+            clear();
+            iterator begin(&(tmp_data[0]));
+            iterator end(&(tmp_data[tmp_size]));
+            assign(begin, end);
+        }
+
+        void    swap(Vector &x){
+            std::swap<allocator_type>(_vallocator, x._vallocator);
+            std::swap<size_type>(_size, x._size);
+            std::swap<size_type>(_capacity, x._capacity);
+            std::swap<value_type>(_data, x._data);
+        }
+
+        void    clear(){
+            for (size_type i = 0; i < _size; i++){
+                _vallocator.destroy(&(_data[i]));
+            }
+            _size = 0;
         }
 
     private:
