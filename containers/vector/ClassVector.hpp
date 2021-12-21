@@ -200,6 +200,30 @@ namespace ft
             return (_data[n]);
         }
 
+        reference at(size_type n){
+            return (_data[n]);
+        }
+
+        const_reference at(size_type n) const{
+            return (_data[n]);
+        }
+
+        reference front(){
+            return (begin());
+        }
+
+        const_reference front() const{
+            return (begin());
+        }
+        
+        reference back(){
+            return (end() - 1);
+        }
+
+        const_reference back() const{
+            return (end() - 1);
+        }
+
         //Modifiers
         template <class InputIterator>
         void    assign(InputIterator first, InputIterator last){
