@@ -1,4 +1,5 @@
 #include <vector>
+#include <string>
 #include "containers/vector/ClassVector.hpp"
 #include "containers/map/ClassMap.hpp"
 #include "containers/stack/ClassStack.hpp"
@@ -39,8 +40,38 @@ void	vector_iterator_tests(){
 	std::cout << "ft::Vector itend: " << *(v2itend - 1) << std::endl;
 }
 
+template <typename T>
+void	display_vector(T &vec){
+	std::cout << vec.size() << std::endl;
+	for (size_t i = 0; i < vec.size(); i++)
+		std::cout << vec[i] << std::endl;
+}
+
+void	assign_tests(std::vector<int> &vec1, ft::Vector<int> &vec2){
+	std::vector<int>::reverse_iterator revb1 = vec1.rbegin();
+	std::vector<int>::reverse_iterator reve1 = vec1.rend();
+	ft::Vector<int>::reverse_iterator revb2 = vec2.rbegin();
+	ft::Vector<int>::reverse_iterator reve2 = vec2.rend();
+	vec1.assign(revb1, reve1);
+	vec2.assign(revb2, reve2);
+	std::cout << "std::vec capacity " << vec1.capacity() << std::endl;
+	std::cout << "ft::vec capacity " << vec2.capacity() << std::endl;
+	display_vector(vec1);
+
+}
+
+void	vector_modifiers_tests(){
+	std::vector<int>	vec1(50);
+	ft::Vector<int>		vec2(50);
+	iota(vec1.begin(), vec1.end(), 1);
+	iota(vec2.begin(), vec2.end(), 1);
+	assign_tests(vec1, vec2);
+}
+
 int main()
 {
-	vector_iterator_tests();
+	//vector_iterator_tests();
+	std::cout << std::endl;
+	vector_modifiers_tests();
 	return (0);
 }

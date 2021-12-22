@@ -76,7 +76,7 @@ namespace ft
         template <typename InputIterator>
         Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
-        _vallocator(alloc), _size(std::distance<InputIterator>(first, last)), _data(_vallocator.allocate(_size)){
+        _vallocator(alloc), _size(std::distance<InputIterator>(first, last)), _capacity(_size), _data(_vallocator.allocate(_size)){
             std::cout << "Range constuctor called" << std::endl;
             int i = 0;
             while (first != last){
@@ -89,7 +89,8 @@ namespace ft
         Copy constructor from x
         x: the copied instance
         ---------------------------------------------------------*/
-        Vector (const Vector& x){
+        Vector (const Vector& x):
+        _vallocator(x._vallocator), _size(0), _capacity(0), _data(NULL){
             std::cout << "Copy constructor called" << std::endl;
             *this = x;
         }
@@ -100,10 +101,7 @@ namespace ft
         ---------------------------------------------------------*/
         Vector &operator=(const Vector &x){
             _vallocator = x._vallocator;
-            _size = x._size;
-            for (size_type i; i < _size; i++){
-                _data[i] = x._data;
-            }
+            assign(x.begin(), x.end());
             return(*this);
         }
         /*-------------------------------------------------------
@@ -117,16 +115,23 @@ namespace ft
         begin function that returns an iterator of the beginning
         of the vector
         ---------------------------------------------------------*/
-        iterator begin() const {
+        iterator begin(){
             return (iterator(_data));
         }
 
+        const_iterator begin() const {
+            return (iterator(_data));
+        }
 
         /*-------------------------------------------------------
         end function that returns an iterator of the end
         of the vector (_size + 1)
         ---------------------------------------------------------*/
-        iterator end() const {
+        iterator end(){
+            return (iterator(_data + _size));
+        }
+
+        const_iterator end() const {
             return (iterator(_data + _size));
         }
 
@@ -134,16 +139,24 @@ namespace ft
         begin function that returns a reverse_iterator of the beginning
         of the vector
         ---------------------------------------------------------*/
-        reverse_iterator rbegin() const {
-            return (reverse_iterator(_data + _size));
+        reverse_iterator rbegin(){
+            return (reverse_iterator(_data + _size - 1));
+        }
+
+        const_reverse_iterator rbegin() const {
+            return (reverse_iterator(_data + _size - 1));
         }
 
         /*-------------------------------------------------------
         end function that returns a reverse_iterator of the end
         of the vector
         ---------------------------------------------------------*/
-        reverse_iterator rend() const{
-            return (reverse_iterator(_data));
+        reverse_iterator rend(){
+            return (reverse_iterator(_data - 1));
+        }
+
+        const_reverse_iterator rend() const{
+            return (reverse_iterator(_data - 1));
         }
 
         size_type size() const{
@@ -228,13 +241,13 @@ namespace ft
         template <class InputIterator>
         void    assign(InputIterator first, InputIterator last){
             _vallocator.deallocate(_data, _capacity);
-            _size = std::distance(first, last);
+            _size = first - last ;
             if (_size > _capacity)
                 _capacity = _size;
             _data = _vallocator.allocate(_size);
             int i = 0;
             while (first != last){
-                _vallocator.construct(&_data[i], first);
+                _vallocator.construct(&_data[i], *first);
                 first++;
                 i++;
             }
