@@ -4,7 +4,7 @@ CC = c++
 
 STD = -std=c++98
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g -fsanitize=address 
 
 HEADERS = 	containers/vector/ClassVector.hpp iterators/vector_iterator.hpp iterators/iterators_traits.hpp iterators/reverse_iterator.hpp \
 			SFINAE/enable_if.hpp SFINAE/is_integral.hpp

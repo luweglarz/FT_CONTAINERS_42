@@ -52,6 +52,8 @@ void	assign_tests(std::vector<int> &vec1, ft::Vector<int> &vec2){
 	std::vector<int>::reverse_iterator reve1 = vec1.rend();
 	ft::Vector<int>::reverse_iterator revb2 = vec2.rbegin();
 	ft::Vector<int>::reverse_iterator reve2 = vec2.rend();
+	iota(vec1.begin(), vec1.end(), 1);
+	iota(vec2.begin(), vec2.end(), 1);
 	vec1.assign(revb1, reve1);
 	vec2.assign(revb2, reve2);
 	std::cout << "std::vec capacity " << vec1.capacity() << std::endl;
@@ -60,12 +62,23 @@ void	assign_tests(std::vector<int> &vec1, ft::Vector<int> &vec2){
 
 }
 
+void	push_back_tests(std::vector<int> &vec1, ft::Vector<int> &vec2){
+	iota(vec1.begin(), vec1.end(), 1);
+	iota(vec2.begin(), vec2.end(), 1);
+	std::cout << "std::vec capacity " << vec1.capacity() << std::endl;
+	std::cout << "ft::vec capacity " << vec2.capacity() << std::endl;
+	vec1.push_back(31);
+	vec2.push_back(31);
+	std::cout << "std::vec capacity " << vec1.capacity() << std::endl;
+	std::cout << "ft::vec capacity " << vec2.capacity() << std::endl;
+
+}
+
 void	vector_modifiers_tests(){
 	std::vector<int>	vec1(50);
 	ft::Vector<int>		vec2(50);
-	iota(vec1.begin(), vec1.end(), 1);
-	iota(vec2.begin(), vec2.end(), 1);
-	assign_tests(vec1, vec2);
+	//assign_tests(vec1, vec2);
+	push_back_tests(vec1, vec2);
 }
 
 int main()

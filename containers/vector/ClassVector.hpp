@@ -175,10 +175,14 @@ namespace ft
                     _size--;
                 }
             }
-            else if (n > _size){
+            else if (n > _size && n <= _capacity){
+                while (_size < n)
+                    push_back(0);
             }
             else if (n > capacity()){
-
+                reserve(n);
+                while (_size < n)
+                    push_back(0);
             }
         }
 
@@ -194,12 +198,17 @@ namespace ft
 
         void    reserve(size_type n){
             if (n > max_size())
-                throw std::length_error();
+                throw std::length_error("ft::vector::reserve");
             else if (n > _capacity){
-                value_type store = _data;
+                value_type *store;
+                store = _vallocator.allocate(n);
+                size_type i = 0;
+                while (i < _size){
+                    _vallocator.construct(&store[i], _data[i]);
+                    i++;
+                }
                 _vallocator.deallocate(_data, _capacity);
                 _capacity = n;
-                _vallocator.allocate(n);
                 _data = store;
             }
         }
@@ -265,8 +274,16 @@ namespace ft
         }
 
         void    push_back(const value_type &val){
-            iterator it = end()++;
-            insert(it, val);
+            if (_capacity == 0){
+                _data = _vallocator.alloc(1);
+                _vallocator.construct(&data[0], val);
+                _capacity = 1;
+                _size = 1;
+            }
+            if (_size >= _capacity)
+            r   eserve(_capacity * 2);
+            _vallocator.constructor(&data[_size], val);
+            size +=1;
         }
 
         void    pop_back(){
@@ -274,12 +291,18 @@ namespace ft
         }
 
         iterator    insert(iterator position, const value_type &val){
-            iterator ret = position;
-            if (_size == _capacity)
+            difference_type data_offset = &(*position) - &(*begin());
+            std::cout << data_offset << std::endl;
+            iterator    insert(begin() + data_offset);
+
+            if (_size >= _capacity)
                 reserve(_capacity * 2);
-            *position = val;
-            _size++;
-            return (ret);
+            _size += 1;
+            if (insert != end())
+                for (iterator it = end() - 1; it != insert; it--)
+                    _vallocator.construct(&(*it), *(it - 1));
+            _vallocator.construct(&(*insert), val);
+            return (insert);
         }
 
         iterator    insert(iterator position, size_type n, const value_type &val){
