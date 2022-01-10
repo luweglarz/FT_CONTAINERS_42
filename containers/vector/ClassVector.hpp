@@ -138,11 +138,11 @@ namespace ft
         of the vector
         ---------------------------------------------------------*/
         reverse_iterator rbegin(){
-            return (reverse_iterator(_data + _size - 1));
+            return (reverse_iterator(_data + _size));
         }
 
         const_reverse_iterator rbegin() const {
-            return (reverse_iterator(_data + _size - 1));
+            return (reverse_iterator(_data + _size));
         }
 
         /*-------------------------------------------------------
@@ -150,11 +150,11 @@ namespace ft
         of the vector
         ---------------------------------------------------------*/
         reverse_iterator rend(){
-            return (reverse_iterator(_data - 1));
+            return (reverse_iterator(_data));
         }
 
         const_reverse_iterator rend() const{
-            return (reverse_iterator(_data - 1));
+            return (reverse_iterator(_data));
         }
 
         size_type size() const{
@@ -254,6 +254,7 @@ namespace ft
                 _capacity = _size;
             _data = _vallocator.allocate(_size);
             int i = 0;
+            std::cout << "first " << *first << std::endl;
             while (first != last){
                 _vallocator.construct(&_data[i], *first);
                 first++;

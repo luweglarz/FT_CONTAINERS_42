@@ -22,30 +22,84 @@ void	iota(InputIterator first, InputIterator last, T value){
 }
 
 void	vector_iterator_tests(){
+	std::cout << "Iterators unitest:" << std::endl;
 	std::vector<int> vec1(50);
 	iota(vec1.begin(), vec1.end(), 1);
 	std::vector<int>::iterator v1itbegin = vec1.begin();
 	std::vector<int>::iterator v1itend = vec1.end();
-	vec1.reserve(100);
-	std::cout << "capa " << vec1.size() << std::endl;
 
 	ft::Vector<int> vec2(50);
 	iota(vec2.begin(), vec2.end(), 1);
-	ft::Vector<int> vec3(vec2.begin(), vec2.end());
 	ft::Vector<int>::iterator v2itbegin = vec2.begin();
 	ft::Vector<int>::iterator v2itend = vec2.end();
-
-	std::cout << "std::vector itbegin: " << *(v1itbegin + 1) << std::endl;
-	std::cout << "ft::Vector itbegin: " << *(v2itbegin + 1) << std::endl;
-	std::cout << "std::vector itend: " << *(v1itend - 1) << std::endl;
-	std::cout << "ft::Vector itend: " << *(v2itend - 1) << std::endl;
+	if (*v1itbegin == *v2itbegin && vec1.size() == vec2.size() &&
+		vec1.capacity() == vec2.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
+	if (*(v1itend - 1) == *(v2itend - 1) && vec1.size() == vec2.size() &&
+		vec1.capacity() == vec2.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		int i = 0;
+		while (i < 50){
+			if (*v1itbegin != *v2itbegin){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+			v1itbegin++;
+			v2itbegin++;
+			i++;
+		}
+		std::cout << FGRN("[OK]");
+	}
+	else
+		std::cout << FRED("[KO]");
 }
 
-template <typename T>
-void	display_vector(T &vec){
-	std::cout << vec.size() << std::endl;
-	for (size_t i = 0; i < vec.size(); i++)
-		std::cout << vec[i] << std::endl;
+void	reverse_iterator_tests(){
+	std::cout << "Reverse terators unitest:" << std::endl;
+	std::vector<int> vec1(50);
+	iota(vec1.begin(), vec1.end(), 1);
+	std::vector<int>::reverse_iterator v1itbegin = vec1.rbegin();
+	std::vector<int>::reverse_iterator v1itend = vec1.rend();
+
+	ft::Vector<int> vec2(50);
+	iota(vec2.begin(), vec2.end(), 1);
+	ft::Vector<int>::reverse_iterator v2itbegin = vec2.rbegin();
+	ft::Vector<int>::reverse_iterator v2itend = vec2.rend();
+	std::cout << *(v2itend - 1)<< std::endl;
+	if (*(v1itend - 1) == *(v2itend - 1) && vec1.size() == vec2.size() &&
+		vec1.capacity() == vec2.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
+	if (*(v1itbegin + 1) == *(v1itbegin + 1) && vec1.size() == vec2.size() &&
+		vec1.capacity() == vec2.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		int i = 0;
+		v1itend--;
+		v2itend--;
+		while (i < 50){
+			std::cout << i << std::endl;
+			if (*v1itend != *v2itend){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+			v1itend--;
+			v2itend--;
+			i++;
+		}
+		std::cout << FGRN("[OK]");
+	}
+	else
+		std::cout << FRED("[KO]");
+
 }
 
 void	assign_tests(){
@@ -132,7 +186,9 @@ void	vector_modifiers_tests(){
 
 int main()
 {
-	//vector_iterator_tests();
+	vector_iterator_tests();
+	std::cout << std::endl;
+	reverse_iterator_tests();
 	std::cout << std::endl;
 	vector_modifiers_tests();
 	return (0);

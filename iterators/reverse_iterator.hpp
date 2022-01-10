@@ -58,6 +58,15 @@ namespace ft
 		reverse_iterator    operator++(int){reverse_iterator res; res._underlyingit = _underlyingit--; return(res);}
 		reverse_iterator    &operator--(){++_underlyingit; return (*this);}//prefix
 		reverse_iterator	operator--(int){reverse_iterator res; res._underlyingit = _underlyingit++; return(res);}
+
+        /*-------------------------------------------------------
+        Arithmetic operator overloads
+        perform arithmetic operations on _underlyingit
+        ---------------------------------------------------------*/
+        reverse_iterator    operator+(difference_type n) const{reverse_iterator rev(*this); rev.base() -= n; return (rev);}
+        reverse_iterator    operator-(difference_type n) const{reverse_iterator rev(*this); rev.base() += n; return (rev);}
+        reverse_iterator    &operator+=(difference_type n) const{_underlyingit -= n; return (*this);}
+        reverse_iterator    &operator-=(difference_type n) const{_underlyingit += n; return (*this);}
     private:
         iterator_type _underlyingit;
     };
