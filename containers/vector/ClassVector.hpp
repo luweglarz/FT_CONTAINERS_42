@@ -40,7 +40,6 @@ namespace ft
         alloc: the allocator object
         ---------------------------------------------------------*/
         explicit Vector(const allocator_type &alloc = allocator_type()): _vallocator(alloc), _size(0),_capacity(0), _data(NULL){
-            std::cout << "Default constructor called" << std::endl;
         }
 
         /*-------------------------------------------------------
@@ -51,7 +50,6 @@ namespace ft
         ---------------------------------------------------------*/
         explicit Vector(size_type n, const value_type& val = value_type(), const allocator_type &alloc = allocator_type()):
         _vallocator(alloc), _size(n), _capacity(n), _data(_vallocator.allocate(_size)){
-            std::cout << "Constructor with n and val called" << std::endl;
             for (size_type i = 0; i < n; i++){
                 _vallocator.construct(&_data[i], val);
             }
@@ -77,7 +75,6 @@ namespace ft
         Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
         _vallocator(alloc), _size(std::distance<InputIterator>(first, last)), _capacity(_size), _data(_vallocator.allocate(_size)){
-            std::cout << "Range constuctor called" << std::endl;
             int i = 0;
             while (first != last){
                 _data[i] = *first;
@@ -91,7 +88,6 @@ namespace ft
         ---------------------------------------------------------*/
         Vector (const Vector& x):
         _vallocator(x._vallocator), _size(0), _capacity(0), _data(NULL){
-            std::cout << "Copy constructor called" << std::endl;
             *this = x;
         }
         
@@ -108,6 +104,8 @@ namespace ft
         Vector destructor
         ---------------------------------------------------------*/
         ~Vector(){
+            for (size_type i = 0; i < _size; i++)
+                _vallocator.destroy(&_data[i]);
             _vallocator.deallocate(_data, _capacity);
         }
         //Iterators:
@@ -177,12 +175,12 @@ namespace ft
             }
             else if (n > _size && n <= _capacity){
                 while (_size < n)
-                    push_back(0);
+                    push_back(val);
             }
             else if (n > capacity()){
                 reserve(n);
                 while (_size < n)
-                    push_back(0);
+                    push_back(val);
             }
         }
 
@@ -200,7 +198,7 @@ namespace ft
             if (n > max_size())
                 throw std::length_error("ft::vector::reserve");
             else if (n > _capacity){
-                value_type *store;
+                value_type *store = NULL;
                 store = _vallocator.allocate(n);
                 size_type i = 0;
                 while (i < _size){
@@ -248,8 +246,9 @@ namespace ft
 
         //Modifiers
         template <class InputIterator>
-        void    assign(InputIterator first, InputIterator last){
-            _vallocator.deallocate(_data, _capacity);
+        void    assign(InputIterator first, InputIterator last,
+        typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
+            clear();
             _size = first - last ;
             if (_size > _capacity)
                 _capacity = _size;
@@ -263,27 +262,28 @@ namespace ft
         }
 
         void    assign(size_type n, const value_type &val){
-            _vallocator.deallocate(_data, _capacity);
+            clear();
             _size = n;
             if (_size > _capacity)
                 _capacity = _size;
-            _data = _vallocator.allocate(_size);
-            for (size_type i; i < _size; i++){
+            _data = _vallocator.allocate(_capacity);
+            for (size_type i = 0; i < _size; i++){
                 _vallocator.construct(&_data[i], val);
             }
         }
 
         void    push_back(const value_type &val){
             if (_capacity == 0){
-                _data = _vallocator.alloc(1);
-                _vallocator.construct(&data[0], val);
+                _data = _vallocator.allocate(1);
+                _vallocator.construct(&_data[0], val);
                 _capacity = 1;
                 _size = 1;
+                return ;
             }
             if (_size >= _capacity)
-            r   eserve(_capacity * 2);
-            _vallocator.constructor(&data[_size], val);
-            size +=1;
+                reserve(_capacity * 2);
+            _vallocator.construct(&_data[_size], val);
+            _size +=1;
         }
 
         void    pop_back(){

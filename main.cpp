@@ -4,6 +4,7 @@
 #include "containers/map/ClassMap.hpp"
 #include "containers/stack/ClassStack.hpp"
 #include "containers/vector/ClassVector.hpp"
+#include "colors.hpp"
 
 // void	reverse_iterator_tests(){
 // 	ft::Vector<int> vec((size_t)5, 10);
@@ -47,7 +48,27 @@ void	display_vector(T &vec){
 		std::cout << vec[i] << std::endl;
 }
 
-void	assign_tests(std::vector<int> &vec1, ft::Vector<int> &vec2){
+void	assign_tests(){
+	std::cout << "Assign unitest:" << std::endl;
+	//Test on empty vectors
+	std::vector<int>	vec1;
+	ft::Vector<int>		vec2;
+	vec1.assign(10,100);
+	vec2.assign(10,100);
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < 10; i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
+	//Test with iterator overload
+	vec1.resize(50);
+	vec2.resize(50);
 	std::vector<int>::reverse_iterator revb1 = vec1.rbegin();
 	std::vector<int>::reverse_iterator reve1 = vec1.rend();
 	ft::Vector<int>::reverse_iterator revb2 = vec2.rbegin();
@@ -56,29 +77,57 @@ void	assign_tests(std::vector<int> &vec1, ft::Vector<int> &vec2){
 	iota(vec2.begin(), vec2.end(), 1);
 	vec1.assign(revb1, reve1);
 	vec2.assign(revb2, reve2);
-	std::cout << "std::vec capacity " << vec1.capacity() << std::endl;
-	std::cout << "ft::vec capacity " << vec2.capacity() << std::endl;
-	display_vector(vec1);
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < 10; i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
 
 }
 
-void	push_back_tests(std::vector<int> &vec1, ft::Vector<int> &vec2){
+void	push_back_tests(){
+	std::cout << "Push_back unitest:" << std::endl;
+	std::vector<int>	vec1;
+	ft::Vector<int>		vec2;
+	//Test with empty vector
+	vec1.push_back(1);
+	vec2.push_back(1);
+	if (vec1[0] == vec2[0] && vec1.size() == vec2.size() &&
+		vec1.capacity() == vec2.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
+	//Test with vector of size 50
+	vec1.resize(50);
+	vec2.resize(50);
 	iota(vec1.begin(), vec1.end(), 1);
 	iota(vec2.begin(), vec2.end(), 1);
-	std::cout << "std::vec capacity " << vec1.capacity() << std::endl;
-	std::cout << "ft::vec capacity " << vec2.capacity() << std::endl;
-	vec1.push_back(31);
-	vec2.push_back(31);
-	std::cout << "std::vec capacity " << vec1.capacity() << std::endl;
-	std::cout << "ft::vec capacity " << vec2.capacity() << std::endl;
+	vec1.push_back(1);
+	vec2.push_back(1);
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < 50; i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
 
 }
 
 void	vector_modifiers_tests(){
-	std::vector<int>	vec1(50);
-	ft::Vector<int>		vec2(50);
-	//assign_tests(vec1, vec2);
-	push_back_tests(vec1, vec2);
+	assign_tests();
+	std::cout << std::endl;
+	push_back_tests();
 }
 
 int main()
