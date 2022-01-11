@@ -76,8 +76,42 @@ void	push_back_tests(){
 
 }
 
+void	pop_back_tests(){
+	std::cout << "pop_back unitest:" << std::endl;
+	std::vector<int>	vec1;
+	ft::Vector<int>		vec2;
+	//Test with empty vector
+	vec1.pop_back();
+	vec2.pop_back();
+	if (vec1.capacity() == vec2.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
+	// //Test with vector of size 50
+	// vec1.resize(50);
+	// vec2.resize(50);
+	// iota(vec1.begin(), vec1.end(), 1);
+	// iota(vec2.begin(), vec2.end(), 1);
+	// vec1.pop_back();
+	// vec2.pop_back();
+	// if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+	// 	for (size_t i = 0; i < 50; i++){
+	// 		if (vec1[i] != vec2[i]){
+	// 			std::cout << FRED("[KO]");
+	// 			return ;
+	// 		}
+	// 	}
+	// 	std::cout << FGRN("[OK]");
+	// }	
+	// else
+	// 	std::cout << FRED("[KO]");
+
+}
+
 void	vector_modifiers_tests(){
 	assign_tests();
 	std::cout << std::endl;
 	push_back_tests();
+	std::cout << std::endl;
+	pop_back_tests();
 }

@@ -20,11 +20,13 @@ OBJS = $(SRCS:.cpp=.o)
 
 RM = rm -f
 
-all: $(NAME)
+all: $(NAME) $(LIB)
 
-$(NAME): main.cpp $(HEADERS) $(OBJS)
+$(LIB): $(OBJS)
 	@ar rcs $(LIB) $(OBJS)
 	@ranlib $(LIB)
+	
+$(NAME): main.cpp $(HEADERS) $(LIB)
 	$(CC) $(FLAGS) main.cpp $(LIB) -o $(NAME)
 
 clean:

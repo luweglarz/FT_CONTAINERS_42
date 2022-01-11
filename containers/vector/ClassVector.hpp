@@ -184,6 +184,8 @@ namespace ft
                 while (_size < n)
                     push_back(val);
             }
+            else
+                return ;
         }
 
         size_type capacity() const{
@@ -289,7 +291,8 @@ namespace ft
         }
 
         void    pop_back(){
-            resize(_size - 1);
+            if (_size > 1)
+                resize(_size - 1);
         }
 
         iterator    insert(iterator position, const value_type &val){
