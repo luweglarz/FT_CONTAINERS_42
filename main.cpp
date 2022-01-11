@@ -60,7 +60,7 @@ void	vector_iterator_tests(){
 }
 
 void	reverse_iterator_tests(){
-	std::cout << "Reverse terators unitest:" << std::endl;
+	std::cout << "Reverse iterators unitest:" << std::endl;
 	std::vector<int> vec1(50);
 	iota(vec1.begin(), vec1.end(), 1);
 	std::vector<int>::reverse_iterator v1itbegin = vec1.rbegin();
@@ -70,8 +70,7 @@ void	reverse_iterator_tests(){
 	iota(vec2.begin(), vec2.end(), 1);
 	ft::Vector<int>::reverse_iterator v2itbegin = vec2.rbegin();
 	ft::Vector<int>::reverse_iterator v2itend = vec2.rend();
-	std::cout << *(v2itend - 1)<< std::endl;
-	if (*(v1itend - 1) == *(v2itend - 1) && vec1.size() == vec2.size() &&
+	if (*(--v2itend ) == *(--v1itend) && vec1.size() == vec2.size() &&
 		vec1.capacity() == vec2.capacity())
 		std::cout << FGRN("[OK]");
 	else
@@ -85,8 +84,7 @@ void	reverse_iterator_tests(){
 		int i = 0;
 		v1itend--;
 		v2itend--;
-		while (i < 50){
-			std::cout << i << std::endl;
+		while (i < 49){
 			if (*v1itend != *v2itend){
 				std::cout << FRED("[KO]");
 				return ;
