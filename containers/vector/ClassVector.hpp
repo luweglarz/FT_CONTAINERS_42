@@ -49,7 +49,7 @@ namespace ft
         alloc: the allocator object
         ---------------------------------------------------------*/
         explicit Vector(size_type n, const value_type& val = value_type(), const allocator_type &alloc = allocator_type()):
-        _vallocator(alloc), _size(n), _capacity(n), _data(_vallocator.allocate(_size)){
+        _vallocator(alloc), _size(n), _capacity(n), _data(_vallocator.allocate(_capacity)){
             for (size_type i = 0; i < n; i++){
                 _vallocator.construct(&_data[i], val);
             }
@@ -106,7 +106,8 @@ namespace ft
         ~Vector(){
             for (size_type i = 0; i < _size; i++)
                 _vallocator.destroy(&_data[i]);
-            _vallocator.deallocate(_data, _capacity);
+            if (_capacity > 0)
+                _vallocator.deallocate(_data, _capacity);
         }
         //Iterators:
         /*-------------------------------------------------------
@@ -201,6 +202,10 @@ namespace ft
         void    reserve(size_type n){
             if (n > max_size())
                 throw std::length_error("ft::vector::reserve");
+            if (n == 0){
+                _capacity = 1;
+                _data = _vallocator.allocate(1);
+            }
             else if (n > _capacity){
                 value_type *store = NULL;
                 store = _vallocator.allocate(n);
@@ -296,38 +301,53 @@ namespace ft
         }
 
         iterator    insert(iterator position, const value_type &val){
-            difference_type data_offset = &(*position) - &(*begin());
-            iterator    insert(begin() + data_offset);
+            difference_type diff = &(*position) - &(*begin());
+            iterator        insert_pos(begin() + diff);
+            size_type       tmp_end;
 
             if (_size >= _capacity)
                 reserve(_capacity * 2);
-            _size += 1;
-            if (insert != end())
-                for (iterator it = end() - 1; it != insert; it--)
-                    _vallocator.construct(&(*it), *(it - 1));
-            _vallocator.construct(&(*insert), val);
-            return (insert);
+            _size++;
+            tmp_end = _size - 1;
+            if (tmp_end != 0){
+                while (tmp_end != diff){
+                    _vallocator.construct(&_data[tmp_end], _data[tmp_end - 1]);
+                    tmp_end--;
+                }
+            }
+            _data[tmp_end] = val;
+            return (iterator(&_data[tmp_end]));
         }
 
-        iterator    insert(iterator position, size_type n, const value_type &val){
+        void    insert(iterator position, size_type n, const value_type &val){
             int i = 0;
-            iterator ret = position;
+
             while (i < n){
                 insert(position, val);
                 position++;
                 i++;
             }
-            return(ret);
         }
 
         template <class InputIterator>
-        iterator    insert(iterator position, InputIterator first, InputIterator last){
-            iterator ret = position;
-            while (first != last){
-                insert(position, *first);
+        void    insert(iterator position, InputIterator first, InputIterator last,
+        typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
+            difference_type diff = std::distance(begin(), position);
+            difference_type n = std::distance(first, last);
+
+            size_type new_size = n;
+            if (_size >= _capacity)
+                reserve(_capacity * 2);
+            if (_size > 0){
+            for (difference_type i = (_size - 1); i >= diff; i--)
+                _vallocator.construct(&_data[i + new_size], _data[i]);
+            }
+            for (size_type i = 0; i < n; i++){
+                _vallocator.construct(&_data[diff], *first);
+                diff++;
                 first++;
             }
-            return (ret);
+            _size += new_size;
         }
 
         iterator erase(iterator position){

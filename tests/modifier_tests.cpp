@@ -40,7 +40,6 @@ void	assign_tests(){
 	}	
 	else
 		std::cout << FRED("[KO]");
-
 }
 
 void	push_back_tests(){
@@ -87,25 +86,103 @@ void	pop_back_tests(){
 		std::cout << FGRN("[OK]");
 	else
 		std::cout << FRED("[KO]");
-	// //Test with vector of size 50
-	// vec1.resize(50);
-	// vec2.resize(50);
-	// iota(vec1.begin(), vec1.end(), 1);
-	// iota(vec2.begin(), vec2.end(), 1);
-	// vec1.pop_back();
-	// vec2.pop_back();
-	// if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
-	// 	for (size_t i = 0; i < 50; i++){
-	// 		if (vec1[i] != vec2[i]){
-	// 			std::cout << FRED("[KO]");
-	// 			return ;
-	// 		}
-	// 	}
-	// 	std::cout << FGRN("[OK]");
-	// }	
-	// else
-	// 	std::cout << FRED("[KO]");
+	//Test with vector of size 50
+	std::vector<int>	vec3(50);
+	ft::Vector<int>		vec4(50);
+	iota(vec3.begin(), vec3.end(), 1);
+	iota(vec4.begin(), vec4.end(), 1);
+	vec3.pop_back();
+	vec4.pop_back();
+	if (vec3.size() == vec4.size() && vec3.capacity() == vec4.capacity()){
+		for (size_t i = 0; i < 49; i++){
+			if (vec3[i] != vec4[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
 
+}
+
+void	insert_tests(){
+	std::cout << "Insert unitest:" << std::endl;
+	//Test on empty vectors
+	std::vector<int>	vec1;
+	ft::Vector<int>		vec2;
+	vec1.insert(vec1.begin(), 10);
+	vec2.insert(vec2.begin(), 10);
+	if (*vec1.begin() == *vec2.begin() && vec1.capacity() == vec2.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
+	//Test with iterator pos
+	vec1.resize(50);
+	vec2.resize(50);
+	iota(vec1.begin(), vec1.end(), 1);
+	iota(vec2.begin(), vec2.end(), 1);
+	std::vector<int>::iterator res1 = vec1.insert(vec1.begin() + 10, 10);
+	ft::Vector<int>::iterator res2 = vec2.insert(vec2.begin() + 10, 10);
+	if (*res1 != *res2){
+		std::cout << FRED("[KO]");
+	}
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < vec2.size(); i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
+	//Test with n size overload
+	vec1.clear();
+	vec2.clear();
+	vec1.resize(50);
+	vec2.resize(50);
+	iota(vec1.begin(), vec1.end(), 1);
+	iota(vec2.begin(), vec2.end(), 1);
+	vec1.insert(vec1.begin() + 10, 10, 10);
+	vec2.insert(vec2.begin() + 10, 10, 10);
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < vec2.size(); i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
+	//Test with iterator range overload
+	vec1.clear();
+	vec2.clear();
+	vec1.resize(10);
+	vec2.resize(10);
+	std::vector<int>::iterator itb1 = vec1.begin();
+	std::vector<int>::iterator ite1 = vec1.end();
+	ft::Vector<int>::iterator itb2 = vec2.begin();
+	ft::Vector<int>::iterator ite2 = vec2.end();
+	iota(vec1.begin(), vec1.end(), 1);
+	iota(vec2.begin(), vec2.end(), 1);
+	vec1.insert(vec1.begin(),itb1, ite1);
+	vec2.insert(vec2.begin(),itb2, ite2);
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < vec2.size(); i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
 }
 
 void	vector_modifiers_tests(){
@@ -114,4 +191,6 @@ void	vector_modifiers_tests(){
 	push_back_tests();
 	std::cout << std::endl;
 	pop_back_tests();
+	std::cout << std::endl;
+	insert_tests();
 }
