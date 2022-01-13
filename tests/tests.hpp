@@ -17,6 +17,7 @@ void	assign_tests();
 void	push_back_tests();
 void	pop_back_tests();
 void	insert_tests();
+void	erase_tests();
 
 template <class InputIterator, class T>
 void	iota(InputIterator first, InputIterator last, T value){

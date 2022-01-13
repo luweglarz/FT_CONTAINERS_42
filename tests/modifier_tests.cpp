@@ -114,7 +114,8 @@ void	insert_tests(){
 	ft::Vector<int>		vec2;
 	vec1.insert(vec1.begin(), 10);
 	vec2.insert(vec2.begin(), 10);
-	if (*vec1.begin() == *vec2.begin() && vec1.capacity() == vec2.capacity())
+	if (*vec1.begin() == *vec2.begin() && vec1.capacity() == vec2.capacity() &&
+		vec1.size() == vec2.size())
 		std::cout << FGRN("[OK]");
 	else
 		std::cout << FRED("[KO]");
@@ -185,6 +186,10 @@ void	insert_tests(){
 		std::cout << FRED("[KO]");
 }
 
+void	erase_tests(){
+
+}
+
 void	vector_modifiers_tests(){
 	assign_tests();
 	std::cout << std::endl;
@@ -193,4 +198,6 @@ void	vector_modifiers_tests(){
 	pop_back_tests();
 	std::cout << std::endl;
 	insert_tests();
+	std::cout << std::endl;
+	erase_tests();
 }

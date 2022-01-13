@@ -310,7 +310,7 @@ namespace ft
             _size++;
             tmp_end = _size - 1;
             if (tmp_end != 0){
-                while (tmp_end != diff){
+                while (tmp_end != static_cast<size_type>(diff)){
                     _vallocator.construct(&_data[tmp_end], _data[tmp_end - 1]);
                     tmp_end--;
                 }
