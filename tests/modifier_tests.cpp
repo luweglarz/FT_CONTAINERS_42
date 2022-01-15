@@ -1,7 +1,7 @@
 #include "tests.hpp"
 
 void	assign_tests(){
-	std::cout << "Assign unitest:" << std::endl;
+	std::cout << "assign unitest:" << std::endl;
 	//Test on empty vectors
 	std::vector<int>	vec1;
 	ft::Vector<int>		vec2;
@@ -18,19 +18,16 @@ void	assign_tests(){
 	}	
 	else
 		std::cout << FRED("[KO]");
-	//Test with iterator overload
-	vec1.resize(50);
-	vec2.resize(50);
-	std::vector<int>::reverse_iterator revb1 = vec1.rbegin();
-	std::vector<int>::reverse_iterator reve1 = vec1.rend();
-	ft::Vector<int>::reverse_iterator revb2 = vec2.rbegin();
-	ft::Vector<int>::reverse_iterator reve2 = vec2.rend();
+	std::vector<int>::iterator revb1 = vec1.begin();
+	std::vector<int>::iterator reve1 = vec1.end();
+	ft::Vector<int>::iterator revb2 = vec2.begin();
+	ft::Vector<int>::iterator reve2 = vec2.end();
 	iota(revb1, reve1, 1);
 	iota(revb2, reve2, 1);
 	vec1.assign(revb1, reve1);
 	vec2.assign(revb2, reve2);
 	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
-		for (size_t i = 0; i < 10; i++){
+		for (size_t i = 0; i < vec2.size(); i++){
 			if (vec1[i] != vec2[i]){
 				std::cout << FRED("[KO]");
 				return ;
@@ -43,7 +40,7 @@ void	assign_tests(){
 }
 
 void	push_back_tests(){
-	std::cout << "Push_back unitest:" << std::endl;
+	std::cout << "push_back unitest:" << std::endl;
 	std::vector<int>	vec1;
 	ft::Vector<int>		vec2;
 	//Test with empty vector
@@ -108,7 +105,7 @@ void	pop_back_tests(){
 }
 
 void	insert_tests(){
-	std::cout << "Insert unitest:" << std::endl;
+	std::cout << "insert unitest:" << std::endl;
 	//Test on empty vectors
 	std::vector<int>	vec1;
 	ft::Vector<int>		vec2;
@@ -187,7 +184,7 @@ void	insert_tests(){
 }
 
 void	erase_tests(){
-	std::cout << "Erase unitest:" << std::endl;
+	std::cout << "erase unitest:" << std::endl;
 	//Test with position overload
 	std::vector<int>	vec1(10);
 	ft::Vector<int>		vec2(10);
@@ -233,7 +230,7 @@ void	erase_tests(){
 }
 
 void	swap_tests(){
-	std::cout << "Swap unitest:" << std::endl;
+	std::cout << "swap unitest:" << std::endl;
 	std::vector<int>	vec1(10, 100);
 	ft::Vector<int>		vec2(10, 100);
 
@@ -255,7 +252,7 @@ void	swap_tests(){
 }
 
 void	clear_tests(){
-	std::cout << "Clear unitest:" << std::endl;
+	std::cout << "clear unitest:" << std::endl;
 	//Test with empty vectors
 	std::vector<int>	vec1;
 	ft::Vector<int>		vec2;

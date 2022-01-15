@@ -1,7 +1,7 @@
 #include "tests.hpp"
 
 void	vector_iterator_tests(){
-	std::cout << "Iterators unitest:" << std::endl;
+	std::cout << "iterators unitest:" << std::endl;
 	std::vector<int> vec1(50);
 	iota(vec1.begin(), vec1.end(), 1);
 	std::vector<int>::iterator v1itbegin = vec1.begin();
@@ -39,7 +39,7 @@ void	vector_iterator_tests(){
 }
 
 void	reverse_iterator_tests(){
-	std::cout << "Reverse iterators unitest:" << std::endl;
+	std::cout << "reverse iterators unitest:" << std::endl;
 	std::vector<int> vec1(50);
 	iota(vec1.begin(), vec1.end(), 1);
 	std::vector<int>::reverse_iterator v1itbegin = vec1.rbegin();

@@ -19,11 +19,15 @@ void	pop_back_tests();
 void	insert_tests();
 void	erase_tests();
 
+void	vector_capacity_tests();
+void    max_size_tests();
+void    resize_tests();
+
 template <class InputIterator, class T>
 void	iota(InputIterator first, InputIterator last, T value){
 	while (first != last){
 		*first++ = value;
-		value++;
+		++value;
 	}
 }
 #endif

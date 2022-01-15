@@ -176,17 +176,12 @@ namespace ft
                     _size--;
                 }
             }
-            else if (n > _size && n <= _capacity){
+            else if (n > _size){
+                if (n >= _capacity * 2)
+                    reserve(n);
                 while (_size < n)
                     push_back(val);
             }
-            else if (n > capacity()){
-                reserve(n);
-                while (_size < n)
-                    push_back(val);
-            }
-            else
-                return ;
         }
 
         size_type capacity() const{
@@ -258,35 +253,18 @@ namespace ft
         void    assign(InputIterator first, InputIterator last,
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
             clear();
-            _vallocator.deallocate(_data, _capacity);
-            _size = std::distance(first, last);
-            if (_size > _capacity)
-                _capacity = _size;
-            _data = _vallocator.allocate(_size);
-            int i = 0;
-            while (first != last){
-                _vallocator.construct(&_data[i], *first);
-                first++;
-                i++;
-            }
+            insert(begin(), first, last);
         }
 
         void    assign(size_type n, const value_type &val){
             clear();
-            _size = n;
-            if (_size > _capacity)
-                _capacity = _size;
-            _data = _vallocator.allocate(_capacity);
-            for (size_type i = 0; i < _size; i++){
-                _vallocator.construct(&_data[i], val);
-            }
+            insert(begin(), n, val);
         }
 
         void    push_back(const value_type &val){
             if (_capacity == 0){
-                _data = _vallocator.allocate(1);
+                reserve(1);
                 _vallocator.construct(&_data[0], val);
-                _capacity = 1;
                 _size = 1;
                 return ;
             }
@@ -298,7 +276,7 @@ namespace ft
 
         void    pop_back(){
             if (_size > 1)
-                resize(_size - 1);
+                _size--;
         }
 
         iterator    insert(iterator position, const value_type &val){
@@ -306,7 +284,9 @@ namespace ft
             iterator        insert_pos(begin() + diff);
             size_type       tmp_end;
 
-            if (_size >= _capacity)
+            if (_size == 0)
+                reserve(1);
+            else if (_size >= _capacity)
                 reserve(_capacity * 2);
             _size++;
             tmp_end = _size - 1;
@@ -321,13 +301,22 @@ namespace ft
         }
 
         void    insert(iterator position, size_type n, const value_type &val){
-            int i = 0;
+            difference_type diff = std::distance(begin(), position);
+            size_type new_size = n;
 
-            while (i < n){
-                insert(position, val);
-                position++;
-                i++;
+            if (_size == 0)
+                reserve(n);
+            else if (_size > _capacity)
+                reserve(_capacity * 2);
+            if (_size > 0){
+                for (difference_type i = (_size - 1); i >= diff; i--)
+                    _vallocator.construct(&_data[i + new_size], _data[i]);
             }
+            for (size_type i = 0; i < n; i++){
+                _vallocator.construct(&_data[diff], val);
+                diff++;
+            }
+            _size += new_size;
         }
 
         template <class InputIterator>
@@ -335,13 +324,15 @@ namespace ft
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
             difference_type diff = std::distance(begin(), position);
             difference_type n = std::distance(first, last);
-
             size_type new_size = n;
+
+            if (_size == 0)
+                reserve(n);
             if (_size >= _capacity)
                 reserve(_capacity * 2);
             if (_size > 0){
-            for (difference_type i = (_size - 1); i >= diff; i--)
-                _vallocator.construct(&_data[i + new_size], _data[i]);
+                for (difference_type i = (_size - 1); i >= diff; i--)
+                    _vallocator.construct(&_data[i + new_size], _data[i]);
             }
             for (size_type i = 0; i < n; i++){
                 _vallocator.construct(&_data[diff], *first);
