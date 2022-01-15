@@ -258,7 +258,8 @@ namespace ft
         void    assign(InputIterator first, InputIterator last,
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
             clear();
-            _size = first - last ;
+            _vallocator.deallocate(_data, _capacity);
+            _size = std::distance(first, last);
             if (_size > _capacity)
                 _capacity = _size;
             _data = _vallocator.allocate(_size);
@@ -351,46 +352,55 @@ namespace ft
         }
 
         iterator erase(iterator position){
-            value_type  tmp_data;
-            size_type   tmp_size = _size - 1;
-            size_type   j = 0;
-            for (size_type i = 0; i < tmp_size; i++){
-                if (&(_data[j]) == position)
-                    j++;
-                tmp_data[i] = _data[j];
-                j++;
+            iterator    b = begin();
+            iterator    e = end();
+            value_type *store = NULL;
+            store = _vallocator.allocate(_capacity);
+            size_type i = 0;
+            while (b != e){
+                if (b == position)
+                    b++;
+                store[i] = *b;
+                b++;
+                i++;
             }
+            iterator begin(&(store[0]));
+            iterator end(&(store[i]));
             clear();
-            iterator begin(&(tmp_data[0]));
-            iterator end(&(tmp_data[tmp_size]));
-            assign(begin, end);
+            _vallocator.deallocate(_data, _capacity);
+            _data = store;
+            _size = i;
         }
 
         iterator erase(iterator first, iterator last){
-            value_type  tmp_data;
-            size_type   tmp_size = _size - 1;
-            size_type   j = 0;
-            for (size_type i = 0; i < tmp_size; i++){
-                if (&(_data[j]) == first){
+            iterator    b = begin();
+            iterator    e = end();
+            value_type *store = NULL;
+            store = _vallocator.allocate(_capacity);
+            size_type i = 0;
+            while (b != e){
+                if (b == first)
                     while (first != last){
                         first++;
-                        j++;
+                        b++;
                     }
-                }
-                tmp_data[i] = _data[j];
-                j++;
+                store[i] = *b;
+                b++;
+                i++;
             }
+            iterator begin(&(store[0]));
+            iterator end(&(store[i]));
             clear();
-            iterator begin(&(tmp_data[0]));
-            iterator end(&(tmp_data[tmp_size]));
-            assign(begin, end);
+            _vallocator.deallocate(_data, _capacity);
+            _data = store;
+            _size = i;
         }
 
         void    swap(Vector &x){
-            std::swap<allocator_type>(_vallocator, x._vallocator);
-            std::swap<size_type>(_size, x._size);
-            std::swap<size_type>(_capacity, x._capacity);
-            std::swap<value_type>(_data, x._data);
+            _vallocator = x._vallocator;
+            _size       = x._size;
+            _capacity   = x._capacity;
+            std::swap(_data, x._data);
         }
 
         void    clear(){

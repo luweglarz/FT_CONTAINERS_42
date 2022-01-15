@@ -9,7 +9,7 @@ namespace ft
         reverse_iterator
     ---------------------------------------------------------*/
     template<class Iter>
-    class reverse_iterator: public Iter{
+    class reverse_iterator{
     public:
         /*-------------------------------------------------------
         Defining types with typedef
@@ -94,11 +94,11 @@ namespace ft
                     const ft::reverse_iterator<Iterator2> &rhs){return (lhs.base() <= rhs.base());}
     template <class Iterator>
     reverse_iterator<Iterator> operator+(typename reverse_iterator<Iterator>::difference_type n,
-        const reverse_iterator<Iterator> &it){reverse_iterator<Iterator> res = (it.base() - n); return (res);}
+        const reverse_iterator<Iterator> &it){return (it + n);}
     template <class Iterator>
     typename reverse_iterator<Iterator>::difference_type 
     operator-(const reverse_iterator<Iterator> &lhs,const reverse_iterator<Iterator> &rhs){
-        return (lhs.base() - rhs.base());}
+        return (rhs.base() - lhs.base());}
 
 };
 

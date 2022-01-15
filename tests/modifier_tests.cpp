@@ -25,8 +25,8 @@ void	assign_tests(){
 	std::vector<int>::reverse_iterator reve1 = vec1.rend();
 	ft::Vector<int>::reverse_iterator revb2 = vec2.rbegin();
 	ft::Vector<int>::reverse_iterator reve2 = vec2.rend();
-	iota(vec1.begin(), vec1.end(), 1);
-	iota(vec2.begin(), vec2.end(), 1);
+	iota(revb1, reve1, 1);
+	iota(revb2, reve2, 1);
 	vec1.assign(revb1, reve1);
 	vec2.assign(revb2, reve2);
 	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
@@ -187,7 +187,99 @@ void	insert_tests(){
 }
 
 void	erase_tests(){
+	std::cout << "Erase unitest:" << std::endl;
+	//Test with position overload
+	std::vector<int>	vec1(10);
+	ft::Vector<int>		vec2(10);
+	std::vector<int>::iterator itb1 = vec1.begin();
+	std::vector<int>::iterator ite1 = vec1.end();
+	ft::Vector<int>::iterator itb2 = vec2.begin();
+	ft::Vector<int>::iterator ite2 = vec2.end();
+	iota(vec1.begin(), vec1.end(), 1);
+	iota(vec2.begin(), vec2.end(), 1);
+	vec1.erase(vec1.begin());
+	vec2.erase(vec2.begin());
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < vec2.size(); i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
+	//Test with iterator overload
+	std::vector<int>::iterator itb3 = vec1.begin();
+	std::vector<int>::iterator ite3 = vec1.end();
+	ft::Vector<int>::iterator itb4 = vec2.begin();
+	ft::Vector<int>::iterator ite4 = vec2.end();
+	iota(itb3, ite3, 1);
+	iota(itb4, ite4, 1);
+	vec1.erase(vec1.begin() + 4,vec1.begin() + 8);
+	vec2.erase(vec2.begin() + 4,vec2.begin() + 8);
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < vec2.size(); i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}	
+	else
+		std::cout << FRED("[KO]");
+}
 
+void	swap_tests(){
+	std::cout << "Swap unitest:" << std::endl;
+	std::vector<int>	vec1(10, 100);
+	ft::Vector<int>		vec2(10, 100);
+
+	std::vector<int>	vec3(5, 2);
+	ft::Vector<int>		vec4(5, 2);
+	vec1.swap(vec3);
+	vec2.swap(vec4);
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
+		for (size_t i = 0; i < vec2.size(); i++){
+			if (vec1[i] != vec2[i]){
+				std::cout << FRED("[KO]");
+				return ;
+			}
+		}
+		std::cout << FGRN("[OK]");
+	}
+	else
+		std::cout << FRED("[KO]");
+}
+
+void	clear_tests(){
+	std::cout << "Clear unitest:" << std::endl;
+	//Test with empty vectors
+	std::vector<int>	vec1;
+	ft::Vector<int>		vec2;
+	vec1.clear();
+	vec2.clear();
+	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
+	//Test with not empty vectors
+	std::vector<int>	vec3(10);
+	ft::Vector<int>		vec4(10);
+	std::vector<int>::iterator itb1 = vec3.begin();
+	std::vector<int>::iterator ite1 = vec3.end();
+	ft::Vector<int>::iterator itb2 = vec4.begin();
+	ft::Vector<int>::iterator ite2 = vec4.end();
+	iota(itb1, ite1, 1);
+	iota(itb2, ite2, 1);
+	vec3.clear();
+	vec4.clear();
+	if (vec3.size() == vec4.size() && vec3.capacity() == vec4.capacity())
+		std::cout << FGRN("[OK]");
+	else
+		std::cout << FRED("[KO]");
 }
 
 void	vector_modifiers_tests(){
@@ -200,4 +292,8 @@ void	vector_modifiers_tests(){
 	insert_tests();
 	std::cout << std::endl;
 	erase_tests();
+	std::cout << std::endl;
+	swap_tests();
+	std::cout << std::endl;
+	clear_tests();
 }
