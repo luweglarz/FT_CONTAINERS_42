@@ -1,4 +1,4 @@
-#include "tests.hpp"
+#include "../tests.hpp"
 
 void	assign_tests(){
 	std::cout << "assign unitest:" << std::endl;
@@ -8,7 +8,7 @@ void	assign_tests(){
 	vec1.assign(10,100);
 	vec2.assign(10,100);
 	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
-		for (size_t i = 0; i < 10; i++){
+		for (size_t i = 0; i < vec2.size(); i++){
 			if (vec1[i] != vec2[i]){
 				std::cout << FRED("[KO]");
 				return ;
@@ -59,7 +59,7 @@ void	push_back_tests(){
 	vec1.push_back(1);
 	vec2.push_back(1);
 	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
-		for (size_t i = 0; i < 50; i++){
+		for (size_t i = 0; i < vec2.size(); i++){
 			if (vec1[i] != vec2[i]){
 				std::cout << FRED("[KO]");
 				return ;
@@ -91,7 +91,7 @@ void	pop_back_tests(){
 	vec3.pop_back();
 	vec4.pop_back();
 	if (vec3.size() == vec4.size() && vec3.capacity() == vec4.capacity()){
-		for (size_t i = 0; i < 49; i++){
+		for (size_t i = 0; i < vec2.size(); i++){
 			if (vec3[i] != vec4[i]){
 				std::cout << FRED("[KO]");
 				return ;

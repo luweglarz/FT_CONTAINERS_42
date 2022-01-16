@@ -11,7 +11,7 @@ FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 HEADERS = 	containers/vector/ClassVector.hpp iterators/vector_iterator.hpp iterators/iterator_traits.hpp iterators/reverse_iterator.hpp \
 			SFINAE/enable_if.hpp SFINAE/is_integral.hpp tests/tests.hpp
 
-SRCS = tests/iterator_tests.cpp tests/modifier_tests.cpp tests/capacity_tests.cpp
+SRCS = tests/iterator_tests.cpp tests/vector/modifier_tests.cpp tests/vector/capacity_tests.cpp tests/vector/element_access_tests.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

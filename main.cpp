@@ -9,5 +9,7 @@ int main()
 	vector_modifiers_tests();
 	std::cout << std::endl;
 	vector_capacity_tests();
+	std::cout << std::endl;
+	vector_element_access_tests();
 	return (0);
 }

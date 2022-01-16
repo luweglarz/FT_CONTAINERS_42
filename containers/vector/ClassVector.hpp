@@ -197,11 +197,7 @@ namespace ft
         void    reserve(size_type n){
             if (n > max_size())
                 throw std::length_error("ft::vector::reserve");
-            if (n == 0){
-                _capacity = 1;
-                _data = _vallocator.allocate(1);
-            }
-            else if (n > _capacity){
+            if (n > _capacity){
                 value_type *store = NULL;
                 store = _vallocator.allocate(n);
                 size_type i = 0;
@@ -225,27 +221,31 @@ namespace ft
         }
 
         reference at(size_type n){
+            if (n >= _size)
+                throw std::out_of_range("out of vector's range");
             return (_data[n]);
         }
 
         const_reference at(size_type n) const{
+            if (n >= _size)
+                throw std::out_of_range();
             return (_data[n]);
         }
 
         reference front(){
-            return (begin());
+            return (*begin());
         }
 
         const_reference front() const{
-            return (begin());
+            return (*begin());
         }
         
         reference back(){
-            return (end() - 1);
+            return (*(end() - 1));
         }
 
         const_reference back() const{
-            return (end() - 1);
+            return (*(end() - 1));
         }
 
         //Modifiers

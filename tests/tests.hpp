@@ -13,15 +13,8 @@ void	vector_iterator_tests();
 void	reverse_iterator_tests();
 
 void	vector_modifiers_tests();
-void	assign_tests();
-void	push_back_tests();
-void	pop_back_tests();
-void	insert_tests();
-void	erase_tests();
-
 void	vector_capacity_tests();
-void    max_size_tests();
-void    resize_tests();
+void    vector_element_access_tests();
 
 template <class InputIterator, class T>
 void	iota(InputIterator first, InputIterator last, T value){
