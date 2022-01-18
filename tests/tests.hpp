@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <sys/time.h>
+#include <ctime>
 #include "../containers/vector/ClassVector.hpp"
 #include "../containers/map/ClassMap.hpp"
 #include "../containers/stack/ClassStack.hpp"
