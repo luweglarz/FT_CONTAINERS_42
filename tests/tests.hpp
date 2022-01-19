@@ -2,6 +2,7 @@
 #define TESTS_H
 
 #include <vector>
+#include <stack>
 #include <string>
 #include <sys/time.h>
 #include <ctime>
@@ -17,6 +18,10 @@ void	reverse_iterator_tests();
 void	vector_modifiers_tests();
 void	vector_capacity_tests();
 void    vector_element_access_tests();
+void	vector_constructor_tests();
+
+void    stack_constructor_tests();
+
 
 template <class InputIterator, class T>
 void	iota(InputIterator first, InputIterator last, T value){

@@ -87,8 +87,10 @@ namespace ft
         x: the copied instance
         ---------------------------------------------------------*/
         Vector (const Vector& x):
-        _vallocator(x._vallocator), _size(0), _capacity(0), _data(NULL){
-            *this = x;
+        _vallocator(x._vallocator), _size(0), _capacity(0), _data(_vallocator.allocate(_capacity)){
+            for (size_type i = 0; i > _size; i++){
+                _vallocator.construct(&_data[i], x[i]);
+            }
         }
         
         /*-------------------------------------------------------
@@ -97,7 +99,7 @@ namespace ft
         ---------------------------------------------------------*/
         Vector &operator=(const Vector &x){
             _vallocator = x._vallocator;
-            assign(x.begin(), x.end());
+            insert(begin(),x.begin(), x.end());
             return(*this);
         }
         /*-------------------------------------------------------
@@ -106,8 +108,7 @@ namespace ft
         ~Vector(){
             for (size_type i = 0; i < _size; i++)
                 _vallocator.destroy(&_data[i]);
-            if (_capacity > 0)
-                _vallocator.deallocate(_data, _capacity);
+            _vallocator.deallocate(_data, _capacity);
         }
         //Iterators:
         /*-------------------------------------------------------
@@ -282,11 +283,11 @@ namespace ft
         back function that returns the last element of the vector
         ---------------------------------------------------------*/
         reference back(){
-            return (*(end() - 1));
+            return (*(--end()));
         }
 
         const_reference back() const{
-            return (*(end() - 1));
+            return (*(--end()));
         }
 
         //Modifiers
