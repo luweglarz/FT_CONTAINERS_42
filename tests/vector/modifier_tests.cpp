@@ -116,12 +116,10 @@ void	pop_back_tests(){
 	gettimeofday(&a2, NULL);
 	vec2.pop_back();
 	gettimeofday(&b2, NULL);
-	std::cout << "infitiy\n";
 	if (vec1.capacity() == vec2.capacity())
 		std::cout << FGRN("[OK]");
 	else
 		std::cout << FRED("[KO]");
-	std::cout << "autre \n ";
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
 	//Test with vector of size 50
 	std::vector<int>	vec3(50);
@@ -414,4 +412,5 @@ void	vector_modifiers_tests(){
 	swap_tests();
 	std::cout << std::endl;
 	clear_tests();
+	std::cout << std::endl;
 }

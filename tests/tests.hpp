@@ -19,6 +19,7 @@ void	vector_modifiers_tests();
 void	vector_capacity_tests();
 void    vector_element_access_tests();
 void	vector_constructor_tests();
+void    vector_non_members_function();
 
 void    stack_constructor_tests();
 void	stack_size_tests();

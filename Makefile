@@ -12,7 +12,7 @@ HEADERS = 	containers/vector/ClassVector.hpp iterators/vector_iterator.hpp itera
 			SFINAE/enable_if.hpp SFINAE/is_integral.hpp tests/tests.hpp
 
 SRCS = tests/iterator_tests.cpp tests/vector/modifier_tests.cpp tests/vector/capacity_tests.cpp tests/vector/element_access_tests.cpp \
-		tests/vector/constructor_tests.cpp tests/stack/stack_tests.cpp
+		tests/vector/constructor_tests.cpp tests/stack/stack_tests.cpp tests/vector/non_members_functions.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

@@ -108,5 +108,5 @@ void    vector_element_access_tests(){
 	front_tests();
 	std::cout << std::endl;
 	back_tests();
-
+	std::cout << std::endl;
 }

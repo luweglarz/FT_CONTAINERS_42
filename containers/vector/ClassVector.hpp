@@ -10,6 +10,7 @@
 #include "../../iterators/vector_iterator.hpp"
 #include "../../SFINAE/enable_if.hpp"
 #include "../../SFINAE/is_integral.hpp"
+#include "../../iterators/lexicographical_compare.hpp"
 
 namespace ft
 {
@@ -87,9 +88,8 @@ namespace ft
         x: the copied instance
         ---------------------------------------------------------*/
         Vector (const Vector& x):
-        _vallocator(x._vallocator), _size(x._size), _capacity(x._capacity), _data(_vallocator.allocate(_capacity)){
-            for (size_type i = 0; i < _size; i++)
-                _vallocator.construct(&_data[i], x[i]);
+        _vallocator(x._vallocator), _size(0), _capacity(0){
+            *this = x;
         }
         
         /*-------------------------------------------------------
@@ -98,8 +98,12 @@ namespace ft
         ---------------------------------------------------------*/
         Vector &operator=(const Vector &x){
             _vallocator = x._vallocator;
-            std::cout << "test\n";
-            insert(begin(),x.begin(), x.end());
+            _size = x._size;
+            _capacity = x._capacity;
+            _data = _vallocator.allocate(_capacity);
+            for (size_type i = 0; i < _size;i++){
+                _vallocator.construct(&_data[i], x._data[i]);
+            }
             return(*this);
         }
         /*-------------------------------------------------------
@@ -120,7 +124,7 @@ namespace ft
         }
 
         const_iterator begin() const {
-            return (iterator(_data));
+            return (const_iterator(_data));
         }
 
         /*-------------------------------------------------------
@@ -132,7 +136,7 @@ namespace ft
         }
 
         const_iterator end() const {
-            return (iterator(_data + _size));
+            return (const_iterator(_data + _size));
         }
 
         /*-------------------------------------------------------
@@ -511,6 +515,13 @@ namespace ft
             _size = 0;
         }
 
+        //allocator function
+        /*-------------------------------------------------------
+        get_allocator function that returns _vallocator
+        ---------------------------------------------------------*/
+        allocator_type  get_allocator() const{
+            return (_vallocator);
+        }
     private:
         allocator_type  _vallocator;
         size_type       _size;
@@ -518,6 +529,66 @@ namespace ft
         value_type      *_data;
     };
 
+    //Non-members functions
+    /*-------------------------------------------------------
+    swap function that swap two vectors together
+    ---------------------------------------------------------*/
+    template<class T, class Alloc>
+    void    swap(ft::Vector<T, Alloc> &lhs, ft::Vector<T, Alloc> &rhs){
+        lhs.swap(rhs);
+    }
+
+    template <class T, class Alloc>
+    bool operator==(const ft::Vector<T, Alloc> &lhs,
+                    const ft::Vector<T, Alloc> &rhs){
+        typename ft::Vector<T>::iterator b1 = lhs.begin();
+        typename ft::Vector<T>::iterator e1 = lhs.end();
+        typename ft::Vector<T>::iterator b2 = rhs.begin();
+        typename ft::Vector<T>::iterator e2 = rhs.end();
+        if (lhs.size() == rhs.size() && lhs.capacity() == rhs.capacity()){
+            while (b1 != e1 && b2 != e2){
+                if (*b1 != *b2)
+                    return (false);
+                b1++;
+                b2++;
+            }
+            return (true);
+        }
+        return (false);
+    }
+    template <class T, class Alloc>
+    bool operator!=(const ft::Vector<T, Alloc> &lhs,
+                    const ft::Vector<T, Alloc> &rhs){
+        if ((lhs == rhs) == true)
+            return (true);
+        return (false);
+    }
+    template <class T, class Alloc>
+    bool operator<(const ft::Vector<T, Alloc> &lhs,
+                    const ft::Vector<T, Alloc> &rhs){
+        return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));                
+    }
+    template <class T, class Alloc>
+    bool operator<=(const ft::Vector<T, Alloc> &lhs,
+                    const ft::Vector<T, Alloc> &rhs){
+        if ((lhs < rhs) == true)
+            return (true);
+        return (false);                
+    }
+    template <class T, class Alloc>
+    bool operator>(const ft::Vector<T, Alloc> &lhs,
+                    const ft::Vector<T, Alloc> &rhs){
+        if ((lhs < rhs) == false)
+            return (false);
+        return (true);                
+    }
+    template <class T, class Alloc>
+    bool operator>=(const ft::Vector<T, Alloc> &lhs,
+                    const ft::Vector<T, Alloc> &rhs){
+        if ((lhs > rhs) == true)
+            return (true);
+        return (false);                
+    }
 };
 
 #endif

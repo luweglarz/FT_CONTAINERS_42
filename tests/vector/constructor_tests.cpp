@@ -56,4 +56,5 @@ void	vector_constructor_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
+	std::cout << std::endl;
 }

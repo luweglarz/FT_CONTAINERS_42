@@ -248,4 +248,5 @@ void    vector_capacity_tests(){
 	empty_tests();
 	std::cout << std::endl;
 	reserve_tests();
+	std::cout << std::endl;
 }
