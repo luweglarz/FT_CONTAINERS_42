@@ -67,7 +67,7 @@ namespace ft
         reverse_iterator    operator-(difference_type n) const{reverse_iterator rev(*this); rev.base() += n; return (rev);}
         reverse_iterator    &operator+=(difference_type n) const{_underlyingit -= n; return (*this);}
         reverse_iterator    &operator-=(difference_type n) const{_underlyingit += n; return (*this);}
-    private:
+    protected:
         iterator_type _underlyingit;
     };
 
