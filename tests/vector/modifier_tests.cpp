@@ -9,7 +9,6 @@ void	assign_tests(){
 	struct timeval	b1;
 	struct timeval	a2;
 	struct timeval	b2;
-
 	gettimeofday(&a1, NULL);
 	vec1.assign(10,100);
 	gettimeofday(&b1, NULL);
@@ -29,6 +28,8 @@ void	assign_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
+
+	//Test with reverse iterator on filled vector
 	std::vector<int>::iterator revb1 = vec1.begin();
 	std::vector<int>::iterator reve1 = vec1.end();
 	ft::Vector<int>::iterator revb2 = vec2.begin();
@@ -57,13 +58,13 @@ void	assign_tests(){
 
 void	push_back_tests(){
 	std::cout << "push_back unitest:" << std::endl;
+	//Test with empty vector
 	std::vector<int>	vec1;
 	ft::Vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
 	struct timeval	b2;
-	//Test with empty vector
 	gettimeofday(&a1, NULL);
 	vec1.push_back(1);
 	gettimeofday(&b1, NULL);
@@ -76,6 +77,7 @@ void	push_back_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
+
 	//Test with vector of size 50
 	vec1.resize(50);
 	vec2.resize(50);
@@ -103,13 +105,13 @@ void	push_back_tests(){
 
 void	pop_back_tests(){
 	std::cout << "pop_back unitest:" << std::endl;
+	//Test with empty vector
 	std::vector<int>	vec1;
 	ft::Vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
 	struct timeval	b2;
-	//Test with empty vector
 	gettimeofday(&a1, NULL);
 	vec1.pop_back();
 	gettimeofday(&b1, NULL);
@@ -121,6 +123,7 @@ void	pop_back_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
+
 	//Test with vector of size 50
 	std::vector<int>	vec3(50);
 	ft::Vector<int>		vec4(50);
@@ -148,7 +151,7 @@ void	pop_back_tests(){
 
 void	insert_tests(){
 	std::cout << "insert unitest:" << std::endl;
-	//Test on empty vectors
+	//Test on empty vectors with position overload
 	std::vector<int>	vec1;
 	ft::Vector<int>		vec2;
 	std::vector<int>::iterator res1;
@@ -157,7 +160,6 @@ void	insert_tests(){
 	struct timeval	b1;
 	struct timeval	a2;
 	struct timeval	b2;
-
 	gettimeofday(&a1, NULL);
 	res1 = vec1.insert(vec1.begin(), 10);
 	gettimeofday(&b1, NULL);
@@ -173,7 +175,8 @@ void	insert_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
-	//Test with iterator pos
+
+	//Test with iterator pos on resized vector
 	vec1.resize(50);
 	vec2.resize(50);
 	iota(vec1.begin(), vec1.end(), 1);
@@ -196,6 +199,7 @@ void	insert_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
+
 	//Test with n size overload
 	vec1.clear();
 	vec2.clear();
@@ -221,6 +225,7 @@ void	insert_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
+
 	//Test with iterator range overload
 	vec1.clear();
 	vec2.clear();
@@ -265,7 +270,6 @@ void	erase_tests(){
 	struct timeval	b1;
 	struct timeval	a2;
 	struct timeval	b2;
-
 	iota(vec1.begin(), vec1.end(), 1);
 	iota(vec2.begin(), vec2.end(), 1);
 	std::vector<int>::iterator	itret1;
@@ -292,6 +296,7 @@ void	erase_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
+
 	//Test with iterator overload
 	std::vector<int>::iterator itb3 = vec1.begin();
 	std::vector<int>::iterator ite3 = vec1.end();
@@ -376,6 +381,7 @@ void	clear_tests(){
 	else
 		std::cout << FRED("[KO]");
 	std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
+	
 	//Test with not empty vectors
 	std::vector<int>	vec3(10);
 	ft::Vector<int>		vec4(10);

@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <memory>
-#include <iterator>
 #include <limits>
 #include <stdexcept>
 #include "../../iterators/reverse_iterator.hpp"
@@ -75,11 +74,12 @@ namespace ft
         template <typename InputIterator>
         Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
-        _vallocator(alloc), _size(std::distance<InputIterator>(first, last)), _capacity(_size), _data(_vallocator.allocate(_size)){
+        _vallocator(alloc), _size(std::distance<InputIterator>(first, last)), _capacity(_size), _data(_vallocator.allocate(_capacity)){
             int i = 0;
             while (first != last){
-                _data[i] = *first;
+                _vallocator.construct(&_data[i], *first);
                 first++;
+                i++;
             }
         }
 

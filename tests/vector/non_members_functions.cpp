@@ -11,7 +11,6 @@ void    vector_non_members_function(){
 	struct timeval	b1;
 	struct timeval	a2;
 	struct timeval	b2;
-
 	gettimeofday(&a1, NULL);
 	std::swap(vec1, vec3);
 	gettimeofday(&b1, NULL);
@@ -32,6 +31,5 @@ void    vector_non_members_function(){
 	else
 		std::cout << FRED("[KO]");
     std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
-	
 	std::cout << std::endl;
 }
