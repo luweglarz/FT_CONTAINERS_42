@@ -21,7 +21,8 @@ void    vector_element_access_tests();
 void	vector_constructor_tests();
 
 void    stack_constructor_tests();
-
+void	stack_size_tests();
+void	stack_modifier_tests();
 
 template <class InputIterator, class T>
 void	iota(InputIterator first, InputIterator last, T value){

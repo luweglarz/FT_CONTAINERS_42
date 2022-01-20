@@ -20,6 +20,10 @@ void	stack_tests(){
 	std::cout << "Stack tests:" << std::endl << "_______________" << std::endl;
 	stack_constructor_tests();
 	std::cout << std::endl;
+	stack_size_tests();
+	std::cout << std::endl;
+	stack_modifier_tests();
+	std::cout << std::endl;
 }
 
 int main()

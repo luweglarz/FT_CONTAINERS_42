@@ -29,7 +29,7 @@ namespace ft
         x: the copied instance
         ---------------------------------------------------------*/
         Stack &operator=(const Stack &other){
-            (void)other;
+            C = other.C;
             return(*this);
         }
         /*-------------------------------------------------------

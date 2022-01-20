@@ -87,10 +87,9 @@ namespace ft
         x: the copied instance
         ---------------------------------------------------------*/
         Vector (const Vector& x):
-        _vallocator(x._vallocator), _size(0), _capacity(0), _data(_vallocator.allocate(_capacity)){
-            for (size_type i = 0; i > _size; i++){
+        _vallocator(x._vallocator), _size(x._size), _capacity(x._capacity), _data(_vallocator.allocate(_capacity)){
+            for (size_type i = 0; i < _size; i++)
                 _vallocator.construct(&_data[i], x[i]);
-            }
         }
         
         /*-------------------------------------------------------
@@ -99,6 +98,7 @@ namespace ft
         ---------------------------------------------------------*/
         Vector &operator=(const Vector &x){
             _vallocator = x._vallocator;
+            std::cout << "test\n";
             insert(begin(),x.begin(), x.end());
             return(*this);
         }
@@ -337,7 +337,7 @@ namespace ft
         pop_back function that remove the last element of the vector 
         ---------------------------------------------------------*/
         void    pop_back(){
-            if (_size > 1)
+            if (_size > 0)
                 _size--;
         }
 
