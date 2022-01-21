@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <stack>
+#include <map>
 #include <string>
 #include <sys/time.h>
 #include <ctime>
