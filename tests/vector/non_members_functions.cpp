@@ -32,4 +32,6 @@ void    vector_non_members_function(){
 		std::cout << FRED("[KO]");
     std::cout << (b1.tv_usec - a1.tv_usec) / 1000 - (b2.tv_usec - a2.tv_usec) / 1000 << FYEL("MS ");
 	std::cout << std::endl;
+	std::cout << "non_member_operators unitest:" << std::endl;
+	
 }

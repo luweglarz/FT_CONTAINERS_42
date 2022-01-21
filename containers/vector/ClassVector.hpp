@@ -63,14 +63,6 @@ namespace ft
         first: iterator that points on the first element of the range
         last: iterator that points on the last element of the range
         ---------------------------------------------------------*/
-        //  template <typename InputIterator>
-        // Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-        // typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
-        // (void)alloc;
-        // (void)first;
-        // (void)last;
-        // }
-
         template <typename InputIterator>
         Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
@@ -352,7 +344,7 @@ namespace ft
         val: value of the new element
         ---------------------------------------------------------*/
         iterator    insert(iterator position, const value_type &val){
-            difference_type diff = &(*position) - &(*begin());
+            difference_type diff = std::distance(begin(), position);
             iterator        insert_pos(begin() + diff);
             size_type       tmp_end;
 
@@ -360,8 +352,7 @@ namespace ft
                 reserve(1);
             else if (_size >= _capacity)
                 reserve(_capacity * 2);
-            _size++;
-            tmp_end = _size - 1;
+            tmp_end = _size;
             if (tmp_end != 0){
                 while (tmp_end != static_cast<size_type>(diff)){
                     _vallocator.construct(&_data[tmp_end], _data[tmp_end - 1]);
@@ -369,6 +360,7 @@ namespace ft
                 }
             }
             _data[tmp_end] = val;
+            _size++;
             return (iterator(&_data[tmp_end]));
         }
 
@@ -383,10 +375,10 @@ namespace ft
             difference_type diff = std::distance(begin(), position);
             size_type new_size = n;
 
-            if (_size == 0)
-                reserve(n);
-            else if (_size > _capacity)
+            if (_size + n > _capacity && _size + n <= _capacity * 2)
                 reserve(_capacity * 2);
+            else if (_size + n > _capacity * 2)
+                reserve(_size + n);
             if (_size > 0){
                 for (difference_type i = (_size - 1); i >= diff; i--)
                     _vallocator.construct(&_data[i + new_size], _data[i]);
@@ -412,10 +404,10 @@ namespace ft
             difference_type n = std::distance(first, last);
             size_type new_size = n;
 
-            if (_size == 0)
-                reserve(n);
-            if (_size >= _capacity)
+            if (_size + n > _capacity && _size + n <= _capacity * 2)
                 reserve(_capacity * 2);
+            else if (_size + n > _capacity * 2)
+                reserve(_size + n);
             if (_size > 0){
                 for (difference_type i = (_size - 1); i >= diff; i--)
                     _vallocator.construct(&_data[i + new_size], _data[i]);
