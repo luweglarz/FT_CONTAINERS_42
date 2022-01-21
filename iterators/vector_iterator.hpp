@@ -1,10 +1,12 @@
-#ifndef ITERATORS_HPP
-# define ITERATORS_HPP
+#ifndef VECTOR_ITERATOR_HPP
+# define VECTOR_ITERATOR_HPP
+
+#include <iterator>
 
 namespace ft
 {
     /*-------------------------------------------------------
-        vector_iterator
+        vector_iterator (random_access_iterator)
     ---------------------------------------------------------*/
     template <class T>
     class vector_iterator{
@@ -50,6 +52,26 @@ namespace ft
             }
             bool operator!=(const vector_iterator &rhs) const {
                 if (_ptr != rhs._ptr)
+                    return (true);
+                return (false);
+            }
+            bool operator>(const vector_iterator &rhs) const {
+                if (_ptr > rhs._ptr)
+                    return (true);
+                return (false);
+            }
+            bool operator>=(const vector_iterator &rhs) const {
+                if (_ptr >= rhs._ptr)
+                    return (true);
+                return (false);
+            }
+            bool operator<(const vector_iterator &rhs) const {
+                if (_ptr < rhs._ptr)
+                    return (true);
+                return (false);
+            }
+            bool operator<=(const vector_iterator &rhs) const {
+                if (_ptr <= rhs._ptr)
                     return (true);
                 return (false);
             }
