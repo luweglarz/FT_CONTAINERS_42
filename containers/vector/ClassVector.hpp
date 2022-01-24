@@ -116,7 +116,7 @@ namespace ft
         }
 
         const_iterator begin() const {
-            return (const_iterator(_data));
+            return (iterator(_data));
         }
 
         /*-------------------------------------------------------
@@ -128,7 +128,7 @@ namespace ft
         }
 
         const_iterator end() const {
-            return (const_iterator(_data + _size));
+            return (iterator(_data + _size));
         }
 
         /*-------------------------------------------------------

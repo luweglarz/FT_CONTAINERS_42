@@ -6,12 +6,12 @@ enum ncolor {BLACK, RED};
 namespace ft
 {
     template <class Pair>
-    struct RBTN{
+    struct RBTNode{
     public:
 
-        RBTN():color(BLACK), content(), parent(NULL),right(NULL), left(NULL){}
-        ~RBTN(){}
-        RBTN    &operator=(const RBTN &other){
+        RBTNode():color(BLACK), content(), parent(NULL),right(NULL), left(NULL){}
+        ~RBTNode(){}
+        RBTNode    &operator=(const RBTNode &other){
             color = other.color;
             content = other.content;
             parent = other.parent;
@@ -20,9 +20,9 @@ namespace ft
             return (*this);
         }
 
-        ncolor        color;
-        Pair          content;
-        struct RBTN   *parent, *right, *left;
+        ncolor          color;
+        Pair            content;
+        struct RBTNode  *parent, *right, *left;
     };
 }
 
