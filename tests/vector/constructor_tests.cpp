@@ -11,7 +11,7 @@ void	vector_constructor_tests(){
 	std::vector<int>	vec1;
 	gettimeofday(&b1, NULL);
 	gettimeofday(&a2, NULL);
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	gettimeofday(&b2, NULL);
     if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity() && vec1.empty() == vec2.empty())
 		std::cout << FGRN("[OK]");
@@ -24,7 +24,7 @@ void	vector_constructor_tests(){
 	std::vector<int>	vec3(100, 10);
 	gettimeofday(&b1, NULL);
 	gettimeofday(&a2, NULL);
-	ft::Vector<int>		vec4(100, 10);
+	ft::vector<int>		vec4(100, 10);
 	gettimeofday(&b2, NULL);
     if (vec3.size() == vec4.size() && vec3.capacity() == vec4.capacity()){
 		for (size_t i = 0; i < vec4.size(); i++){
@@ -44,7 +44,7 @@ void	vector_constructor_tests(){
 	std::vector<int>	vec5(vec3.begin(), vec3.end());
 	gettimeofday(&b1, NULL);
 	gettimeofday(&a2, NULL);
-	ft::Vector<int>		vec6(vec4.begin(), vec4.end());
+	ft::vector<int>		vec6(vec4.begin(), vec4.end());
 	gettimeofday(&b2, NULL);
     if (vec5.size() == vec6.size() && vec5.capacity() == vec6.capacity()){
 		for (size_t i = 0; i < vec6.size(); i++){
@@ -65,7 +65,7 @@ void	vector_constructor_tests(){
 	std::vector<int>	vec7(vec5);
 	gettimeofday(&b1, NULL);
 	gettimeofday(&a2, NULL);
-	ft::Vector<int>		vec8(vec6);
+	ft::vector<int>		vec8(vec6);
 	gettimeofday(&b2, NULL);
     if (vec7.size() == vec8.size() && vec7.capacity() == vec8.capacity()){
 		for (size_t i = 0; i < vec8.size(); i++){

@@ -4,7 +4,7 @@ void    operator_access_tests(){
     std::cout << "operator[] unitest:" << std::endl;
 	//Test on filled vector
 	std::vector<int>	vec1(50, 23);
-	ft::Vector<int>		vec2(50, 23);
+	ft::vector<int>		vec2(50, 23);
 	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
 		for (size_t i = 0; i < vec2.size(); i++){
 			if (vec1[i] != vec2[i]){
@@ -31,7 +31,7 @@ void	at_tests(){
 	std::cout << "at unitest:" << std::endl;
 	//Test on filled vector
 	std::vector<int>	vec1(50, 23);
-	ft::Vector<int>		vec2(50, 23);
+	ft::vector<int>		vec2(50, 23);
 	if (vec1.size() == vec2.size() && vec1.capacity() == vec2.capacity()){
 		for (size_t i = 0; i < vec2.size(); i++){
 			if (vec1.at(i) != vec2.at(i)){
@@ -61,7 +61,7 @@ void	front_tests(){
 	std::cout << "front unitest:" << std::endl;
 	//Test on filled vector
 	std::vector<int>	vec1(50, 23);
-	ft::Vector<int>		vec2(50, 23);
+	ft::vector<int>		vec2(50, 23);
 	if (vec1.front() != vec2.front())
 		std::cout << FRED("[KO]");
 	else
@@ -80,7 +80,7 @@ void	back_tests(){
 	std::cout << "back unitest:" << std::endl;
 	//Test on filled vector
 	std::vector<int>	vec1(50, 23);
-	ft::Vector<int>		vec2(50, 23);
+	ft::vector<int>		vec2(50, 23);
 	if (vec1.front() != vec2.front())
 		std::cout << FRED("[KO]");
 	else

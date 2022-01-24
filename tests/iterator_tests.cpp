@@ -7,10 +7,10 @@ void	vector_iterator_tests(){
 	std::vector<int>::iterator v1itbegin = vec1.begin();
 	std::vector<int>::iterator v1itend = vec1.end();
 
-	ft::Vector<int> vec2(50);
+	ft::vector<int> vec2(50);
 	iota(vec2.begin(), vec2.end(), 1);
-	ft::Vector<int>::iterator v2itbegin = vec2.begin();
-	ft::Vector<int>::iterator v2itend = vec2.end();
+	ft::vector<int>::iterator v2itbegin = vec2.begin();
+	ft::vector<int>::iterator v2itend = vec2.end();
 	if (*v1itbegin == *v2itbegin && vec1.size() == vec2.size() &&
 		vec1.capacity() == vec2.capacity())
 		std::cout << FGRN("[OK]");
@@ -45,10 +45,10 @@ void	reverse_iterator_tests(){
 	std::vector<int>::reverse_iterator v1itbegin = vec1.rbegin();
 	std::vector<int>::reverse_iterator v1itend = vec1.rend();
 
-	ft::Vector<int> vec2(50);
+	ft::vector<int> vec2(50);
 	iota(vec2.begin(), vec2.end(), 1);
-	ft::Vector<int>::reverse_iterator v2itbegin = vec2.rbegin();
-	ft::Vector<int>::reverse_iterator v2itend = vec2.rend();
+	ft::vector<int>::reverse_iterator v2itbegin = vec2.rbegin();
+	ft::vector<int>::reverse_iterator v2itend = vec2.rend();
 	if (*(--v2itend ) == *(--v1itend) && vec1.size() == vec2.size() &&
 		vec1.capacity() == vec2.capacity())
 		std::cout << FGRN("[OK]");

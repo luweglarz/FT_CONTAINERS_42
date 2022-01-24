@@ -14,7 +14,7 @@
 namespace ft
 {
     template <class T, class Alloc = std::allocator<T> >
-    class Vector{
+    class vector{
     public:
         /*-------------------------------------------------------
         Defining types with typedef
@@ -39,7 +39,7 @@ namespace ft
         Default constructor that creates an empty vector
         alloc: the allocator object
         ---------------------------------------------------------*/
-        explicit Vector(const allocator_type &alloc = allocator_type()): _vallocator(alloc), _size(0),_capacity(0), _data(NULL){
+        explicit vector(const allocator_type &alloc = allocator_type()): _vallocator(alloc), _size(0),_capacity(0), _data(NULL){
         }
 
         /*-------------------------------------------------------
@@ -48,7 +48,7 @@ namespace ft
         val: the value that the container will be filled with 
         alloc: the allocator object
         ---------------------------------------------------------*/
-        explicit Vector(size_type n, const value_type& val = value_type(), const allocator_type &alloc = allocator_type()):
+        explicit vector(size_type n, const value_type& val = value_type(), const allocator_type &alloc = allocator_type()):
         _vallocator(alloc), _size(n), _capacity(n), _data(_vallocator.allocate(_capacity)){
             for (size_type i = 0; i < n; i++){
                 _vallocator.construct(&_data[i], val);
@@ -64,7 +64,7 @@ namespace ft
         last: iterator that points on the last element of the range
         ---------------------------------------------------------*/
         template <typename InputIterator>
-        Vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+        vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
         _vallocator(alloc), _size(std::distance<InputIterator>(first, last)), _capacity(_size), _data(_vallocator.allocate(_capacity)){
             int i = 0;
@@ -79,7 +79,7 @@ namespace ft
         Copy constructor from x
         x: the copied instance
         ---------------------------------------------------------*/
-        Vector (const Vector& x):
+        vector (const vector& x):
         _vallocator(x._vallocator), _size(0), _capacity(0){
             *this = x;
         }
@@ -88,7 +88,7 @@ namespace ft
         Assignation operator from x
         x: the copied instance
         ---------------------------------------------------------*/
-        Vector &operator=(const Vector &x){
+        vector &operator=(const vector &x){
             _vallocator = x._vallocator;
             _size = x._size;
             _capacity = x._capacity;
@@ -99,9 +99,9 @@ namespace ft
             return(*this);
         }
         /*-------------------------------------------------------
-        Vector destructor
+        vector destructor
         ---------------------------------------------------------*/
-        ~Vector(){
+        ~vector(){
             for (size_type i = 0; i < _size; i++)
                 _vallocator.destroy(&_data[i]);
             _vallocator.deallocate(_data, _capacity);
@@ -116,7 +116,7 @@ namespace ft
         }
 
         const_iterator begin() const {
-            return (iterator(_data));
+            return (const_iterator(_data));
         }
 
         /*-------------------------------------------------------
@@ -128,7 +128,7 @@ namespace ft
         }
 
         const_iterator end() const {
-            return (iterator(_data + _size));
+            return (const_iterator(_data + _size));
         }
 
         /*-------------------------------------------------------
@@ -140,7 +140,7 @@ namespace ft
         }
 
         const_reverse_iterator rbegin() const {
-            return (reverse_iterator(_data + _size - 1));
+            return (const_reverse_iterator(_data + _size - 1));
         }
 
         /*-------------------------------------------------------
@@ -148,13 +148,11 @@ namespace ft
         of the vector
         ---------------------------------------------------------*/
         reverse_iterator rend(){
-            reverse_iterator rev(_data - 1);
-            return (rev);
+            return (reverse_iterator(_data - 1));
         }
 
         const_reverse_iterator rend() const{
-            reverse_iterator rev(_data - 1);
-            return (rev);
+            return (const_reverse_iterator(_data - 1));
         }
 
         //Capacity
@@ -480,9 +478,9 @@ namespace ft
 
         /*-------------------------------------------------------
         swap function that swap the elements of *(this) with &x
-        x: Vector to exchange the contents with
+        x: vector to exchange the contents with
         ---------------------------------------------------------*/
-        void    swap(Vector &x){
+        void    swap(vector &x){
             allocator_type   tmp_allocator = _vallocator;
             size_type   tmp_size = _size;
             size_type   tmp_capacity = _capacity;
@@ -526,17 +524,17 @@ namespace ft
     swap function that swap two vectors together
     ---------------------------------------------------------*/
     template<class T, class Alloc>
-    void    swap(ft::Vector<T, Alloc> &lhs, ft::Vector<T, Alloc> &rhs){
+    void    swap(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs){
         lhs.swap(rhs);
     }
 
     template <class T, class Alloc>
-    bool operator==(const ft::Vector<T, Alloc> &lhs,
-                    const ft::Vector<T, Alloc> &rhs){
-        typename ft::Vector<T>::iterator b1 = lhs.begin();
-        typename ft::Vector<T>::iterator e1 = lhs.end();
-        typename ft::Vector<T>::iterator b2 = rhs.begin();
-        typename ft::Vector<T>::iterator e2 = rhs.end();
+    bool operator==(const ft::vector<T, Alloc> &lhs,
+                    const ft::vector<T, Alloc> &rhs){
+        typename ft::vector<T>::const_iterator b1 = lhs.begin();
+        typename ft::vector<T>::const_iterator e1 = lhs.end();
+        typename ft::vector<T>::const_iterator b2 = rhs.begin();
+        typename ft::vector<T>::const_iterator e2 = rhs.end();
         if (lhs.size() == rhs.size() && lhs.capacity() == rhs.capacity()){
             while (b1 != e1 && b2 != e2){
                 if (*b1 != *b2)
@@ -549,37 +547,29 @@ namespace ft
         return (false);
     }
     template <class T, class Alloc>
-    bool operator!=(const ft::Vector<T, Alloc> &lhs,
-                    const ft::Vector<T, Alloc> &rhs){
-        if ((lhs == rhs) == true)
-            return (true);
-        return (false);
+    bool operator!=(const ft::vector<T, Alloc> &lhs,
+                    const ft::vector<T, Alloc> &rhs){
+        return (!(lhs == rhs));
     }
     template <class T, class Alloc>
-    bool operator<(const ft::Vector<T, Alloc> &lhs,
-                    const ft::Vector<T, Alloc> &rhs){
+    bool operator<(const ft::vector<T, Alloc> &lhs,
+                    const ft::vector<T, Alloc> &rhs){
         return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));                
     }
     template <class T, class Alloc>
-    bool operator<=(const ft::Vector<T, Alloc> &lhs,
-                    const ft::Vector<T, Alloc> &rhs){
-        if ((lhs < rhs) == true)
-            return (true);
-        return (false);                
+    bool operator<=(const ft::vector<T, Alloc> &lhs,
+                    const ft::vector<T, Alloc> &rhs){
+        return (!(rhs < lhs));              
     }
     template <class T, class Alloc>
-    bool operator>(const ft::Vector<T, Alloc> &lhs,
-                    const ft::Vector<T, Alloc> &rhs){
-        if ((lhs < rhs) == false)
-            return (false);
-        return (true);                
+    bool operator>(const ft::vector<T, Alloc> &lhs,
+                    const ft::vector<T, Alloc> &rhs){
+        return (rhs < lhs);
     }
     template <class T, class Alloc>
-    bool operator>=(const ft::Vector<T, Alloc> &lhs,
-                    const ft::Vector<T, Alloc> &rhs){
-        if ((lhs > rhs) == true)
-            return (true);
-        return (false);                
+    bool operator>=(const ft::vector<T, Alloc> &lhs,
+                    const ft::vector<T, Alloc> &rhs){
+        return (!(lhs < rhs));           
     }
 };
 

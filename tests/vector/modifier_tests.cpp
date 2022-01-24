@@ -4,7 +4,7 @@ void	assign_tests(){
 	std::cout << "assign unitest:" << std::endl;
 	//Test on empty vectors
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -32,8 +32,8 @@ void	assign_tests(){
 	//Test with reverse iterator on filled vector
 	std::vector<int>::iterator revb1 = vec1.begin();
 	std::vector<int>::iterator reve1 = vec1.end();
-	ft::Vector<int>::iterator revb2 = vec2.begin();
-	ft::Vector<int>::iterator reve2 = vec2.end();
+	ft::vector<int>::iterator revb2 = vec2.begin();
+	ft::vector<int>::iterator reve2 = vec2.end();
 	iota(revb1, reve1, 1);
 	iota(revb2, reve2, 1);
 	gettimeofday(&a1, NULL);
@@ -60,7 +60,7 @@ void	push_back_tests(){
 	std::cout << "push_back unitest:" << std::endl;
 	//Test with empty vector
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -107,7 +107,7 @@ void	pop_back_tests(){
 	std::cout << "pop_back unitest:" << std::endl;
 	//Test with empty vector
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -126,7 +126,7 @@ void	pop_back_tests(){
 
 	//Test with vector of size 50
 	std::vector<int>	vec3(50);
-	ft::Vector<int>		vec4(50);
+	ft::vector<int>		vec4(50);
 	iota(vec3.begin(), vec3.end(), 1);
 	iota(vec4.begin(), vec4.end(), 1);
 	gettimeofday(&a1, NULL);
@@ -153,9 +153,9 @@ void	insert_tests(){
 	std::cout << "insert unitest:" << std::endl;
 	//Test on empty vectors with position overload
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	std::vector<int>::iterator res1;
-	ft::Vector<int>::iterator res2;
+	ft::vector<int>::iterator res2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -233,8 +233,8 @@ void	insert_tests(){
 	vec2.resize(10);
 	std::vector<int>::iterator itb1 = vec1.begin();
 	std::vector<int>::iterator ite1 = vec1.end();
-	ft::Vector<int>::iterator itb2 = vec2.begin();
-	ft::Vector<int>::iterator ite2 = vec2.end();
+	ft::vector<int>::iterator itb2 = vec2.begin();
+	ft::vector<int>::iterator ite2 = vec2.end();
 	iota(vec1.begin(), vec1.end(), 1);
 	iota(vec2.begin(), vec2.end(), 1);
 	gettimeofday(&a1, NULL);
@@ -261,11 +261,11 @@ void	erase_tests(){
 	std::cout << "erase unitest:" << std::endl;
 	//Test with position overload
 	std::vector<int>	vec1(10);
-	ft::Vector<int>		vec2(10);
+	ft::vector<int>		vec2(10);
 	std::vector<int>::iterator itb1 = vec1.begin();
 	std::vector<int>::iterator ite1 = vec1.end();
-	ft::Vector<int>::iterator itb2 = vec2.begin();
-	ft::Vector<int>::iterator ite2 = vec2.end();
+	ft::vector<int>::iterator itb2 = vec2.begin();
+	ft::vector<int>::iterator ite2 = vec2.end();
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -273,7 +273,7 @@ void	erase_tests(){
 	iota(vec1.begin(), vec1.end(), 1);
 	iota(vec2.begin(), vec2.end(), 1);
 	std::vector<int>::iterator	itret1;
-	ft::Vector<int>::iterator	itret2;
+	ft::vector<int>::iterator	itret2;
 	gettimeofday(&a1, NULL);
 	itret1 = vec1.erase(vec1.begin());
 	gettimeofday(&b1, NULL);
@@ -300,8 +300,8 @@ void	erase_tests(){
 	//Test with iterator overload
 	std::vector<int>::iterator itb3 = vec1.begin();
 	std::vector<int>::iterator ite3 = vec1.end();
-	ft::Vector<int>::iterator itb4 = vec2.begin();
-	ft::Vector<int>::iterator ite4 = vec2.end();
+	ft::vector<int>::iterator itb4 = vec2.begin();
+	ft::vector<int>::iterator ite4 = vec2.end();
 	iota(itb3, ite3, 1);
 	iota(itb4, ite4, 1);
 	gettimeofday(&a1, NULL);
@@ -331,10 +331,10 @@ void	erase_tests(){
 void	swap_tests(){
 	std::cout << "swap unitest:" << std::endl;
 	std::vector<int>	vec1(10, 100);
-	ft::Vector<int>		vec2(10, 100);
+	ft::vector<int>		vec2(10, 100);
 
 	std::vector<int>	vec3(5, 2);
-	ft::Vector<int>		vec4(5, 2);
+	ft::vector<int>		vec4(5, 2);
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -365,7 +365,7 @@ void	clear_tests(){
 	std::cout << "clear unitest:" << std::endl;
 	//Test with empty vectors
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -384,11 +384,11 @@ void	clear_tests(){
 	
 	//Test with not empty vectors
 	std::vector<int>	vec3(10);
-	ft::Vector<int>		vec4(10);
+	ft::vector<int>		vec4(10);
 	std::vector<int>::iterator itb1 = vec3.begin();
 	std::vector<int>::iterator ite1 = vec3.end();
-	ft::Vector<int>::iterator itb2 = vec4.begin();
-	ft::Vector<int>::iterator ite2 = vec4.end();
+	ft::vector<int>::iterator itb2 = vec4.begin();
+	ft::vector<int>::iterator ite2 = vec4.end();
 	iota(itb1, ite1, 1);
 	iota(itb2, ite2, 1);
 	gettimeofday(&a1, NULL);

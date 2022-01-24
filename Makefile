@@ -2,7 +2,7 @@ NAME = ft_containers
 
 LIB = tests.a
 
-CC = c++
+CC = clang++
 
 STD = -std=c++98 
 

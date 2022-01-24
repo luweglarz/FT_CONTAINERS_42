@@ -11,7 +11,7 @@ void    stack_constructor_tests(){
 	std::stack<int>	stck1;
 	gettimeofday(&b1, NULL);
 	gettimeofday(&a2, NULL);
-	ft::Stack<int>	stck2;
+	ft::stack<int>	stck2;
 	gettimeofday(&b2, NULL);
     if (stck1.size() == stck2.size())
 		std::cout << FGRN("[OK]");
@@ -28,14 +28,14 @@ void	stack_size_tests(){
 	struct timeval	a2;
 	struct timeval	b2;
 	std::vector<int> vec1(10, 100);
-	ft::Vector<int> vec2(10, 100);
+	ft::vector<int> vec2(10, 100);
 
     gettimeofday(&a1, NULL);
 	std::stack<int, std::vector<int> >	stck1(vec1);
 	stck1.pop();
 	gettimeofday(&b1, NULL);
 	gettimeofday(&a2, NULL);
-	ft::Stack<int>	stck2(vec2);
+	ft::stack<int>	stck2(vec2);
 	stck2.pop();
 	gettimeofday(&b2, NULL);
 	if (stck1.size() == stck2.size())
@@ -67,14 +67,14 @@ void	stack_modifier_tests(){
 	struct timeval	a2;
 	struct timeval	b2;
 	std::vector<int> vec1(10, 100);
-	ft::Vector<int> vec2(10, 100);
+	ft::vector<int> vec2(10, 100);
 
     gettimeofday(&a1, NULL);
 	std::stack<int, std::vector<int> >	stck1(vec1);
 	stck1.push(5);
 	gettimeofday(&b1, NULL);
 	gettimeofday(&a2, NULL);
-	ft::Stack<int>	stck2(vec2);
+	ft::stack<int>	stck2(vec2);
 	stck2.push(5);
 	gettimeofday(&b2, NULL);
 	if (stck1.size() == stck2.size() && stck1.top() == stck2.top())

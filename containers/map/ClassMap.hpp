@@ -1,5 +1,5 @@
-#ifndef MAP_HPP
-#define MAP_HPP
+#ifndef map_HPP
+#define map_HPP
 
 #include <iostream>
 #include <memory>
@@ -13,14 +13,14 @@ namespace ft
 
     template < class Key, class T, class Compare = std::less<Key>,
 				class Alloc = std::allocator<ft::pair<const Key, T> > >
-	class Map{
+	class map{
     public:
         /*-------------------------------------------------------
         Defining types with typedef
         ---------------------------------------------------------*/
         typedef Key                                                 key_type;
         typedef T                                                   mapped_key;
-        typedef ft::pair<const Key, T>                              value_type;
+        typedef ft::pair<const key_type, key_type>                  value_type;
         typedef size_t                                              size_type;
         typedef ptrdiff_t                                           difference_type;
         typedef Compare                                             key_compare;
@@ -42,7 +42,7 @@ namespace ft
         comp: comparator object
         alloc: the allocator object
         ---------------------------------------------------------*/
-        explicit Map(const Compare &comp, const allocator_type &alloc = allocator_type()): _mallocator(alloc), _size(0), _cmp(comp), 
+        explicit map(const Compare &comp, const allocator_type &alloc = allocator_type()): _mallocator(alloc), _size(0), _cmp(comp), 
                     _first(NULL), _last(NULL), _current(NULL){
         }
 
@@ -54,7 +54,7 @@ namespace ft
         alloc: the allocator object
         ---------------------------------------------------------*/
         template <class InputIterator>
-        explicit Map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
+        explicit map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
                     typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
                     _mallocator(alloc), _size(std::distance<InputIterator>(first, last)), _cmp(comp){}
 
@@ -62,15 +62,15 @@ namespace ft
         copy constructor that creates a map with a range of iterators
         x: source map object to copy
         ---------------------------------------------------------*/
-        Map(const Map &x){
+        map(const map &x){
             *this = x;
         }
 
-        Map &operator=(const Map &x){
+        map &operator=(const map &x){
             (void)x;
         }
 
-        ~Map(){
+        ~map(){
         }
     
         //Iterators
@@ -121,6 +121,19 @@ namespace ft
         const_reverse_iterator rend() const {
             return (iterator(_last));
         }
+        
+        //Capacity
+        
+        //Element access
+
+        //Modifiers
+        /*-------------------------------------------------------
+        insert function that insert a new element to the map
+        val: value to insert (value_type)
+        ---------------------------------------------------------*/
+        pair<iterator, bool> insert(const value_type &val){
+            (void)val;
+        }
 
     protected:
         class value_compare : public std::binary_function<value_type, value_type, bool>{
@@ -133,7 +146,7 @@ namespace ft
         };
 
     private:
-        typedef RBTNode<value_type>        node;
+        typedef RBTNode<value_type>     node;
 
         allocator_type      _mallocator;
         size_type           _size;

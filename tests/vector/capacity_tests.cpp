@@ -4,7 +4,7 @@ void	size_tests(){
 	std::cout << "size unitest:" << std::endl;
 	//Test on empty vector
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -53,7 +53,7 @@ void	size_tests(){
 
 	//Test on huge vector size
 	std::vector<int>	vec3(10000, 1000);
-	ft::Vector<int>		vec4(10000, 1000);
+	ft::vector<int>		vec4(10000, 1000);
 	gettimeofday(&a1, NULL);
 	vec3.size();
 	gettimeofday(&b1, NULL);
@@ -71,7 +71,7 @@ void    max_size_tests(){
     std::cout << "max_size unitest:" << std::endl;
 	//Basic test
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -93,7 +93,7 @@ void    resize_tests(){
     std::cout << "resize unitest:" << std::endl;
 	//Test on empty vector
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -162,7 +162,7 @@ void	capacity_tests(){
 	std::cout << "capacity unitest:" << std::endl;
 	//Test on empty vector
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -201,7 +201,7 @@ void	empty_tests(){
 	std::cout << "empty unitest:" << std::endl;
 	//Test on empty vector
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
@@ -240,7 +240,7 @@ void	reserve_tests(){
 	std::cout << "reserve unitest:" << std::endl;
 	//Test on empty vector
 	std::vector<int>	vec1;
-	ft::Vector<int>		vec2;
+	ft::vector<int>		vec2;
 	struct timeval	a1;
 	struct timeval	b1;
 	struct timeval	a2;
