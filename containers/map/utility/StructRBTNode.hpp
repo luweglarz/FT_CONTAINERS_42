@@ -1,6 +1,8 @@
 #ifndef STRUCT_RBT_HPP
 # define STRUCT_RBT_HPP
 
+#include <memory>
+
 enum ncolor {BLACK, RED};
 
 namespace ft
@@ -19,7 +21,7 @@ namespace ft
         ---------------------------------------------------------*/
         RBTNode(ncolor col, Pair cont,struct RBTNode &par, struct RBTnode &r, struct RBTnode &l):
         color(col), content(cont), parent(par), right(r), left(l){}
-
+    
         /*-------------------------------------------------------
         Destructor
         ---------------------------------------------------------*/
@@ -33,9 +35,22 @@ namespace ft
             return (*this);
         }
 
+        /*-------------------------------------------------------
+        Set node 
+        ---------------------------------------------------------*/
+        void set_node(ncolor col, Pair cont,struct RBTNode &par, struct RBTnode &r, struct RBTnode &l){
+            color = col;
+            content = cont;
+            parent = par;
+            right = r;
+            left = l;
+        }
+
+        typedef Pair                        value_type;
+        typedef struct RBTNode<value_type>  node;
         ncolor          color;
-        Pair            content;
-        struct RBTNode  *parent, *right, *left;
+        value_type      content;
+        node         *parent, *right, *left;
     };
 }
 

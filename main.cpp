@@ -34,9 +34,10 @@ void	iterator_tests(){
 
 int main()
 {
-	iterator_tests();
-	vector_tests();
-	stack_tests();
-	
+	// iterator_tests();
+	// vector_tests();
+	// stack_tests();
+	ft::map<char, int>	test;
+	test.insert(ft::pair<char, int>('c', 2));
 	return (0);
 }

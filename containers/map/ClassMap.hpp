@@ -25,14 +25,15 @@ namespace ft
         typedef std::ptrdiff_t                                      difference_type;
         typedef Compare                                             key_compare;
         typedef Alloc                                               allocator_type;
+        typedef RBTNode<value_type>                                 node;
 
         typedef typename allocator_type::reference                  reference;
         typedef typename allocator_type::const_reference            const_reference;
         typedef typename allocator_type::pointer                    pointer;
         typedef typename allocator_type::const_pointer              const_pointer;
 
-        typedef ft::map_iterator<T>                                 iterator;
-        typedef ft::map_iterator<const T>                           const_iterator;
+        typedef ft::map_iterator<node>                              iterator;
+        typedef ft::map_iterator<const node>                        const_iterator;
         typedef ft::reverse_iterator<iterator>                      reverse_iterator;
         typedef ft::reverse_iterator<const_iterator>                const_reverse_iterator;
 
@@ -42,8 +43,8 @@ namespace ft
         comp: comparator object
         alloc: the allocator object
         ---------------------------------------------------------*/
-        explicit map(const Compare &comp, const allocator_type &alloc = allocator_type()): _mallocator(alloc), _size(0), _cmp(comp), 
-                    _first(NULL), _last(NULL), _current(NULL){
+        explicit map(const Compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): _mallocator(alloc), _size(0), _cmp(comp), 
+                    _first(NULL), _current(NULL), _last(NULL){
         }
 
         /*-------------------------------------------------------
@@ -83,7 +84,7 @@ namespace ft
         }
         
         const_iterator begin() const{
-            return (iterator(_first));
+            return (const_iterator(_first));
         }
 
         /*-------------------------------------------------------
@@ -95,7 +96,7 @@ namespace ft
         }
 
         const_iterator end() const{
-            return (iterator(_last));
+            return (const_iterator(_last));
         }
 
         /*-------------------------------------------------------
@@ -103,11 +104,11 @@ namespace ft
         at the beginning of the map
         ---------------------------------------------------------*/
         reverse_iterator rbegin(){
-            return (iterator(_first));
+            return (reverse_iterator(_first));
         }
 
         const_reverse_iterator rbegin() const{
-            return (iterator(_first));
+            return (const_reverse_iterator(_first));
         }
 
         /*-------------------------------------------------------
@@ -115,11 +116,11 @@ namespace ft
         at the end of the map
         ---------------------------------------------------------*/
         reverse_iterator rend(){
-            return (iterator(_last));
+            return (reverse_iterator(_last));
         }
 
         const_reverse_iterator rend() const {
-            return (iterator(_last));
+            return (const_reverse_iterator(_last));
         }
         
         //Capacity
@@ -170,8 +171,15 @@ namespace ft
         val: value to insert (value_type)
         ---------------------------------------------------------*/
         pair<iterator, bool> insert(const value_type &val){
-            (void)val;
-
+            node  *newnode;
+            if (_size == 0){
+                newnode = _nallocator.allocate(1);
+                _nallocator.construct(&newnode->content, val);
+                _first = newnode;
+                _size++;
+                return (ft::make_pair(begin(),true));
+            }
+            return (ft::make_pair(begin(),true));
         }
         
         // iterator insert(iterator hint, const value_type &value){
@@ -257,8 +265,9 @@ namespace ft
         };
 
     private:
-        typedef RBTNode<value_type>     node;
+        typedef std::allocator<RBTNode<value_type> > Nalloc;
 
+        Nalloc              _nallocator;
         allocator_type      _mallocator;
         size_type           _size;
         value_compare       _cmp;
