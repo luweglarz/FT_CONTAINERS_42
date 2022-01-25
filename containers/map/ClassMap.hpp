@@ -22,7 +22,7 @@ namespace ft
         typedef T                                                   mapped_key;
         typedef ft::pair<const key_type, key_type>                  value_type;
         typedef size_t                                              size_type;
-        typedef ptrdiff_t                                           difference_type;
+        typedef std::ptrdiff_t                                      difference_type;
         typedef Compare                                             key_compare;
         typedef Alloc                                               allocator_type;
 
@@ -123,18 +123,129 @@ namespace ft
         }
         
         //Capacity
-        
-        //Element access
+        allocator_type get_allocator() const{
+            return (_mallocator);
+        }
 
+        bool empty() const{
+            return true;
+        }
+
+        size_type size() const{
+            return 0;
+        }
+
+        size_type max_size() const{
+            return 0;
+        }
+        //Element access
+        // T &at(const Key &key){
+        //     (void)key;
+        //     return;
+        // }
+
+        // T &operator[](const Key &key){
+        //     (void)key;
+        //     return;
+        // }
         //Modifiers
+        // void clear(){
+        // }
+
+        // void erase(iterator pos){
+        //     (void)pos;
+        // }
+
+        // void erase(iterator first, iterator last){
+        //     (void)first;
+        //     (void)last;
+        // }
+
+        // size_type erase(const Key &key){
+        //     (void)key;
+        //     return;
+        // }
         /*-------------------------------------------------------
         insert function that insert a new element to the map
         val: value to insert (value_type)
         ---------------------------------------------------------*/
         pair<iterator, bool> insert(const value_type &val){
             (void)val;
-        }
 
+        }
+        
+        // iterator insert(iterator hint, const value_type &value){
+        //     (void)hint;
+        //     (void)value;
+        //     return;
+        // }
+        
+        // template<class InputIterator>
+        // void insert(InputIterator first, InputIterator last){
+        //     (void)first;
+        //     (void)last;
+            
+        // }
+
+        // void swap(map &other){
+        //     (void)other;
+        // }
+
+        // //Lookup
+        // size_type count(const Key &key) const{
+        //     (void)key;
+        //     return;
+        // }
+
+        // iterator find(const Key &key){
+        //     (void)key;
+        //     return;
+        // }
+
+        // const_iterator find(const Key &key) const{
+        //     (void)key;
+        //     return;
+        // }
+
+        // ft::pair<iterator,iterator> equal_range(const Key &key){
+        //     (void)key;
+        //     return;
+        // }
+
+        // ft::pair<const_iterator,const_iterator> equal_range(const Key &key) const{
+        //     (void)key;
+        //     return;
+        // }
+
+        // iterator lower_bound(const Key &key){
+        //     (void)key;
+        //     return;
+        // }
+
+        // const_iterator lower_bound(const Key &key) const{
+        //     (void)key;
+        //     return;
+        // }
+
+        // iterator upper_bound(const Key &key){
+        //     (void)key;
+        //     return;
+        // }
+
+        // const_iterator upper_bound(const Key &key) const{  
+        //     (void)key;
+        //     return;
+        // }
+
+        // //Observers
+        // key_compare key_comp() const{
+        //     return;
+        // }
+
+        // ft::map::value_compare value_comp() const{
+        //     return;
+        // }
+        
     protected:
         class value_compare : public std::binary_function<value_type, value_type, bool>{
         public:
