@@ -38,6 +38,8 @@ int main()
 	// vector_tests();
 	// stack_tests();
 	ft::map<char, int>	test;
-	test.insert(ft::pair<char, int>('c', 2));
+	test.insert(ft::make_pair<char, int>('c', 5));
+	ft::map<char, int>::iterator it = test.find('c');
+	std::cout << test['c'] << std::endl;
 	return (0);
 }

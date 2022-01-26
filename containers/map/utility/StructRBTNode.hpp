@@ -48,9 +48,10 @@ namespace ft
 
         typedef Pair                        value_type;
         typedef struct RBTNode<value_type>  node;
+
         ncolor          color;
         value_type      content;
-        node         *parent, *right, *left;
+        node            *parent, *right, *left;
     };
 }
 
