@@ -45,7 +45,7 @@ namespace ft
         alloc: the allocator object
         ---------------------------------------------------------*/
         explicit map(const Compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): _mallocator(alloc), _size(0), _cmp(comp), 
-                    _root(NULL), _current(NULL), _last(NULL){
+                    _root(NULL), _first(NULL), _last(NULL){
         }
 
         /*-------------------------------------------------------
@@ -82,11 +82,11 @@ namespace ft
         at the beginning of the map
         ---------------------------------------------------------*/
         iterator begin(){
-            return (iterator(_root));
+            return (iterator(_first));
         }
         
         const_iterator begin() const{
-            return (const_iterator(_root));
+            return (const_iterator(_first));
         }
 
         /*-------------------------------------------------------
@@ -118,34 +118,37 @@ namespace ft
         at the end of the map
         ---------------------------------------------------------*/
         reverse_iterator rend(){
-            return (reverse_iterator(_root));
+            return (reverse_iterator(_first));
         }
 
         const_reverse_iterator rend() const {
-            return (const_reverse_iterator(_root));
+            return (const_reverse_iterator(_first));
         }
         
         //Capacity
         allocator_type get_allocator() const{
-            return (_mallocator);
+            return (_nallocator);
         }
 
         bool empty() const{
-            return true;
+            if(_size == 0)
+                return (true);
+            else
+                return (false);
         }
 
         size_type size() const{
-            return 0;
+            return (_size);
         }
 
         size_type max_size() const{
-            return 0;
+            return ((_nallocator.max_size()));
         }
         //Element access
-        // T &at(const Key &key){
-        //     (void)key;
-        //     return;
-        // }
+        T &at(const Key &key){
+            iterator    ret = find(key);
+            return (ret->second);
+        }
 
         T &operator[](const Key &key){
             iterator    ret = find(key);
@@ -173,11 +176,12 @@ namespace ft
         val: value to insert (value_type)
         ---------------------------------------------------------*/
         pair<iterator, bool> insert(const value_type &val){
-            node  *newnode;
+            node  *newnode = _nallocator.allocate(1);
             if (_size == 0){
-                newnode = _nallocator.allocate(1);
                 _mallocator.construct(&newnode->content, val);
                 _root = newnode;
+                _first = newnode;
+                _last = newnode;
                 _size++;
                 return (ft::make_pair(begin(),true));
             }
@@ -209,25 +213,25 @@ namespace ft
         // }
 
         iterator find(const Key &key){
-            _current = _root;
-            while (_current != NULL && _current->content.first != key){
-                if (key < _current->content.first)
-                    _current = _current->left;
+            node *current = _first;
+            while (current != NULL && current->content.first != key){
+                if (key < current->content.first)
+                    current = current->left;
                 else
-                    _current = _current->right;
+                    current = current->right;
             }
-            return (iterator(_current));
+            return (iterator(current));
         }
 
         const_iterator find(const Key &key) const{
-            _current = _root;
-            while (_current != NULL && _current->content.first != key){
-                if (_cmp(key, _current->content.first))
-                    _current = _current->left;
+            node *current = _first;
+            while (current != NULL && current->content.first != key){
+                if (_cmp(key, current->content.first))
+                    current = current->left;
                 else
-                    _current = _current->right;
+                    current = current->right;
             }
-            return (iterator(_current));
+            return (iterator(current));
         }
 
         // ft::pair<iterator,iterator> equal_range(const Key &key){
@@ -285,7 +289,7 @@ namespace ft
         size_type           _size;
         value_compare       _cmp;
         node                *_root;
-        node                *_current;
+        node                *_first;
         node                *_last;
     };
 }
