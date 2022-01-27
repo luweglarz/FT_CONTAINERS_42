@@ -32,8 +32,7 @@ void	iterator_tests(){
 	std::cout << std::endl;
 }
 
-int main()
-{
+int main(){
 	// iterator_tests();
 	// vector_tests();
 	// stack_tests();
@@ -44,6 +43,6 @@ int main()
 	ft::map<char, int>::iterator it = test.find('c');
 	std::cout << test['c'] << std::endl;
 	std::cout << test['b'] << std::endl;
-	std::cout << test['d'] << std::endl;
+	// std::cout << test['d'] << std::endl;
 	return (0);
 }

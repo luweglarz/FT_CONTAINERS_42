@@ -26,7 +26,7 @@ namespace ft
         typedef Compare                                             key_compare;
         typedef Alloc                                               allocator_type;
         typedef RBTNode<value_type>                                 node;
-        typedef std::allocator<node>                                Nalloc;
+        typedef typename std::allocator<node>                       nalloc;
 
         typedef typename allocator_type::reference                  reference;
         typedef typename allocator_type::const_reference            const_reference;
@@ -204,7 +204,7 @@ namespace ft
                 newnode->parent->right = newnode;
             newnode->color = RED;
             _size++;
-            return (ft::make_pair(begin(),true));
+            return (ft::make_pair(iterator(newnode),true));
         }
         
         // iterator insert(iterator hint, const value_type &value){
@@ -302,7 +302,7 @@ namespace ft
         }
 
     private:
-        Nalloc              _nallocator;
+        nalloc              _nallocator;
         allocator_type      _mallocator;
         size_type           _size;
         value_compare       _cmp;

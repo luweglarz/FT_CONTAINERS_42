@@ -19,15 +19,15 @@ namespace ft
             typedef typename    Tree::value_type                    *content;
 
             map_iterator(): _ptr(NULL){}
-            map_iterator(value_type *p): _ptr(p){}
+            map_iterator(pointer p): _ptr(p){}
             map_iterator(const map_iterator &src){*this = src;}
             map_iterator &operator=(const map_iterator &src){_ptr = src._ptr;return(*this);}
             ~map_iterator(){}
 
 
             //overloads
-            reference       operator*()const {return (*_ptr);}
             content         operator->()const {return (&_ptr->content);}
+            reference       operator*()const {return (_ptr->content);}
             reference       &operator[](int idx) const {return *(_ptr + idx);}
         
             map_iterator    &operator++(){++_ptr; return (*this);}//prefix

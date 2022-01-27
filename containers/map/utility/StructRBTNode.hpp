@@ -13,6 +13,10 @@ namespace ft
 
         typedef Pair                        value_type;
         typedef struct RBTNode<value_type>  node;
+        typedef node                        *pointer;
+        typedef const node                  *const_pointer;
+        typedef node                        &reference;
+        typedef const node                  &const_reference;
 
         /*-------------------------------------------------------
         default constructor
@@ -20,16 +24,26 @@ namespace ft
         RBTNode():color(BLACK), content(), parent(NULL),right(NULL), left(NULL){}
 
         /*-------------------------------------------------------
-        constructor
+        fill constructor
         ---------------------------------------------------------*/
-        RBTNode(ncolor col, Pair cont,struct RBTNode &par, struct RBTnode &r, struct RBTnode &l):
-        color(col), content(cont), parent(par), right(r), left(l){}
-    
+        RBTNode(ncolor col, Pair cont,pointer par, pointer r, pointer l):
+        color(col), content(cont), parent(par), right(r), left(l){std::cout << "filecon\n";}
+
+        /*-------------------------------------------------------
+        fill constructor
+        ---------------------------------------------------------*/
+        // RBTNode(const RBTNode &other){
+        //     *this = other;
+        // }
         /*-------------------------------------------------------
         Destructor
         ---------------------------------------------------------*/
         ~RBTNode(){}
-        RBTNode    &operator=(const RBTNode &other){
+
+        /*-------------------------------------------------------
+        Assignation operator
+        ---------------------------------------------------------*/
+        reference operator=(const_reference other){
             color = other.color;
             content = other.content;
             parent = other.parent;
@@ -38,19 +52,11 @@ namespace ft
             return (*this);
         }
 
-        /*-------------------------------------------------------
-        Set node 
-        ---------------------------------------------------------*/
-        void set_node(ncolor col, node *par, node *r, node *l){
-            color = col;
-            parent = par;
-            right = r;
-            left = l;
-        }
-
         ncolor          color;
         value_type      content;
-        node            *parent, *right, *left;
+        pointer         parent;
+        pointer         right;
+        pointer         left;
     };
 }
 

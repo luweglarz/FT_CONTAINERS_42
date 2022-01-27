@@ -18,7 +18,7 @@ namespace ft
             typedef             T                                   &reference;
 
             vector_iterator(): _ptr(NULL){}
-            vector_iterator(T *p): _ptr(p){}
+            vector_iterator(pointer p): _ptr(p){}
             vector_iterator(const vector_iterator &src){*this = src;}
             vector_iterator &operator=(const vector_iterator &src){_ptr = src._ptr;return(*this);}
             ~vector_iterator(){}
