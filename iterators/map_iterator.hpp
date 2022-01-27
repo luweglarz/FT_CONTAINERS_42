@@ -26,13 +26,13 @@ namespace ft
 
 
             //overloads
-            reference   operator*()const {return (*_ptr);}
-            content     operator->()const {return (&_ptr->content);}
-            reference   &operator[](int idx) const {return *(_ptr + idx);}
+            reference       operator*()const {return (*_ptr);}
+            content         operator->()const {return (&_ptr->content);}
+            reference       &operator[](int idx) const {return *(_ptr + idx);}
         
-            map_iterator &operator++(){++_ptr; return (*this);}//prefix
-		    map_iterator operator++(int){map_iterator res; res._ptr = _ptr++; return(res);}
-		    map_iterator	&operator--(){--_ptr; return (*this);}//prefix
+            map_iterator    &operator++(){++_ptr; return (*this);}//prefix
+		    map_iterator    operator++(int){map_iterator res; res._ptr = _ptr++; return(res);}
+		    map_iterator    &operator--(){--_ptr; return (*this);}//prefix
 		    map_iterator	operator--(int){map_iterator res; res._ptr = _ptr--; return(res);}
 
         private:

@@ -37,7 +37,7 @@ namespace ft
         typedef ft::map_iterator<const node>                        const_iterator;
         typedef ft::reverse_iterator<iterator>                      reverse_iterator;
         typedef ft::reverse_iterator<const_iterator>                const_reverse_iterator;
-
+    
         //Constructors
         /*-------------------------------------------------------
         Default constructor that creates an empty map
@@ -176,16 +176,34 @@ namespace ft
         val: value to insert (value_type)
         ---------------------------------------------------------*/
         pair<iterator, bool> insert(const value_type &val){
+            node  def;
             node  *newnode = _nallocator.allocate(1);
+            node *current = _root;
+            node *before;
+
+            _nallocator.construct(newnode, def);
+            _mallocator.construct(&newnode->content, val);
             if (_size == 0){
-                _mallocator.construct(&newnode->content, val);
                 _root = newnode;
                 _first = newnode;
                 _last = newnode;
                 _size++;
                 return (ft::make_pair(begin(),true));
             }
-
+            while (current != NULL){
+                before = current;
+                if (_cmp(val, current->content))
+                    current = current->left;
+                else
+                    current = current->right;
+            }
+            newnode->parent = before;
+            if (_cmp(newnode->content, before->content))
+                newnode->parent->left = newnode;
+            else
+                newnode->parent->right = newnode;
+            newnode->color = RED;
+            _size++;
             return (ft::make_pair(begin(),true));
         }
         
@@ -213,7 +231,7 @@ namespace ft
         // }
 
         iterator find(const Key &key){
-            node *current = _first;
+            node *current = _root;
             while (current != NULL && current->content.first != key){
                 if (key < current->content.first)
                     current = current->left;
@@ -224,14 +242,14 @@ namespace ft
         }
 
         const_iterator find(const Key &key) const{
-            node *current = _first;
+            node *current = _root;
             while (current != NULL && current->content.first != key){
                 if (_cmp(key, current->content.first))
                     current = current->left;
                 else
                     current = current->right;
             }
-            return (iterator(current));
+            return (const_iterator(current));
         }
 
         // ft::pair<iterator,iterator> equal_range(const Key &key){
@@ -265,23 +283,23 @@ namespace ft
         // }
 
         // //Observers
-        // key_compare key_comp() const{
-        //     return;
-        // }
-
-        // ft::map::value_compare value_comp() const{
-        //     return;
-        // }
-        
-    protected:
+        protected:
         class value_compare : public std::binary_function<value_type, value_type, bool>{
         public:
             value_compare( Compare C):comp(C){}
 
             bool operator()(const value_type &lhs, const value_type &rhs) const {return (comp(lhs.first, rhs.first));}
         protected:
-            Compare comp;
+            key_compare comp;
         };
+
+        key_compare key_comp() const{
+            return(key_compare());
+        }
+
+        value_compare value_comp() const{
+            return (value_compare(key_compare()));
+        }
 
     private:
         Nalloc              _nallocator;

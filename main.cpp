@@ -39,7 +39,11 @@ int main()
 	// stack_tests();
 	ft::map<char, int>	test;
 	test.insert(ft::make_pair<char, int>('c', 5));
+	test.insert(ft::make_pair<char, int>('b', 8));
+	test.insert(ft::make_pair<char, int>('d', 10));
 	ft::map<char, int>::iterator it = test.find('c');
 	std::cout << test['c'] << std::endl;
+	std::cout << test['b'] << std::endl;
+	std::cout << test['d'] << std::endl;
 	return (0);
 }

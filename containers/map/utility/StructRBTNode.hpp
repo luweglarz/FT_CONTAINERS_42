@@ -11,6 +11,9 @@ namespace ft
     struct RBTNode{
     public:
 
+        typedef Pair                        value_type;
+        typedef struct RBTNode<value_type>  node;
+
         /*-------------------------------------------------------
         default constructor
         ---------------------------------------------------------*/
@@ -38,16 +41,12 @@ namespace ft
         /*-------------------------------------------------------
         Set node 
         ---------------------------------------------------------*/
-        void set_node(ncolor col, Pair cont,struct RBTNode &par, struct RBTnode &r, struct RBTnode &l){
+        void set_node(ncolor col, node *par, node *r, node *l){
             color = col;
-            content = cont;
             parent = par;
             right = r;
             left = l;
         }
-
-        typedef Pair                        value_type;
-        typedef struct RBTNode<value_type>  node;
 
         ncolor          color;
         value_type      content;
