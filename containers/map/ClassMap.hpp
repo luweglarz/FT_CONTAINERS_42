@@ -177,7 +177,7 @@ namespace ft
         ---------------------------------------------------------*/
         pair<iterator, bool> insert(const value_type &val){
             node  def;
-            node  *newnode = _nallocator.allocate(1);
+            node *newnode = _nallocator.allocate(1);
             node *current = _root;
             node *before;
 
@@ -204,6 +204,7 @@ namespace ft
                 newnode->parent->right = newnode;
             newnode->color = RED;
             _size++;
+            check_rules(newnode);
             return (ft::make_pair(iterator(newnode),true));
         }
         
@@ -231,7 +232,7 @@ namespace ft
         // }
 
         iterator find(const Key &key){
-            node *current = _root;
+            ptrnode current = _root;
             while (current != NULL && current->content.first != key){
                 if (key < current->content.first)
                     current = current->left;
@@ -242,7 +243,7 @@ namespace ft
         }
 
         const_iterator find(const Key &key) const{
-            node *current = _root;
+            ptrnode current = _root;
             while (current != NULL && current->content.first != key){
                 if (_cmp(key, current->content.first))
                     current = current->left;
@@ -302,13 +303,102 @@ namespace ft
         }
 
     private:
+        typedef node        *ptrnode;
+        //Map variables
         nalloc              _nallocator;
         allocator_type      _mallocator;
         size_type           _size;
         value_compare       _cmp;
-        node                *_root;
-        node                *_first;
-        node                *_last;
+        ptrnode             _root;
+        ptrnode             _first;
+        ptrnode             _last;
+
+        //Red Black Tree functions
+
+        void    rotate_left(node *rot){
+            ptrnode right = rot->right;
+            rot->right = right->left;
+            if (right->right != NULL)
+                right->left->parent = rot;
+            right->parent = rot->parent;
+            if (rot->parent == NULL)
+                _root = right;
+            else if (rot == rot->parent->left)
+                rot->parent->left = right;
+            else
+                rot->parent->right = right;
+            right->left = rot;
+            rot->parent = right;
+        }
+
+        void    rotate_right(node *rot){
+            ptrnode left = rot->left;
+            rot->left = left->right;
+            if (left->right != NULL)
+                left->right->parent = rot;
+            left->parent = rot->parent;
+            if (rot->parent == NULL)
+                _root = left;
+            else if (rot == rot->parent->right)
+                rot->parent->right = left;
+            else
+                rot->parent->left = left;
+            left->right = rot;
+            rot->parent = left;
+        }
+
+        void    check_rules(node *newnode){
+            //check rules 
+            node *def;
+            if (newnode->parent == NULL){
+                newnode->color = BLACK;
+                return ;
+            }
+            if (newnode->parent->parent == NULL)
+                return ;
+            while (newnode->parent->color == RED){
+                if (newnode->parent == newnode->parent->parent->right){
+                    def = newnode->parent->parent->left;
+                    if (def->color == RED){
+                        def->color = BLACK;
+                        newnode->parent->color = BLACK;
+                        newnode->parent->parent->color = RED;
+                        newnode = newnode->parent->parent;
+                    }
+                    else{
+                        if (newnode == newnode->parent->left){
+                            newnode = newnode->parent;
+                            rotate_right(newnode);
+                        }
+                        newnode->parent->color = BLACK;
+                        newnode->parent->parent->color = RED;
+                        rotate_left(newnode->parent->parent);
+                    }
+
+                }
+                else{
+                    def = newnode->parent->parent->right;
+                    if (def->color == RED){
+                        def->color = BLACK;
+                        newnode->parent->color = BLACK;
+                        newnode->parent->parent->color = RED;
+                        newnode = newnode->parent->parent;
+                    }
+                    else{
+                        if (newnode == newnode->parent->right){
+                            newnode = newnode->parent;
+                            rotate_left(newnode);
+                        }
+                        newnode->parent->color = BLACK;
+                        newnode->parent->parent->color = RED;
+                        rotate_left(newnode->parent->parent);
+                    }
+                }
+                if (newnode == _root)
+                    break;
+            }
+            _root->color = BLACK;
+        }
     };
 }
 

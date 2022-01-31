@@ -27,14 +27,7 @@ namespace ft
         fill constructor
         ---------------------------------------------------------*/
         RBTNode(ncolor col, Pair cont,pointer par, pointer r, pointer l):
-        color(col), content(cont), parent(par), right(r), left(l){std::cout << "filecon\n";}
-
-        /*-------------------------------------------------------
-        fill constructor
-        ---------------------------------------------------------*/
-        // RBTNode(const RBTNode &other){
-        //     *this = other;
-        // }
+        color(col), content(cont), parent(par), right(r), left(l){}
         /*-------------------------------------------------------
         Destructor
         ---------------------------------------------------------*/
