@@ -25,19 +25,21 @@ namespace ft
         typedef std::ptrdiff_t                                      difference_type;
         typedef Compare                                             key_compare;
         typedef Alloc                                               allocator_type;
-        typedef RBTNode<value_type>                                 node;
-        typedef typename std::allocator<node>                       nalloc;
 
         typedef typename allocator_type::reference                  reference;
         typedef typename allocator_type::const_reference            const_reference;
         typedef typename allocator_type::pointer                    pointer;
         typedef typename allocator_type::const_pointer              const_pointer;
-
+    private:
+        typedef RBTNode<value_type>                                 node;
+        typedef typename std::allocator<node>                       nalloc;
+        typedef node                                                *ptrnode;
+    public:
         typedef ft::map_iterator<node>                              iterator;
         typedef ft::map_iterator<const node>                        const_iterator;
         typedef ft::reverse_iterator<iterator>                      reverse_iterator;
         typedef ft::reverse_iterator<const_iterator>                const_reverse_iterator;
-    
+
         //Constructors
         /*-------------------------------------------------------
         Default constructor that creates an empty map
@@ -167,22 +169,83 @@ namespace ft
         //     (void)last;
         // }
 
-        // size_type erase(const Key &key){
-        //     (void)key;
-        //     return;
-        // }
+        size_type erase(const Key &key){
+            //check if key exists
+            ptrnode current = _root;
+            while (current != NULL && current->content.first != key){
+                if (key < current->content.first)
+                    current = current->left;
+                else
+                    current = current->right;
+            }
+            //return 0 if key can't be found
+            if (current == NULL)
+                return (0);
+            //current == key node
+            ptrnode fixing_node;
+            int key_color;
+            //if current has two children
+            if (current->left != NULL && current->right !=NULL){
+                ptrnode order_fix = find_mini(current->right);
+                current->content = order_fix->content;
+                fixing_node = delete_children(order_fix, key_color);
+            }
+            //if has 0 or one children
+            else
+                fixing_node = delete_children(current, key_color);
+            if (key_color == BLACK){
+                check_rules_delete(fixing_node);
+            }
+        }
+
+        ptrnode delete_children(ptrnode current, int &key_color){
+            ptrnode newChild;
+            // if current has only left child
+            if (current->left != NULL && current->right == NULL){
+                newChild = current->left;
+                key_color = current->color;
+                if (current->parent == NULL)
+                    _root = current->left;
+                else
+                    current->parent->left = newChild;
+                newChild->parent = current->parent;
+                return (current->left);
+            }
+            //if current has only right child
+            else if (current->right != NULL && current->left == NULL){
+                newChild = current->right;
+                key_color = current->color;
+                if (current->parent == NULL)
+                    _root = current->right;
+                else
+                    current->parent->right = newChild;
+                newChild->parent = current->parent;
+                return (current->right);
+            }
+            //if no children
+            else {
+                return (NULL);
+            }
+        }
+
+        ptrnode find_mini(ptrnode right){
+            while (right->left != NULL)
+                right = right->left;
+            return (right);
+        }
         /*-------------------------------------------------------
         insert function that insert a new element to the map
         val: value to insert (value_type)
         ---------------------------------------------------------*/
         pair<iterator, bool> insert(const value_type &val){
             node  def;
-            node *newnode = _nallocator.allocate(1);
-            node *current = _root;
-            node *before;
+            ptrnode newnode = _nallocator.allocate(1);
+            ptrnode current = _root;
+            ptrnode newnode_parent;
 
             _nallocator.construct(newnode, def);
             _mallocator.construct(&newnode->content, val);
+            // if tree is empty insert as root
             if (_size == 0){
                 _root = newnode;
                 _first = newnode;
@@ -190,21 +253,28 @@ namespace ft
                 _size++;
                 return (ft::make_pair(begin(),true));
             }
+            //Go throught the tree to find the place of the new key then insert it 
             while (current != NULL){
-                before = current;
+                newnode_parent = current;
                 if (_cmp(val, current->content))
                     current = current->left;
                 else
                     current = current->right;
             }
-            newnode->parent = before;
-            if (_cmp(newnode->content, before->content))
+            newnode->parent = newnode_parent;
+            //set if newnode is at the left or right of its parent
+            if (_cmp(newnode->content, newnode_parent->content))
                 newnode->parent->left = newnode;
             else
                 newnode->parent->right = newnode;
             newnode->color = RED;
             _size++;
-            check_rules(newnode);
+            //Check if rules aren't compromised and fix the tree if it's the case
+            check_rules_insert(newnode);
+            if (_cmp(newnode->content, _first->content))
+                _first = newnode;
+            if (_cmp(newnode->content, _last->content))
+                _last = newnode;
             return (ft::make_pair(iterator(newnode),true));
         }
         
@@ -239,6 +309,8 @@ namespace ft
                 else
                     current = current->right;
             }
+            if (current == _root && key != _root->content.first)
+                return (iterator(NULL));
             return (iterator(current));
         }
 
@@ -250,6 +322,8 @@ namespace ft
                 else
                     current = current->right;
             }
+            if (current == _root && key != _root->content.first)
+                return (const_iterator(NULL));
             return (const_iterator(current));
         }
 
@@ -303,7 +377,6 @@ namespace ft
         }
 
     private:
-        typedef node        *ptrnode;
         //Map variables
         nalloc              _nallocator;
         allocator_type      _mallocator;
@@ -315,10 +388,10 @@ namespace ft
 
         //Red Black Tree functions
 
-        void    rotate_left(node *rot){
+        void    rotate_left(ptrnode rot){
             ptrnode right = rot->right;
             rot->right = right->left;
-            if (right->right != NULL)
+            if (right->left != NULL)
                 right->left->parent = rot;
             right->parent = rot->parent;
             if (rot->parent == NULL)
@@ -331,7 +404,7 @@ namespace ft
             rot->parent = right;
         }
 
-        void    rotate_right(node *rot){
+        void    rotate_right(ptrnode rot){
             ptrnode left = rot->left;
             rot->left = left->right;
             if (left->right != NULL)
@@ -347,24 +420,32 @@ namespace ft
             rot->parent = left;
         }
 
-        void    check_rules(node *newnode){
-            //check rules 
-            node *def;
+        void    check_rules_insert(ptrnode newnode){
+            ptrnode def;
+            //If the newnode is the root or its direct children do nothing
             if (newnode->parent == NULL){
                 newnode->color = BLACK;
                 return ;
             }
             if (newnode->parent->parent == NULL)
                 return ;
+            //We don't want the parent of the newnode to be red so we make this while loop
             while (newnode->parent->color == RED){
+                //if the newnode's parent is at the right of newnode's grandparent:
+                //init def as the left of the newnode's grandparent
                 if (newnode->parent == newnode->parent->parent->right){
                     def = newnode->parent->parent->left;
-                    if (def->color == RED){
+                    //if def != leaf && def->color is red
+                    //newnode's parent and left of newnode's granparent become black
+                    //newnode's grandparent become red, if it's the root it will be black
+                    //newnode = its grandparent until we reach the root
+                    if (def && def->color == RED){
                         def->color = BLACK;
                         newnode->parent->color = BLACK;
                         newnode->parent->parent->color = RED;
                         newnode = newnode->parent->parent;
                     }
+                    //rotation case
                     else{
                         if (newnode == newnode->parent->left){
                             newnode = newnode->parent;
@@ -374,11 +455,11 @@ namespace ft
                         newnode->parent->parent->color = RED;
                         rotate_left(newnode->parent->parent);
                     }
-
                 }
                 else{
+                    //reverse of the first if (if the right of the newnode's grandparent is red)
                     def = newnode->parent->parent->right;
-                    if (def->color == RED){
+                    if (def && def->color == RED){
                         def->color = BLACK;
                         newnode->parent->color = BLACK;
                         newnode->parent->parent->color = RED;
@@ -398,6 +479,10 @@ namespace ft
                     break;
             }
             _root->color = BLACK;
+        }
+
+        void    check_rules_delete(ptrnode deletednode){
+            (void)deletednode;
         }
     };
 }
