@@ -44,6 +44,7 @@ int main(){
 		test.insert(ft::make_pair(abc[i], i));
 		i++;
 	}
+	test.erase('a');
 	std::cout << test['a'] << std::endl;
 	std::cout << test['b'] << std::endl;
 	std::cout << test['c'] << std::endl;

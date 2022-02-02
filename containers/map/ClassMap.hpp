@@ -187,6 +187,7 @@ namespace ft
             //if current has two children
             if (current->left != NULL && current->right !=NULL){
                 ptrnode order_fix = find_mini(current->right);
+                //gotta make current->content a pointer on content so we can assign even if one of the value is const
                 current->content = order_fix->content;
                 fixing_node = delete_children(order_fix, key_color);
             }
@@ -196,42 +197,7 @@ namespace ft
             if (key_color == BLACK){
                 check_rules_delete(fixing_node);
             }
-        }
-
-        ptrnode delete_children(ptrnode current, int &key_color){
-            ptrnode newChild;
-            // if current has only left child
-            if (current->left != NULL && current->right == NULL){
-                newChild = current->left;
-                key_color = current->color;
-                if (current->parent == NULL)
-                    _root = current->left;
-                else
-                    current->parent->left = newChild;
-                newChild->parent = current->parent;
-                return (current->left);
-            }
-            //if current has only right child
-            else if (current->right != NULL && current->left == NULL){
-                newChild = current->right;
-                key_color = current->color;
-                if (current->parent == NULL)
-                    _root = current->right;
-                else
-                    current->parent->right = newChild;
-                newChild->parent = current->parent;
-                return (current->right);
-            }
-            //if no children
-            else {
-                return (NULL);
-            }
-        }
-
-        ptrnode find_mini(ptrnode right){
-            while (right->left != NULL)
-                right = right->left;
-            return (right);
+            return (1);
         }
         /*-------------------------------------------------------
         insert function that insert a new element to the map
@@ -481,8 +447,95 @@ namespace ft
             _root->color = BLACK;
         }
 
+        ptrnode delete_children(ptrnode current, int &key_color){
+            ptrnode newChild;
+            // if current has only left child
+            if (current->left != NULL && current->right == NULL){
+                newChild = current->left;
+                key_color = current->color;
+                if (current->parent == NULL)
+                    _root = current->left;
+                else
+                    current->parent->left = newChild;
+                newChild->parent = current->parent;
+                return (current->left);
+            }
+            //if current has only right child
+            else if (current->right != NULL && current->left == NULL){
+                newChild = current->right;
+                key_color = current->color;
+                if (current->parent == NULL)
+                    _root = current->right;
+                else
+                    current->parent->right = newChild;
+                newChild->parent = current->parent;
+                return (current->right);
+            }
+            //if no children
+            else {
+                return (NULL);
+            }
+        }
+    
         void    check_rules_delete(ptrnode deletednode){
-            (void)deletednode;
+            if (deletednode == _root)
+                return ;
+            ptrnode sibling = get_node_sibling(deletednode);
+            if (sibling->color == RED){
+                sibling->color = BLACK;
+                deletednode->parent->color = RED;
+                if (deletednode == deletednode->parent->left)
+                    rotate_left(deletednode->parent);
+                else
+                    rotate_right(deletednode->parent);
+                sibling = get_node_sibling(deletednode);
+            }
+            if ((sibling->left->color == BLACK || sibling->left == NULL) &&
+                (sibling->left->color == BLACK || sibling->left == NULL)){
+                if (deletednode->parent->color == RED)    
+                    sibling->color = BLACK;
+                else
+                    check_rules_delete(deletednode->parent);
+            }
+            else{
+                bool deleted_left_child = false;
+                if (deletednode == deletednode->parent->left)
+                    deleted_left_child = true;
+                if ((deleted_left_child) && (sibling->right->color == BLACK || sibling->right == NULL)){
+                    sibling->left->color = BLACK;
+                    sibling->color = RED;
+                    rotate_right(sibling);
+                    sibling = deletednode->parent->right;
+                }
+                else if ((!deleted_left_child) && (sibling->left->color == BLACK || sibling->left == NULL)){
+                    sibling->right->color = BLACK;
+                    sibling->color = RED;
+                    rotate_left(sibling);
+                    sibling = deletednode->parent->left;
+                }
+                sibling->color = deletednode->parent->color;
+                deletednode->parent->color = BLACK;
+                if (deletednode){
+                    sibling->right->color = BLACK;
+                    rotate_left(deletednode->parent);
+                }
+                else{
+                    sibling->left->color = BLACK;
+                    rotate_right(deletednode->parent);
+                }
+            }
+        }
+        ptrnode find_mini(ptrnode right){
+            while (right->left != NULL)
+                right = right->left;
+            return (right);
+        }
+        ptrnode    get_node_sibling(ptrnode node){
+            if (node == node->parent->left)
+                return (node->parent->right);
+            else if (node == node->parent->right)
+                return (node->parent->left);
+            return (NULL);
         }
     };
 }
