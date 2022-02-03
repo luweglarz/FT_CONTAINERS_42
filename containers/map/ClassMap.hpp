@@ -6,7 +6,7 @@
 #include <functional>
 #include "utility/pair.hpp"
 #include "../../iterators/map_iterator.hpp"
-#include "utility/StructRBTNode.hpp"
+#include "utility/StructRBT.hpp"
 
 namespace ft
 {
@@ -24,19 +24,20 @@ namespace ft
         typedef size_t                                              size_type;
         typedef std::ptrdiff_t                                      difference_type;
         typedef Compare                                             key_compare;
-        typedef Alloc                                               allocator_type;
 
+        typedef Alloc                                               allocator_type;
         typedef typename allocator_type::reference                  reference;
         typedef typename allocator_type::const_reference            const_reference;
         typedef typename allocator_type::pointer                    pointer;
         typedef typename allocator_type::const_pointer              const_pointer;
     private:
-        typedef RBTNode<value_type>                                 node;
-        typedef typename std::allocator<node>                       nalloc;
-        typedef node                                                *ptrnode;
+        typedef RBT<value_type>                                     Tree;
+        typedef typename Tree::node                                  node;
+        typedef typename Tree::pointer                              ptrnode;
+        typedef typename Tree::allocator_type                       Nalloc;
     public:
-        typedef ft::map_iterator<node>                              iterator;
-        typedef ft::map_iterator<const node>                        const_iterator;
+        typedef ft::map_iterator<Tree>                              iterator;
+        typedef ft::map_iterator<const Tree>                        const_iterator;
         typedef ft::reverse_iterator<iterator>                      reverse_iterator;
         typedef ft::reverse_iterator<const_iterator>                const_reverse_iterator;
 
@@ -47,7 +48,7 @@ namespace ft
         alloc: the allocator object
         ---------------------------------------------------------*/
         explicit map(const Compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): _mallocator(alloc), _size(0), _cmp(comp), 
-                    _root(NULL), _first(NULL), _last(NULL){
+                    _RBT(){
         }
 
         /*-------------------------------------------------------
@@ -60,7 +61,7 @@ namespace ft
         template <class InputIterator>
         explicit map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
                     typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
-                    _mallocator(alloc), _size(std::distance<InputIterator>(first, last)), _cmp(comp){}
+                    _mallocator(alloc), _size(std::distance<InputIterator>(first, last)), _cmp(comp), _RBT(){}
 
         /*-------------------------------------------------------
         copy constructor that creates a map with a range of iterators
@@ -75,7 +76,7 @@ namespace ft
         }
 
         ~map(){
-            //erase(_root, _last);
+            //erase(_RBT.root, _RBT.last);
         }
     
         //Iterators
@@ -84,11 +85,11 @@ namespace ft
         at the beginning of the map
         ---------------------------------------------------------*/
         iterator begin(){
-            return (iterator(_first));
+            return (iterator(_RBT.first));
         }
         
         const_iterator begin() const{
-            return (const_iterator(_first));
+            return (const_iterator(_RBT.first));
         }
 
         /*-------------------------------------------------------
@@ -96,11 +97,11 @@ namespace ft
         at the end of the map
         ---------------------------------------------------------*/
         iterator end(){
-            return (iterator(_last));
+            return (iterator(_RBT.last));
         }
 
         const_iterator end() const{
-            return (const_iterator(_last));
+            return (const_iterator(_RBT.last));
         }
 
         /*-------------------------------------------------------
@@ -108,11 +109,11 @@ namespace ft
         at the beginning of the map
         ---------------------------------------------------------*/
         reverse_iterator rbegin(){
-            return (reverse_iterator(_last));
+            return (reverse_iterator(_RBT.last));
         }
 
         const_reverse_iterator rbegin() const{
-            return (const_reverse_iterator(_last));
+            return (const_reverse_iterator(_RBT.last));
         }
 
         /*-------------------------------------------------------
@@ -120,16 +121,16 @@ namespace ft
         at the end of the map
         ---------------------------------------------------------*/
         reverse_iterator rend(){
-            return (reverse_iterator(_first));
+            return (reverse_iterator(_RBT.first));
         }
 
         const_reverse_iterator rend() const {
-            return (const_reverse_iterator(_first));
+            return (const_reverse_iterator(_RBT.first));
         }
         
         //Capacity
         allocator_type get_allocator() const{
-            return (_nallocator);
+            return (_mallocator);
         }
 
         bool empty() const{
@@ -144,7 +145,7 @@ namespace ft
         }
 
         size_type max_size() const{
-            return ((_nallocator.max_size()));
+            return ((_mallocator.max_size()));
         }
         //Element access
         T &at(const Key &key){
@@ -171,7 +172,7 @@ namespace ft
 
         size_type erase(const Key &key){
             //check if key exists
-            ptrnode current = _root;
+            ptrnode current = _RBT.root;
             while (current != NULL && current->content.first != key){
                 if (key < current->content.first)
                     current = current->left;
@@ -206,16 +207,16 @@ namespace ft
         pair<iterator, bool> insert(const value_type &val){
             node  def;
             ptrnode newnode = _nallocator.allocate(1);
-            ptrnode current = _root;
+            ptrnode current = _RBT.root;
             ptrnode newnode_parent;
 
             _nallocator.construct(newnode, def);
             _mallocator.construct(&newnode->content, val);
             // if tree is empty insert as root
             if (_size == 0){
-                _root = newnode;
-                _first = newnode;
-                _last = newnode;
+                _RBT.root = newnode;
+                _RBT.first = newnode;
+                _RBT.last = newnode;
                 _size++;
                 return (ft::make_pair(begin(),true));
             }
@@ -237,10 +238,10 @@ namespace ft
             _size++;
             //Check if rules aren't compromised and fix the tree if it's the case
             check_rules_insert(newnode);
-            if (_cmp(newnode->content, _first->content))
-                _first = newnode;
-            if (_cmp(newnode->content, _last->content))
-                _last = newnode;
+            if (_cmp(newnode->content, _RBT.first->content))
+                _RBT.first = newnode;
+            if (_cmp(newnode->content, _RBT.last->content))
+                _RBT.last = newnode;
             return (ft::make_pair(iterator(newnode),true));
         }
         
@@ -268,27 +269,27 @@ namespace ft
         // }
 
         iterator find(const Key &key){
-            ptrnode current = _root;
+            ptrnode current = _RBT.root;
             while (current != NULL && current->content.first != key){
                 if (key < current->content.first)
                     current = current->left;
                 else
                     current = current->right;
             }
-            if (current == _root && key != _root->content.first)
+            if (current == _RBT.root && key != _RBT.root->content.first)
                 return (iterator(NULL));
             return (iterator(current));
         }
 
         const_iterator find(const Key &key) const{
-            ptrnode current = _root;
+            ptrnode current = _RBT.root;
             while (current != NULL && current->content.first != key){
                 if (_cmp(key, current->content.first))
                     current = current->left;
                 else
                     current = current->right;
             }
-            if (current == _root && key != _root->content.first)
+            if (current == _RBT.root && key != _RBT.root->content.first)
                 return (const_iterator(NULL));
             return (const_iterator(current));
         }
@@ -344,14 +345,11 @@ namespace ft
 
     private:
         //Map variables
-        nalloc              _nallocator;
         allocator_type      _mallocator;
         size_type           _size;
         value_compare       _cmp;
-        ptrnode             _root;
-        ptrnode             _first;
-        ptrnode             _last;
-
+        Tree                _RBT;
+        Nalloc              _nallocator;
         //Red Black Tree functions
 
         void    rotate_left(ptrnode rot){
@@ -361,7 +359,7 @@ namespace ft
                 right->left->parent = rot;
             right->parent = rot->parent;
             if (rot->parent == NULL)
-                _root = right;
+                _RBT.root = right;
             else if (rot == rot->parent->left)
                 rot->parent->left = right;
             else
@@ -377,7 +375,7 @@ namespace ft
                 left->right->parent = rot;
             left->parent = rot->parent;
             if (rot->parent == NULL)
-                _root = left;
+                _RBT.root = left;
             else if (rot == rot->parent->right)
                 rot->parent->right = left;
             else
@@ -441,10 +439,10 @@ namespace ft
                         rotate_left(newnode->parent->parent);
                     }
                 }
-                if (newnode == _root)
+                if (newnode == _RBT.root)
                     break;
             }
-            _root->color = BLACK;
+            _RBT.root->color = BLACK;
         }
 
         ptrnode delete_children(ptrnode current, int &key_color){
@@ -454,7 +452,7 @@ namespace ft
                 newChild = current->left;
                 key_color = current->color;
                 if (current->parent == NULL)
-                    _root = current->left;
+                    _RBT.root = current->left;
                 else
                     current->parent->left = newChild;
                 newChild->parent = current->parent;
@@ -465,7 +463,7 @@ namespace ft
                 newChild = current->right;
                 key_color = current->color;
                 if (current->parent == NULL)
-                    _root = current->right;
+                    _RBT.root = current->right;
                 else
                     current->parent->right = newChild;
                 newChild->parent = current->parent;
@@ -478,7 +476,7 @@ namespace ft
         }
     
         void    check_rules_delete(ptrnode deletednode){
-            if (deletednode == _root)
+            if (deletednode == _RBT.root)
                 return ;
             ptrnode sibling = get_node_sibling(deletednode);
             if (sibling->color == RED){

@@ -9,7 +9,7 @@ STD = -std=c++98
 FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 HEADERS = 	containers/vector/ClassVector.hpp containers/stack/ClassStack.hpp \
-			containers/map/ClassMap.hpp containers/map/utility/StructRBTNode.hpp \
+			containers/map/ClassMap.hpp containers/map/utility/StructRBT.hpp \
 			iterators/vector_iterator.hpp iterators/iterator_traits.hpp iterators/reverse_iterator.hpp iterators/lexicographical_compare.hpp iterators/map_iterator.hpp \
 			SFINAE/enable_if.hpp SFINAE/is_integral.hpp \
 			tests/tests.hpp

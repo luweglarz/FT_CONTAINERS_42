@@ -12,7 +12,7 @@ namespace ft
     class map_iterator{
         public:
             typedef typename    std::bidirectional_iterator_tag     iterator_category;
-            typedef             Tree                                value_type;
+            typedef typename    Tree::node                          value_type;
             typedef typename    std::ptrdiff_t                      difference_type;
             typedef             value_type                          *pointer;
             typedef             value_type                          &reference;
