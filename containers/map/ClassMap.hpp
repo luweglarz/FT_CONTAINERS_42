@@ -31,8 +31,8 @@ namespace ft
         typedef typename allocator_type::pointer                    pointer;
         typedef typename allocator_type::const_pointer              const_pointer;
     private:
-        typedef RBT<value_type>                                     Tree;
-        typedef typename Tree::node                                  node;
+        typedef RBT<value_type, key_compare>                        Tree;
+        typedef typename Tree::node                                 node;
         typedef typename Tree::pointer                              ptrnode;
         typedef typename Tree::allocator_type                       Nalloc;
     public:
@@ -173,8 +173,8 @@ namespace ft
         size_type erase(const Key &key){
             //check if key exists
             ptrnode current = _RBT.root;
-            while (current != NULL && current->content.first != key){
-                if (key < current->content.first)
+            while (current != NULL && current->content->first != key){
+                if (key < current->content->first)
                     current = current->left;
                 else
                     current = current->right;
@@ -187,7 +187,7 @@ namespace ft
             int key_color;
             //if current has two children
             if (current->left != NULL && current->right !=NULL){
-                ptrnode order_fix = find_mini(current->right);
+                ptrnode order_fix = Tree::find_min(current->right);
                 //gotta make current->content a pointer on content so we can assign even if one of the value is const
                 current->content = order_fix->content;
                 fixing_node = delete_children(order_fix, key_color);
@@ -211,7 +211,8 @@ namespace ft
             ptrnode newnode_parent;
 
             _nallocator.construct(newnode, def);
-            _mallocator.construct(&newnode->content, val);
+            newnode->content = _mallocator.allocate(1);
+            _mallocator.construct(newnode->content, val);
             // if tree is empty insert as root
             if (_size == 0){
                 _RBT.root = newnode;
@@ -223,14 +224,14 @@ namespace ft
             //Go throught the tree to find the place of the new key then insert it 
             while (current != NULL){
                 newnode_parent = current;
-                if (_cmp(val, current->content))
+                if (_cmp(val, *current->content))
                     current = current->left;
                 else
                     current = current->right;
             }
             newnode->parent = newnode_parent;
             //set if newnode is at the left or right of its parent
-            if (_cmp(newnode->content, newnode_parent->content))
+            if (_cmp(*newnode->content, *newnode_parent->content))
                 newnode->parent->left = newnode;
             else
                 newnode->parent->right = newnode;
@@ -238,9 +239,9 @@ namespace ft
             _size++;
             //Check if rules aren't compromised and fix the tree if it's the case
             check_rules_insert(newnode);
-            if (_cmp(newnode->content, _RBT.first->content))
+            if (_cmp(*newnode->content, *_RBT.first->content))
                 _RBT.first = newnode;
-            if (_cmp(newnode->content, _RBT.last->content))
+            if (_cmp(*newnode->content, *_RBT.last->content))
                 _RBT.last = newnode;
             return (ft::make_pair(iterator(newnode),true));
         }
@@ -270,26 +271,26 @@ namespace ft
 
         iterator find(const Key &key){
             ptrnode current = _RBT.root;
-            while (current != NULL && current->content.first != key){
-                if (key < current->content.first)
+            while (current != NULL && current->content->first != key){
+                if (key < current->content->first)
                     current = current->left;
                 else
                     current = current->right;
             }
-            if (current == _RBT.root && key != _RBT.root->content.first)
+            if (current == _RBT.root && key != _RBT.root->content->first)
                 return (iterator(NULL));
             return (iterator(current));
         }
 
         const_iterator find(const Key &key) const{
             ptrnode current = _RBT.root;
-            while (current != NULL && current->content.first != key){
-                if (_cmp(key, current->content.first))
+            while (current != NULL && current->content->first != key){
+                if (_cmp(key, current->content->first))
                     current = current->left;
                 else
                     current = current->right;
             }
-            if (current == _RBT.root && key != _RBT.root->content.first)
+            if (current == _RBT.root && key != _RBT.root->content->first)
                 return (const_iterator(NULL));
             return (const_iterator(current));
         }
@@ -522,11 +523,6 @@ namespace ft
                     rotate_right(deletednode->parent);
                 }
             }
-        }
-        ptrnode find_mini(ptrnode right){
-            while (right->left != NULL)
-                right = right->left;
-            return (right);
         }
         ptrnode    get_node_sibling(ptrnode node){
             if (node == node->parent->left)

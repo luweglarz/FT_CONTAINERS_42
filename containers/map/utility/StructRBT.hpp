@@ -12,6 +12,7 @@ namespace ft
     public:
 
         typedef Pair                        value_type;
+        typedef value_type                  *val_pointer;
         typedef struct RBTNode<value_type>  node;
         typedef node                        *pointer;
         typedef const node                  *const_pointer;
@@ -26,7 +27,7 @@ namespace ft
         /*-------------------------------------------------------
         fill constructor
         ---------------------------------------------------------*/
-        RBTNode(ncolor col, Pair cont,pointer par, pointer r, pointer l):
+        RBTNode(ncolor col, val_pointer cont,pointer par, pointer r, pointer l):
         color(col), content(cont), parent(par), right(r), left(l){}
         /*-------------------------------------------------------
         Destructor
@@ -46,17 +47,18 @@ namespace ft
         }
 
         ncolor          color;
-        value_type      content;
+        val_pointer     content;
         pointer         parent;
         pointer         right;
         pointer         left;
     };
 
-    template <class Pair, class Alloc = std::allocator<RBTNode<Pair> > >
+    template <class Pair, class Compare, class Alloc = std::allocator<RBTNode<Pair> > >
     class RBT{
     public:
         typedef Pair                                                value_type;
         typedef RBTNode<value_type>                                 node;
+        typedef Compare                                             compare;
         typedef Alloc                                               allocator_type;
         typedef typename allocator_type::reference                  reference;
         typedef typename allocator_type::const_reference            const_reference;
@@ -66,8 +68,21 @@ namespace ft
         pointer             root;
         pointer             first;
         pointer             last;
+        compare             cmp;
 
         RBT():root(NULL), first(NULL), last(NULL){}
+    
+        static pointer find_min(pointer right){
+            while (right->left != NULL)
+                right = right->left;
+            return (right);
+        }
+
+        static pointer	find_max(pointer left) {
+			while (left->right != NULL)
+                left = left->right;
+            return (left);
+		}
     };
 }
 
