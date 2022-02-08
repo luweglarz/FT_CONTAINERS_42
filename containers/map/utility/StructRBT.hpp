@@ -72,17 +72,59 @@ namespace ft
 
         RBT():root(NULL), first(NULL), last(NULL){}
     
-        static pointer find_min(pointer right){
+        pointer find_min(pointer right){
             while (right->left != NULL)
                 right = right->left;
             return (right);
         }
 
-        static pointer	find_max(pointer left) {
+        pointer	find_max(pointer left) {
 			while (left->right != NULL)
                 left = left->right;
             return (left);
 		}
+
+        void    rotate_left(pointer rot){
+            pointer right = rot->right;
+            rot->right = right->left;
+            if (right->left != NULL)
+                right->left->parent = rot;
+            right->parent = rot->parent;
+            if (rot->parent == NULL)
+                root = right;
+            else if (rot == rot->parent->left)
+                rot->parent->left = right;
+            else
+                rot->parent->right = right;
+            right->left = rot;
+            rot->parent = right;
+        }
+
+        void    rotate_right(pointer rot){
+            pointer left = rot->left;
+            rot->left = left->right;
+            if (left->right != NULL)
+                left->right->parent = rot;
+            left->parent = rot->parent;
+            if (rot->parent == NULL)
+                root = left;
+            else if (rot == rot->parent->right)
+                rot->parent->right = left;
+            else
+                rot->parent->left = left;
+            left->right = rot;
+            rot->parent = left;
+        }
+
+        void    transplant(pointer a, pointer b){
+            if (a->parent == NULL)
+                root = b;
+            else if (a == a->parent->left)
+                a->parent->left = b;
+            else
+                a->parent->right = b;
+            b->parent = a->parent;
+        }
     };
 }
 

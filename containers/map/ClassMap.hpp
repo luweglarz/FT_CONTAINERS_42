@@ -183,21 +183,36 @@ namespace ft
             if (current == NULL)
                 return (0);
             //current == key node
-            ptrnode fixing_node;
-            int key_color;
-            //if current has two children
-            if (current->left != NULL && current->right !=NULL){
-                ptrnode order_fix = Tree::find_min(current->right);
-                //gotta make current->content a pointer on content so we can assign even if one of the value is const
-                current->content = order_fix->content;
-                fixing_node = delete_children(order_fix, key_color);
+            ptrnode tmp1, tmp2;
+            tmp1 = current;
+            int tmp1_color = tmp1->color;
+            if (current->left == NULL){
+                tmp2 = current->right;
+                _RBT.transplant(current, current->right);
             }
-            //if has 0 or one children
-            else
-                fixing_node = delete_children(current, key_color);
-            if (key_color == BLACK){
-                check_rules_delete(fixing_node);
+            else if (current->right == NULL){
+                tmp2 = current->left;
+                _RBT.transplant(current, current->left);
             }
+            else{
+                tmp1 = _RBT.find_min(current->right);
+                tmp1_color = tmp1->color;
+                tmp2 = tmp1->right;
+                if (tmp1->parent == current)
+                    tmp2->parent = tmp1;
+                else{
+                    _RBT.transplant(tmp1, tmp1->right);
+                    tmp1->right = current->right;
+                    tmp1->right->parent = tmp1;
+                }
+                _RBT.transplant(current, tmp1);
+                tmp1->left = current->left;
+                tmp1->left->parent = tmp1;
+                tmp1->color = current->color;
+            }
+            _nallocator.destroy(current);
+            if (tmp1_color == BLACK)
+                check_rules_delete(tmp2);
             return (1);
         }
         /*-------------------------------------------------------
@@ -351,40 +366,7 @@ namespace ft
         value_compare       _cmp;
         Tree                _RBT;
         Nalloc              _nallocator;
-        //Red Black Tree functions
-
-        void    rotate_left(ptrnode rot){
-            ptrnode right = rot->right;
-            rot->right = right->left;
-            if (right->left != NULL)
-                right->left->parent = rot;
-            right->parent = rot->parent;
-            if (rot->parent == NULL)
-                _RBT.root = right;
-            else if (rot == rot->parent->left)
-                rot->parent->left = right;
-            else
-                rot->parent->right = right;
-            right->left = rot;
-            rot->parent = right;
-        }
-
-        void    rotate_right(ptrnode rot){
-            ptrnode left = rot->left;
-            rot->left = left->right;
-            if (left->right != NULL)
-                left->right->parent = rot;
-            left->parent = rot->parent;
-            if (rot->parent == NULL)
-                _RBT.root = left;
-            else if (rot == rot->parent->right)
-                rot->parent->right = left;
-            else
-                rot->parent->left = left;
-            left->right = rot;
-            rot->parent = left;
-        }
-
+        //check rules functions
         void    check_rules_insert(ptrnode newnode){
             ptrnode def;
             //If the newnode is the root or its direct children do nothing
@@ -414,11 +396,11 @@ namespace ft
                     else{
                         if (newnode == newnode->parent->left){
                             newnode = newnode->parent;
-                            rotate_right(newnode);
+                            _RBT.rotate_right(newnode);
                         }
                         newnode->parent->color = BLACK;
                         newnode->parent->parent->color = RED;
-                        rotate_left(newnode->parent->parent);
+                        _RBT.rotate_left(newnode->parent->parent);
                     }
                 }
                 else{
@@ -433,11 +415,11 @@ namespace ft
                     else{
                         if (newnode == newnode->parent->right){
                             newnode = newnode->parent;
-                            rotate_left(newnode);
+                            _RBT.rotate_left(newnode);
                         }
                         newnode->parent->color = BLACK;
                         newnode->parent->parent->color = RED;
-                        rotate_left(newnode->parent->parent);
+                        _RBT.rotate_left(newnode->parent->parent);
                     }
                 }
                 if (newnode == _RBT.root)
@@ -472,6 +454,17 @@ namespace ft
             }
             //if no children
             else {
+                if (current->color == BLACK)
+                    newChild = _nallocator.allocate(1);
+                else
+                    newChild = NULL;
+                if (current->parent == NULL)
+                    _RBT.root = newChild;
+                else if (current->parent->left == current)
+                    current->parent->left = newChild;
+                else if (current->parent->right == current)
+                    current->parent->right = newChild;
+                std::cout << "newchild " << newChild->content->first <<std::endl;
                 return (NULL);
             }
         }
@@ -484,9 +477,9 @@ namespace ft
                 sibling->color = BLACK;
                 deletednode->parent->color = RED;
                 if (deletednode == deletednode->parent->left)
-                    rotate_left(deletednode->parent);
+                    _RBT.rotate_left(deletednode->parent);
                 else
-                    rotate_right(deletednode->parent);
+                    _RBT.rotate_right(deletednode->parent);
                 sibling = get_node_sibling(deletednode);
             }
             if ((sibling->left->color == BLACK || sibling->left == NULL) &&
@@ -503,24 +496,24 @@ namespace ft
                 if ((deleted_left_child) && (sibling->right->color == BLACK || sibling->right == NULL)){
                     sibling->left->color = BLACK;
                     sibling->color = RED;
-                    rotate_right(sibling);
+                    _RBT.rotate_right(sibling);
                     sibling = deletednode->parent->right;
                 }
                 else if ((!deleted_left_child) && (sibling->left->color == BLACK || sibling->left == NULL)){
                     sibling->right->color = BLACK;
                     sibling->color = RED;
-                    rotate_left(sibling);
+                    _RBT.rotate_left(sibling);
                     sibling = deletednode->parent->left;
                 }
                 sibling->color = deletednode->parent->color;
                 deletednode->parent->color = BLACK;
                 if (deletednode){
                     sibling->right->color = BLACK;
-                    rotate_left(deletednode->parent);
+                    _RBT.rotate_left(deletednode->parent);
                 }
                 else{
                     sibling->left->color = BLACK;
-                    rotate_right(deletednode->parent);
+                    _RBT.rotate_right(deletednode->parent);
                 }
             }
         }

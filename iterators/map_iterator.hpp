@@ -26,7 +26,7 @@ namespace ft
 
             //overloads
             content         operator->()const {return (_ptr->content);}
-            reference       operator*()const {return (_ptr->content);}
+            reference       operator*()const {return (*_ptr->content);}
 
             //prefix
             map_iterator    &operator++(){

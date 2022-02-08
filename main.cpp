@@ -37,16 +37,22 @@ int main(){
 	// vector_tests();
 	// stack_tests();
 	ft::map<char, int>	test;
+	std::map<char, int> test1;
 	const char *abc = "abcdefghijkl";
 	int i = 0;
 	while (i < 5){
 		std::cout << "le i: " << i << std::endl;
 		test.insert(ft::make_pair(abc[i], i));
+		test1.insert(std::make_pair(abc[i], i));
 		i++;
 	}
-	test.erase('a');
-	std::cout << test['a'] << std::endl;
-	std::cout << test['b'] << std::endl;
-	std::cout << test['c'] << std::endl;
+	test.erase('d');
+	test1.erase('d');
+	i = 0;
+	while(i < 5){
+		std::cout << test1[abc[i]] << " - ";
+		std::cout << test[abc[i]] << std::endl;
+		i++;
+	}
 	return (0);
 }
