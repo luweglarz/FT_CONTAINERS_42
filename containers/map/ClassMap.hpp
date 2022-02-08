@@ -85,11 +85,11 @@ namespace ft
         at the beginning of the map
         ---------------------------------------------------------*/
         iterator begin(){
-            return (iterator(_RBT.first));
+            return (iterator(_RBT.first, _RBT));
         }
         
         const_iterator begin() const{
-            return (const_iterator(_RBT.first));
+            return (const_iterator(_RBT.first, _RBT));
         }
 
         /*-------------------------------------------------------
@@ -97,11 +97,11 @@ namespace ft
         at the end of the map
         ---------------------------------------------------------*/
         iterator end(){
-            return (iterator(_RBT.last));
+            return (iterator(_RBT.last, _RBT));
         }
 
         const_iterator end() const{
-            return (const_iterator(_RBT.last));
+            return (const_iterator(_RBT.last, _RBT));
         }
 
         /*-------------------------------------------------------
@@ -148,14 +148,17 @@ namespace ft
             return ((_mallocator.max_size()));
         }
         //Element access
-        T &at(const Key &key){
+        mapped_key &at(const Key &key){
             iterator    ret = find(key);
             return (ret->second);
         }
 
-        T &operator[](const Key &key){
-            iterator    ret = find(key);
-            return (ret->second);
+        mapped_key &operator[](const Key &key){
+            iterator itret;
+            if ((itret = find(key)) != iterator(NULL, _RBT))
+                return (itret->second);
+            ft::pair<iterator, bool> ret = insert(ft::make_pair(key, mapped_key()));
+            return (ret.first->second);
         }
         //Modifiers
         // void clear(){
@@ -182,21 +185,35 @@ namespace ft
             //return 0 if key can't be found
             if (current == NULL)
                 return (0);
+            if (current == _RBT.first)
+                _RBT.first = _RBT.find_min(_RBT.root);
+            else if (current == _RBT.last)
+                _RBT.last = _RBT.find_max(_RBT.root);
             //current == key node
-            ptrnode tmp1, tmp2;
+            ptrnode tmp1 = NULL, tmp2 = NULL;
+            node    def;
             tmp1 = current;
             int tmp1_color = tmp1->color;
+            //if node to delete has only a right child or no child
             if (current->left == NULL){
+                current->right = _nallocator.allocate(1);
+                _nallocator.construct(current->right, def);
                 tmp2 = current->right;
                 _RBT.transplant(current, current->right);
             }
+            //if node to delete has only a left child
             else if (current->right == NULL){
+                current->left = _nallocator.allocate(1);
+                _nallocator.construct(current->left, def);
                 tmp2 = current->left;
                 _RBT.transplant(current, current->left);
             }
+            //if node to delete has 2 children
             else{
                 tmp1 = _RBT.find_min(current->right);
                 tmp1_color = tmp1->color;
+                tmp1->right = _nallocator.allocate(1);
+                _nallocator.construct(tmp1->right, def);
                 tmp2 = tmp1->right;
                 if (tmp1->parent == current)
                     tmp2->parent = tmp1;
@@ -210,9 +227,11 @@ namespace ft
                 tmp1->left->parent = tmp1;
                 tmp1->color = current->color;
             }
-            _nallocator.destroy(current);
+            //_nallocator.destroy(current);
             if (tmp1_color == BLACK)
                 check_rules_delete(tmp2);
+            _nallocator.destroy(tmp2);
+            iterator it = begin();
             return (1);
         }
         /*-------------------------------------------------------
@@ -239,26 +258,28 @@ namespace ft
             //Go throught the tree to find the place of the new key then insert it 
             while (current != NULL){
                 newnode_parent = current;
-                if (_cmp(val, *current->content))
+                if (_cmp(*newnode->content, *current->content))
                     current = current->left;
                 else
                     current = current->right;
             }
             newnode->parent = newnode_parent;
             //set if newnode is at the left or right of its parent
+            if (newnode_parent == NULL)
+                _RBT.root = newnode;
             if (_cmp(*newnode->content, *newnode_parent->content))
-                newnode->parent->left = newnode;
+                newnode_parent->left = newnode;
             else
-                newnode->parent->right = newnode;
+                newnode_parent->right = newnode;
             newnode->color = RED;
             _size++;
             //Check if rules aren't compromised and fix the tree if it's the case
             check_rules_insert(newnode);
             if (_cmp(*newnode->content, *_RBT.first->content))
                 _RBT.first = newnode;
-            if (_cmp(*newnode->content, *_RBT.last->content))
+            if (_cmp(*_RBT.last->content, *newnode->content))
                 _RBT.last = newnode;
-            return (ft::make_pair(iterator(newnode),true));
+            return (ft::make_pair(iterator(newnode, _RBT),true));
         }
         
         // iterator insert(iterator hint, const value_type &value){
@@ -287,14 +308,16 @@ namespace ft
         iterator find(const Key &key){
             ptrnode current = _RBT.root;
             while (current != NULL && current->content->first != key){
+                //std::cout << "current: " << current->content->first << std::endl;
                 if (key < current->content->first)
                     current = current->left;
                 else
                     current = current->right;
+                //std::cout << "current2: " << current->content->first << std::endl;
             }
             if (current == _RBT.root && key != _RBT.root->content->first)
-                return (iterator(NULL));
-            return (iterator(current));
+                return (iterator(NULL, _RBT));
+            return (iterator(current, _RBT));
         }
 
         const_iterator find(const Key &key) const{
@@ -306,8 +329,8 @@ namespace ft
                     current = current->right;
             }
             if (current == _RBT.root && key != _RBT.root->content->first)
-                return (const_iterator(NULL));
-            return (const_iterator(current));
+                return (const_iterator(NULL, _RBT));
+            return (const_iterator(current, _RBT));
         }
 
         // ft::pair<iterator,iterator> equal_range(const Key &key){
@@ -419,7 +442,7 @@ namespace ft
                         }
                         newnode->parent->color = BLACK;
                         newnode->parent->parent->color = RED;
-                        _RBT.rotate_left(newnode->parent->parent);
+                        _RBT.rotate_right(newnode->parent->parent);
                     }
                 }
                 if (newnode == _RBT.root)
@@ -427,102 +450,66 @@ namespace ft
             }
             _RBT.root->color = BLACK;
         }
-
-        ptrnode delete_children(ptrnode current, int &key_color){
-            ptrnode newChild;
-            // if current has only left child
-            if (current->left != NULL && current->right == NULL){
-                newChild = current->left;
-                key_color = current->color;
-                if (current->parent == NULL)
-                    _RBT.root = current->left;
-                else
-                    current->parent->left = newChild;
-                newChild->parent = current->parent;
-                return (current->left);
-            }
-            //if current has only right child
-            else if (current->right != NULL && current->left == NULL){
-                newChild = current->right;
-                key_color = current->color;
-                if (current->parent == NULL)
-                    _RBT.root = current->right;
-                else
-                    current->parent->right = newChild;
-                newChild->parent = current->parent;
-                return (current->right);
-            }
-            //if no children
-            else {
-                if (current->color == BLACK)
-                    newChild = _nallocator.allocate(1);
-                else
-                    newChild = NULL;
-                if (current->parent == NULL)
-                    _RBT.root = newChild;
-                else if (current->parent->left == current)
-                    current->parent->left = newChild;
-                else if (current->parent->right == current)
-                    current->parent->right = newChild;
-                std::cout << "newchild " << newChild->content->first <<std::endl;
-                return (NULL);
-            }
-        }
     
         void    check_rules_delete(ptrnode deletednode){
-            if (deletednode == _RBT.root)
-                return ;
-            ptrnode sibling = get_node_sibling(deletednode);
-            if (sibling->color == RED){
-                sibling->color = BLACK;
-                deletednode->parent->color = RED;
-                if (deletednode == deletednode->parent->left)
-                    _RBT.rotate_left(deletednode->parent);
-                else
-                    _RBT.rotate_right(deletednode->parent);
-                sibling = get_node_sibling(deletednode);
-            }
-            if ((sibling->left->color == BLACK || sibling->left == NULL) &&
-                (sibling->left->color == BLACK || sibling->left == NULL)){
-                if (deletednode->parent->color == RED)    
-                    sibling->color = BLACK;
-                else
-                    check_rules_delete(deletednode->parent);
-            }
-            else{
-                bool deleted_left_child = false;
-                if (deletednode == deletednode->parent->left)
-                    deleted_left_child = true;
-                if ((deleted_left_child) && (sibling->right->color == BLACK || sibling->right == NULL)){
-                    sibling->left->color = BLACK;
-                    sibling->color = RED;
-                    _RBT.rotate_right(sibling);
-                    sibling = deletednode->parent->right;
+            ptrnode tmp;
+            while (deletednode != _RBT.root && deletednode->color == BLACK){
+                //if the deleted node is the left of its parent
+                if (deletednode == deletednode->parent->left){
+                    tmp = deletednode->parent->right;
+                    if (tmp->color == RED){
+                        tmp->color = BLACK;
+                        deletednode->parent->color = RED;
+                        _RBT.rotate_left(deletednode->parent);
+                        tmp = deletednode->parent->right;
+                    }
+                    if (tmp->left->color == BLACK && tmp->right->color == BLACK){
+                        tmp->color = RED;
+                        deletednode = deletednode->parent;
+                    }
+                    else {
+                        if (tmp->right->color == BLACK){
+                            tmp->left->color = BLACK;
+                            tmp->color = RED;
+                            _RBT.rotate_right(tmp);
+                            tmp = deletednode->parent->right;
+                        }
+                        tmp->color = deletednode->parent->color;
+                        deletednode->parent->color = BLACK;
+                        tmp->right->color = BLACK;
+                        _RBT.rotate_left(deletednode->parent);
+                        deletednode = _RBT.root;
+                    }
                 }
-                else if ((!deleted_left_child) && (sibling->left->color == BLACK || sibling->left == NULL)){
-                    sibling->right->color = BLACK;
-                    sibling->color = RED;
-                    _RBT.rotate_left(sibling);
-                    sibling = deletednode->parent->left;
-                }
-                sibling->color = deletednode->parent->color;
-                deletednode->parent->color = BLACK;
-                if (deletednode){
-                    sibling->right->color = BLACK;
-                    _RBT.rotate_left(deletednode->parent);
-                }
+                //if the deleted node is the right of its parent
                 else{
-                    sibling->left->color = BLACK;
-                    _RBT.rotate_right(deletednode->parent);
+                    tmp = deletednode->parent->left;
+                    if (tmp->color == RED){
+                        tmp->color = BLACK;
+                        deletednode->parent->color = RED;
+                        _RBT.rotate_right(deletednode->parent);
+                        tmp = deletednode->parent->left;
+                    }
+                    if (tmp->left->color == BLACK && tmp->right->color == BLACK){
+                        tmp->color = RED;
+                        deletednode = deletednode->parent;
+                    }
+                    else {
+                        if (tmp->left->color == BLACK){
+                            tmp->right->color = BLACK;
+                            tmp->color = RED;
+                            _RBT.rotate_left(tmp);
+                            tmp = deletednode->parent->left;
+                        }
+                        tmp->color = deletednode->parent->color;
+                        deletednode->parent->color = BLACK;
+                        tmp->left->color = BLACK;
+                        _RBT.rotate_right(deletednode->parent);
+                        deletednode = _RBT.root;
+                    }
                 }
+                deletednode->color = BLACK;
             }
-        }
-        ptrnode    get_node_sibling(ptrnode node){
-            if (node == node->parent->left)
-                return (node->parent->right);
-            else if (node == node->parent->right)
-                return (node->parent->left);
-            return (NULL);
         }
     };
 }

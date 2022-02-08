@@ -72,13 +72,13 @@ namespace ft
 
         RBT():root(NULL), first(NULL), last(NULL){}
     
-        pointer find_min(pointer right){
+        static pointer find_min(pointer right){
             while (right->left != NULL)
                 right = right->left;
             return (right);
         }
 
-        pointer	find_max(pointer left) {
+        static pointer	find_max(pointer left) {
 			while (left->right != NULL)
                 left = left->right;
             return (left);

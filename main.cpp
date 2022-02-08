@@ -41,7 +41,6 @@ int main(){
 	const char *abc = "abcdefghijkl";
 	int i = 0;
 	while (i < 5){
-		std::cout << "le i: " << i << std::endl;
 		test.insert(ft::make_pair(abc[i], i));
 		test1.insert(std::make_pair(abc[i], i));
 		i++;
@@ -49,7 +48,9 @@ int main(){
 	test.erase('d');
 	test1.erase('d');
 	i = 0;
+
 	while(i < 5){
+		std::cout << "Key: " << abc[i] << std::endl;
 		std::cout << test1[abc[i]] << " - ";
 		std::cout << test[abc[i]] << std::endl;
 		i++;
