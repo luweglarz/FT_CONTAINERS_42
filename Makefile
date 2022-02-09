@@ -10,8 +10,8 @@ FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 HEADERS = 	containers/vector/ClassVector.hpp containers/stack/ClassStack.hpp \
 			containers/map/ClassMap.hpp containers/map/utility/StructRBT.hpp \
-			iterators/vector_iterator.hpp iterators/iterator_traits.hpp iterators/reverse_iterator.hpp iterators/lexicographical_compare.hpp iterators/map_iterator.hpp \
-			SFINAE/enable_if.hpp SFINAE/is_integral.hpp \
+			iterators/vector_iterator.hpp iterators/iterator_traits.hpp iterators/random_access_reverse_iterator.hpp iterators/lexicographical_compare.hpp iterators/map_iterator.hpp \
+			SFINAE/enable_if.hpp SFINAE/is_integral.hpp iterators/map_reverse_iterator.hpp\
 			tests/tests.hpp
 
 SRCS = 	tests/iterator_tests.cpp tests/vector/modifier_tests.cpp tests/vector/capacity_tests.cpp tests/vector/element_access_tests.cpp \

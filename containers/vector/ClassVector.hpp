@@ -5,7 +5,7 @@
 #include <memory>
 #include <limits>
 #include <stdexcept>
-#include "../../iterators/reverse_iterator.hpp"
+#include "../../iterators/random_access_reverse_iterator.hpp"
 #include "../../iterators/vector_iterator.hpp"
 #include "../../SFINAE/enable_if.hpp"
 #include "../../SFINAE/is_integral.hpp"

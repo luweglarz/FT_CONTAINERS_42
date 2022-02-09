@@ -6,6 +6,7 @@
 #include <functional>
 #include "utility/pair.hpp"
 #include "../../iterators/map_iterator.hpp"
+#include "../../iterators/map_reverse_iterator.hpp"
 #include "utility/StructRBT.hpp"
 
 namespace ft
@@ -48,7 +49,7 @@ namespace ft
         alloc: the allocator object
         ---------------------------------------------------------*/
         explicit map(const Compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): _mallocator(alloc), _size(0), _cmp(comp), 
-                    _RBT(){
+                    _RBT(), _nallocator(){
         }
 
         /*-------------------------------------------------------
@@ -61,7 +62,12 @@ namespace ft
         template <class InputIterator>
         explicit map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
                     typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
-                    _mallocator(alloc), _size(std::distance<InputIterator>(first, last)), _cmp(comp), _RBT(){}
+                    _mallocator(alloc), _cmp(comp), _RBT(){
+            while (first != last){
+                _size += insert(first->first);
+                first++;
+            }
+        }
 
         /*-------------------------------------------------------
         copy constructor that creates a map with a range of iterators
@@ -72,11 +78,14 @@ namespace ft
         }
 
         map &operator=(const map &x){
-            (void)x;
+            _mallocator = x._mallocator;
+            _size = x._size;
+            _cmp = x._cmp;
+            _RBT = x._RBT;
         }
 
         ~map(){
-            //erase(_RBT.root, _RBT.last);
+            erase(begin(), end());
         }
     
         //Iterators
@@ -145,14 +154,9 @@ namespace ft
         }
 
         size_type max_size() const{
-            return ((_mallocator.max_size()));
+            return ((_nallocator.max_size()));
         }
         //Element access
-        mapped_key &at(const Key &key){
-            iterator    ret = find(key);
-            return (ret->second);
-        }
-
         mapped_key &operator[](const Key &key){
             iterator itret;
             if ((itret = find(key)) != iterator(NULL, _RBT))
@@ -161,17 +165,20 @@ namespace ft
             return (ret.first->second);
         }
         //Modifiers
-        // void clear(){
-        // }
+        void clear(){
+            erase(begin(), end());
+        }
 
-        // void erase(iterator pos){
-        //     (void)pos;
-        // }
+        void erase(iterator pos){
+            erase(pos->first);
+        }
 
-        // void erase(iterator first, iterator last){
-        //     (void)first;
-        //     (void)last;
-        // }
+        void erase(iterator first, iterator last){
+            while (first != last){
+                erase(first->first);
+                first++;
+            }
+        }
 
         size_type erase(const Key &key){
             //check if key exists
@@ -227,9 +234,11 @@ namespace ft
                 tmp1->left->parent = tmp1;
                 tmp1->color = current->color;
             }
-            //_nallocator.destroy(current);
+            _mallocator.destroy(current->content);
+            _nallocator.destroy(current);
             if (tmp1_color == BLACK)
                 check_rules_delete(tmp2);
+            _mallocator.destroy(tmp2->content);
             _nallocator.destroy(tmp2);
             iterator it = begin();
             return (1);
@@ -288,22 +297,28 @@ namespace ft
         //     return;
         // }
         
-        // template<class InputIterator>
-        // void insert(InputIterator first, InputIterator last){
-        //     (void)first;
-        //     (void)last;
-            
-        // }
+        template<class InputIterator>
+        void insert(InputIterator first, InputIterator last,
+        typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
+            while (first != last){
+                insert(*first);
+                first++;
+            }
+        }
 
-        // void swap(map &other){
-        //     (void)other;
-        // }
+        void swap(map &other){
+            Tree    tmp = other._RBT;
+            other._RBT = this->_RBT;
+            this->_RBT = tmp;
+        }
 
         // //Lookup
-        // size_type count(const Key &key) const{
-        //     (void)key;
-        //     return;
-        // }
+        size_type count(const Key &key) const{
+            iterator it = find(key);
+            if (it != iterator(NULL, _RBT))
+                return (1);
+            return (0);
+        }
 
         iterator find(const Key &key){
             ptrnode current = _RBT.root;
@@ -333,35 +348,55 @@ namespace ft
             return (const_iterator(current, _RBT));
         }
 
-        // ft::pair<iterator,iterator> equal_range(const Key &key){
-        //     (void)key;
-        //     return;
-        // }
+        ft::pair<iterator,iterator> equal_range(const Key &key){
+            (void)key;
+            return;
+        }
 
-        // ft::pair<const_iterator,const_iterator> equal_range(const Key &key) const{
-        //     (void)key;
-        //     return;
-        // }
+        ft::pair<const_iterator,const_iterator> equal_range(const Key &key) const{
+            (void)key;
+            return;
+        }
 
-        // iterator lower_bound(const Key &key){
-        //     (void)key;
-        //     return;
-        // }
+        iterator lower_bound(const Key &key){
+            iterator it = begin();
+            while (it != end()){
+                if (!(key_comp(it->first, key)))
+                    return (it);
+                it++;
+            }
+            return (end());
+        }
 
-        // const_iterator lower_bound(const Key &key) const{
-        //     (void)key;
-        //     return;
-        // }
+        const_iterator lower_bound(const Key &key) const{
+            iterator it = begin();
+            while (it != end()){
+                if (!(key_comp(it->first, key)))
+                    return (it);
+                it++;
+            }
+            return (end());
+        }
 
-        // iterator upper_bound(const Key &key){
-        //     (void)key;
-        //     return;
-        // }
+        iterator upper_bound(const Key &key){
+            iterator it = begin();
+            while (it != end()){
+                if (!(key_comp(it->first, key)) && key_comp(key, it->first))
+                    return (it);
+                it++;
+            }
+            return (end());
+        }
 
-        // const_iterator upper_bound(const Key &key) const{  
-        //     (void)key;
-        //     return;
-        // }
+        const_iterator upper_bound(const Key &key) const{  
+            iterator it = begin();
+            while (it != end()){
+                if (!(key_comp(it->first, key)) && key_comp(key, it->first))
+                    return (it);
+                it++;
+            }
+            return (end());
+        }
 
         // //Observers
         protected:
