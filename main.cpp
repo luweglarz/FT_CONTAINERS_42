@@ -50,9 +50,9 @@ int main(){
 	i = 0;
 
 	while(i < 5){
-		std::cout << "Key: " << abc[i] << std::endl;
-		std::cout << test1[abc[i]] << " - ";
-		std::cout << test[abc[i]] << std::endl;
+		//std::cout << "Key: " << abc[i] << std::endl;
+		// std::cout << test1[abc[i]] << " - ";
+		// std::cout << test[abc[i]] << std::endl;
 		i++;
 	}
 	return (0);

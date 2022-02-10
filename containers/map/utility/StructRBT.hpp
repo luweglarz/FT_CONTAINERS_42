@@ -22,7 +22,7 @@ namespace ft
         /*-------------------------------------------------------
         default constructor
         ---------------------------------------------------------*/
-        RBTNode():color(BLACK), content(), parent(NULL),right(NULL), left(NULL){}
+        RBTNode():color(BLACK), content(NULL), parent(NULL),right(NULL), left(NULL){}
 
         /*-------------------------------------------------------
         fill constructor
@@ -74,11 +74,11 @@ namespace ft
     
         static pointer find_min(pointer right){
             while (right->left != NULL)
-                right = right->left;
+                right = right->left; 
             return (right);
         }
 
-        static pointer	find_max(pointer left) {
+        static pointer	find_max(pointer left){
 			while (left->right != NULL)
                 left = left->right;
             return (left);

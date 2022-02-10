@@ -20,7 +20,7 @@ namespace ft
             typedef typename    Tree::value_type                    *content;
 
             map_iterator(): _ptr(NULL), _rbt(){}
-            map_iterator(pointer p, RBT r): _ptr(p), _rbt(r){}
+            map_iterator(pointer p, RBT r): _ptr(p){_rbt = &r;}
             map_iterator(const map_iterator &src){*this = src;}
             map_iterator &operator=(const map_iterator &src){_ptr = src._ptr;_rbt = src._rbt;return(*this);}
             ~map_iterator(){}
@@ -31,11 +31,12 @@ namespace ft
 
             //prefix
             map_iterator    &operator++(){
-                if(_ptr->right != NULL)
-                    _ptr = _rbt.find_min(_ptr->right);
-                else if (_ptr != _rbt.root){
+                if(_ptr->right){
+                    _ptr = _rbt->find_min(_ptr->right);
+                }
+                else if (_ptr != _rbt->root){
                     pointer current = _ptr->parent;
-                    while (current && (_rbt.cmp(current->content->first, _ptr->content->first)))
+                    while (current && (_rbt->cmp(current->content->first, _ptr->content->first)))
                         current = current->parent;
                     if (current != NULL)
                         _ptr = current;
@@ -45,13 +46,13 @@ namespace ft
 		    map_iterator    operator++(int){map_iterator tmp = *this; ++*this; return tmp;}
             //prefix
 		    map_iterator    &operator--(){
-                if (_ptr == _rbt.last)
+                if (_ptr == _rbt->last)
                     _ptr = _ptr->parent;
                 else if (_ptr->left != NULL)
-                    _ptr = _rbt.find_max(_ptr->left);
-                else if (_ptr != _rbt.root){
+                    _ptr = _rbt->find_max(_ptr->left);
+                else if (_ptr != _rbt->root){
                     pointer current = _ptr->parent;
-                    while (current && (_rbt.cmp(_ptr->content->first, current->content->first)))
+                    while (current && (_rbt->cmp(_ptr->content->first, current->content->first)))
                         current = current->parent;
                     if (current != NULL)
                         _ptr = current;
@@ -72,7 +73,7 @@ namespace ft
             }
         private:
             pointer _ptr;
-            RBT     _rbt;
+            RBT     *_rbt;
     };
 };
 

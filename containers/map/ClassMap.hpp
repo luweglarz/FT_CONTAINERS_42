@@ -174,15 +174,25 @@ namespace ft
         }
 
         void erase(iterator first, iterator last){
+            iterator tmp = first;
             while (first != last){
+                tmp++;
                 erase(first->first);
-                first++;
+                first = tmp;
             }
+            erase(tmp->first);
         }
 
         size_type erase(const Key &key){
             //check if key exists
             ptrnode current = _RBT.root;
+            if (_size == 1){
+                _mallocator.destroy(current->content);
+                _nallocator.destroy(current);
+                _mallocator.deallocate(current->content, 1);
+                _nallocator.deallocate(current, 1);
+                return (1);
+            }
             while (current != NULL && current->content->first != key){
                 if (key < current->content->first)
                     current = current->left;
@@ -236,11 +246,12 @@ namespace ft
             }
             _mallocator.destroy(current->content);
             _nallocator.destroy(current);
+            _mallocator.deallocate(current->content, 1);
+            _nallocator.deallocate(current, 1);
+           // std::cout << "tmp2 " << tmp2->content->first << std::endl;
             if (tmp1_color == BLACK)
                 check_rules_delete(tmp2);
-            _mallocator.destroy(tmp2->content);
-            _nallocator.destroy(tmp2);
-            iterator it = begin();
+            _size--;
             return (1);
         }
         /*-------------------------------------------------------
@@ -349,13 +360,19 @@ namespace ft
         }
 
         ft::pair<iterator,iterator> equal_range(const Key &key){
-            (void)key;
-            return;
+            ft::pair<iterator, iterator>	ret;
+
+			ret.first = lower_bound(key);
+			ret.second = upper_bound(key);
+			return (ret);
         }
 
         ft::pair<const_iterator,const_iterator> equal_range(const Key &key) const{
-            (void)key;
-            return;
+            ft::pair<iterator, iterator>	ret;
+
+			ret.first = lower_bound(key);
+			ret.second = upper_bound(key);
+			return (ret);
         }
 
         iterator lower_bound(const Key &key){
@@ -491,14 +508,16 @@ namespace ft
             while (deletednode != _RBT.root && deletednode->color == BLACK){
                 //if the deleted node is the left of its parent
                 if (deletednode == deletednode->parent->left){
+                    //std::cout << "deletednode " << deletednode->content->first << std::endl;
                     tmp = deletednode->parent->right;
+                    //std::cout << "parent " << deletednode->parent->right->content->first << std::endl;
                     if (tmp->color == RED){
                         tmp->color = BLACK;
                         deletednode->parent->color = RED;
                         _RBT.rotate_left(deletednode->parent);
                         tmp = deletednode->parent->right;
                     }
-                    if (tmp->left->color == BLACK && tmp->right->color == BLACK){
+                    if ((tmp->left == NULL || tmp->left->color == BLACK) && tmp->right->color == BLACK){
                         tmp->color = RED;
                         deletednode = deletednode->parent;
                     }
