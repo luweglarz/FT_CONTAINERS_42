@@ -176,11 +176,11 @@ namespace ft
         void erase(iterator first, iterator last){
             iterator tmp = first;
             while (first != last){
+                std::cout << "begin " << _RBT.first->content->first << std::endl;
                 tmp++;
                 erase(first->first);
                 first = tmp;
             }
-            erase(tmp->first);
         }
 
         size_type erase(const Key &key){
@@ -202,26 +202,24 @@ namespace ft
             //return 0 if key can't be found
             if (current == NULL)
                 return (0);
-            if (current == _RBT.first)
-                _RBT.first = _RBT.find_min(_RBT.root);
-            else if (current == _RBT.last)
-                _RBT.last = _RBT.find_max(_RBT.root);
             //current == key node
             ptrnode tmp1 = NULL, tmp2 = NULL;
             node    def;
             tmp1 = current;
             int tmp1_color = tmp1->color;
             //if node to delete has only a right child or no child
+            bool children = true;
             if (current->left == NULL){
-                current->right = _nallocator.allocate(1);
-                _nallocator.construct(current->right, def);
+                if (current->right == NULL){
+                    current->right = _nallocator.allocate(1);
+                    _nallocator.construct(current->right, def);
+                    children = false;
+                }
                 tmp2 = current->right;
                 _RBT.transplant(current, current->right);
             }
             //if node to delete has only a left child
             else if (current->right == NULL){
-                current->left = _nallocator.allocate(1);
-                _nallocator.construct(current->left, def);
                 tmp2 = current->left;
                 _RBT.transplant(current, current->left);
             }
@@ -250,8 +248,10 @@ namespace ft
             _nallocator.deallocate(current, 1);
            // std::cout << "tmp2 " << tmp2->content->first << std::endl;
             if (tmp1_color == BLACK)
-                check_rules_delete(tmp2);
+                check_rules_delete(tmp2, children);
             _size--;
+            _RBT.first = _RBT.find_min(_RBT.root);
+            _RBT.last = _RBT.find_max(_RBT.root);
             return (1);
         }
         /*-------------------------------------------------------
@@ -503,15 +503,19 @@ namespace ft
             _RBT.root->color = BLACK;
         }
     
-        void    check_rules_delete(ptrnode deletednode){
+        void    check_rules_delete(ptrnode deletednode, bool children){
             ptrnode tmp;
             while (deletednode != _RBT.root && deletednode->color == BLACK){
                 //if the deleted node is the left of its parent
+                (void)children;
                 if (deletednode == deletednode->parent->left){
                     //std::cout << "deletednode " << deletednode->content->first << std::endl;
                     tmp = deletednode->parent->right;
+
+                    std::cout << "deleted " << deletednode->parent->content->first << std::endl;
                     //std::cout << "parent " << deletednode->parent->right->content->first << std::endl;
                     if (tmp->color == RED){
+                        std::cout << "red\n";
                         tmp->color = BLACK;
                         deletednode->parent->color = RED;
                         _RBT.rotate_left(deletednode->parent);
@@ -519,6 +523,7 @@ namespace ft
                     }
                     if ((tmp->left == NULL || tmp->left->color == BLACK) && tmp->right->color == BLACK){
                         tmp->color = RED;
+                        deletednode->parent->left = NULL;
                         deletednode = deletednode->parent;
                     }
                     else {
@@ -532,6 +537,15 @@ namespace ft
                         deletednode->parent->color = BLACK;
                         tmp->right->color = BLACK;
                         _RBT.rotate_left(deletednode->parent);
+                        std::cout << "deleted " << deletednode->parent->content->first << std::endl;
+                        if (deletednode->parent == _RBT.root){
+                            std::cout << "test\n";
+                            _RBT.root->left = NULL;
+                        }
+                        if (children == false){
+                            deletednode->parent->left = NULL;
+                            deletednode->parent->right = NULL;
+                        }
                         deletednode = _RBT.root;
                     }
                 }
@@ -544,8 +558,9 @@ namespace ft
                         _RBT.rotate_right(deletednode->parent);
                         tmp = deletednode->parent->left;
                     }
-                    if (tmp->left->color == BLACK && tmp->right->color == BLACK){
+                    if ((tmp->right == NULL || tmp->right->color == BLACK) && tmp->right->color == BLACK){
                         tmp->color = RED;
+                        deletednode->parent->right = NULL;
                         deletednode = deletednode->parent;
                     }
                     else {
@@ -559,6 +574,12 @@ namespace ft
                         deletednode->parent->color = BLACK;
                         tmp->left->color = BLACK;
                         _RBT.rotate_right(deletednode->parent);
+                        if (deletednode->parent == _RBT.root)
+                            _RBT.root->right = NULL;
+                        if (children == false){
+                            deletednode->parent->left = NULL;
+                            deletednode->parent->right = NULL;
+                        }
                         deletednode = _RBT.root;
                     }
                 }

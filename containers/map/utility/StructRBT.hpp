@@ -73,8 +73,11 @@ namespace ft
         RBT():root(NULL), first(NULL), last(NULL){}
     
         static pointer find_min(pointer right){
-            while (right->left != NULL)
+            while (right->left != NULL){
+               // std::cout << "right " << right->content->first << std::endl;
                 right = right->left; 
+                //std::cout << "right " << right->content->first << std::endl;
+            }
             return (right);
         }
 
