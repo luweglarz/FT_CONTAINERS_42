@@ -94,11 +94,11 @@ namespace ft
         at the beginning of the map
         ---------------------------------------------------------*/
         iterator begin(){
-            return (iterator(_RBT.first, _RBT));
+            return (iterator(_RBT.first, &_RBT));
         }
         
         const_iterator begin() const{
-            return (const_iterator(_RBT.first, _RBT));
+            return (const_iterator(_RBT.first, &_RBT));
         }
 
         /*-------------------------------------------------------
@@ -106,11 +106,11 @@ namespace ft
         at the end of the map
         ---------------------------------------------------------*/
         iterator end(){
-            return (iterator(_RBT.last, _RBT));
+            return (iterator(_RBT.last, &_RBT));
         }
 
         const_iterator end() const{
-            return (const_iterator(_RBT.last, _RBT));
+            return (const_iterator(_RBT.last, &_RBT));
         }
 
         /*-------------------------------------------------------
@@ -118,11 +118,11 @@ namespace ft
         at the beginning of the map
         ---------------------------------------------------------*/
         reverse_iterator rbegin(){
-            return (reverse_iterator(_RBT.last));
+            return (reverse_iterator(_RBT.last, &_RBT));
         }
 
         const_reverse_iterator rbegin() const{
-            return (const_reverse_iterator(_RBT.last));
+            return (const_reverse_iterator(_RBT.last, &_RBT));
         }
 
         /*-------------------------------------------------------
@@ -130,11 +130,11 @@ namespace ft
         at the end of the map
         ---------------------------------------------------------*/
         reverse_iterator rend(){
-            return (reverse_iterator(_RBT.first));
+            return (reverse_iterator(_RBT.first, &_RBT));
         }
 
         const_reverse_iterator rend() const {
-            return (const_reverse_iterator(_RBT.first));
+            return (const_reverse_iterator(_RBT.first, &_RBT));
         }
         
         //Capacity
@@ -176,9 +176,9 @@ namespace ft
         void erase(iterator first, iterator last){
             iterator tmp = first;
             while (first != last){
-                std::cout << "begin " << _RBT.first->content->first << std::endl;
                 tmp++;
                 erase(first->first);
+
                 first = tmp;
             }
         }
@@ -191,35 +191,29 @@ namespace ft
                 _nallocator.destroy(current);
                 _mallocator.deallocate(current->content, 1);
                 _nallocator.deallocate(current, 1);
+                _size--;
                 return (1);
             }
-            while (current != NULL && current->content->first != key){
+            while (current != _RBT.leafs && current->content->first != key){
                 if (key < current->content->first)
                     current = current->left;
                 else
                     current = current->right;
             }
             //return 0 if key can't be found
-            if (current == NULL)
+            if (current == _RBT.leafs)
                 return (0);
             //current == key node
-            ptrnode tmp1 = NULL, tmp2 = NULL;
-            node    def;
+            ptrnode tmp1, tmp2;
             tmp1 = current;
             int tmp1_color = tmp1->color;
             //if node to delete has only a right child or no child
-            bool children = true;
-            if (current->left == NULL){
-                if (current->right == NULL){
-                    current->right = _nallocator.allocate(1);
-                    _nallocator.construct(current->right, def);
-                    children = false;
-                }
+            if (current->left == _RBT.leafs){
                 tmp2 = current->right;
                 _RBT.transplant(current, current->right);
             }
             //if node to delete has only a left child
-            else if (current->right == NULL){
+            else if (current->right == _RBT.leafs){
                 tmp2 = current->left;
                 _RBT.transplant(current, current->left);
             }
@@ -227,8 +221,6 @@ namespace ft
             else{
                 tmp1 = _RBT.find_min(current->right);
                 tmp1_color = tmp1->color;
-                tmp1->right = _nallocator.allocate(1);
-                _nallocator.construct(tmp1->right, def);
                 tmp2 = tmp1->right;
                 if (tmp1->parent == current)
                     tmp2->parent = tmp1;
@@ -246,9 +238,8 @@ namespace ft
             _nallocator.destroy(current);
             _mallocator.deallocate(current->content, 1);
             _nallocator.deallocate(current, 1);
-           // std::cout << "tmp2 " << tmp2->content->first << std::endl;
             if (tmp1_color == BLACK)
-                check_rules_delete(tmp2, children);
+                check_rules_delete(tmp2);
             _size--;
             _RBT.first = _RBT.find_min(_RBT.root);
             _RBT.last = _RBT.find_max(_RBT.root);
@@ -259,12 +250,14 @@ namespace ft
         val: value to insert (value_type)
         ---------------------------------------------------------*/
         pair<iterator, bool> insert(const value_type &val){
+            //Allocate en set the new node
             node  def;
             ptrnode newnode = _nallocator.allocate(1);
+            _nallocator.construct(newnode, def);
+            newnode->right = _RBT.leafs;
+            newnode->left = _RBT.leafs;
             ptrnode current = _RBT.root;
             ptrnode newnode_parent;
-
-            _nallocator.construct(newnode, def);
             newnode->content = _mallocator.allocate(1);
             _mallocator.construct(newnode->content, val);
             // if tree is empty insert as root
@@ -276,7 +269,7 @@ namespace ft
                 return (ft::make_pair(begin(),true));
             }
             //Go throught the tree to find the place of the new key then insert it 
-            while (current != NULL){
+            while (current != _RBT.leafs){
                 newnode_parent = current;
                 if (_cmp(*newnode->content, *current->content))
                     current = current->left;
@@ -285,7 +278,7 @@ namespace ft
             }
             newnode->parent = newnode_parent;
             //set if newnode is at the left or right of its parent
-            if (newnode_parent == NULL)
+            if (newnode_parent == _RBT.leafs)
                 _RBT.root = newnode;
             if (_cmp(*newnode->content, *newnode_parent->content))
                 newnode_parent->left = newnode;
@@ -299,14 +292,15 @@ namespace ft
                 _RBT.first = newnode;
             if (_cmp(*_RBT.last->content, *newnode->content))
                 _RBT.last = newnode;
-            return (ft::make_pair(iterator(newnode, _RBT),true));
+            return (ft::make_pair(iterator(newnode, &_RBT),true));
         }
         
-        // iterator insert(iterator hint, const value_type &value){
-        //     (void)hint;
-        //     (void)value;
-        //     return;
-        // }
+        iterator insert(iterator hint, const value_type &value){
+            (void)hint;
+            pair<iterator, bool> ret;
+            ret = insert(value);
+            return(ret->first);
+        }
         
         template<class InputIterator>
         void insert(InputIterator first, InputIterator last,
@@ -441,6 +435,7 @@ namespace ft
         value_compare       _cmp;
         Tree                _RBT;
         Nalloc              _nallocator;
+    
         //check rules functions
         void    check_rules_insert(ptrnode newnode){
             ptrnode def;
@@ -503,27 +498,20 @@ namespace ft
             _RBT.root->color = BLACK;
         }
     
-        void    check_rules_delete(ptrnode deletednode, bool children){
+        void    check_rules_delete(ptrnode deletednode){
             ptrnode tmp;
             while (deletednode != _RBT.root && deletednode->color == BLACK){
                 //if the deleted node is the left of its parent
-                (void)children;
                 if (deletednode == deletednode->parent->left){
-                    //std::cout << "deletednode " << deletednode->content->first << std::endl;
                     tmp = deletednode->parent->right;
-
-                    std::cout << "deleted " << deletednode->parent->content->first << std::endl;
-                    //std::cout << "parent " << deletednode->parent->right->content->first << std::endl;
                     if (tmp->color == RED){
-                        std::cout << "red\n";
                         tmp->color = BLACK;
                         deletednode->parent->color = RED;
                         _RBT.rotate_left(deletednode->parent);
                         tmp = deletednode->parent->right;
                     }
-                    if ((tmp->left == NULL || tmp->left->color == BLACK) && tmp->right->color == BLACK){
+                    if (tmp->left->color == BLACK && tmp->right->color == BLACK){
                         tmp->color = RED;
-                        deletednode->parent->left = NULL;
                         deletednode = deletednode->parent;
                     }
                     else {
@@ -537,15 +525,6 @@ namespace ft
                         deletednode->parent->color = BLACK;
                         tmp->right->color = BLACK;
                         _RBT.rotate_left(deletednode->parent);
-                        std::cout << "deleted " << deletednode->parent->content->first << std::endl;
-                        if (deletednode->parent == _RBT.root){
-                            std::cout << "test\n";
-                            _RBT.root->left = NULL;
-                        }
-                        if (children == false){
-                            deletednode->parent->left = NULL;
-                            deletednode->parent->right = NULL;
-                        }
                         deletednode = _RBT.root;
                     }
                 }
@@ -558,9 +537,8 @@ namespace ft
                         _RBT.rotate_right(deletednode->parent);
                         tmp = deletednode->parent->left;
                     }
-                    if ((tmp->right == NULL || tmp->right->color == BLACK) && tmp->right->color == BLACK){
+                    if (tmp->right->color == BLACK && tmp->right->color == BLACK){
                         tmp->color = RED;
-                        deletednode->parent->right = NULL;
                         deletednode = deletednode->parent;
                     }
                     else {
@@ -574,12 +552,6 @@ namespace ft
                         deletednode->parent->color = BLACK;
                         tmp->left->color = BLACK;
                         _RBT.rotate_right(deletednode->parent);
-                        if (deletednode->parent == _RBT.root)
-                            _RBT.root->right = NULL;
-                        if (children == false){
-                            deletednode->parent->left = NULL;
-                            deletednode->parent->right = NULL;
-                        }
                         deletednode = _RBT.root;
                     }
                 }

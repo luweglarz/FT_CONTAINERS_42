@@ -68,21 +68,28 @@ namespace ft
         pointer             root;
         pointer             first;
         pointer             last;
+        pointer             leafs;
         compare             cmp;
 
-        RBT():root(NULL), first(NULL), last(NULL){}
+        RBT():root(NULL), first(NULL), last(NULL){
+            node def;
+            allocator_type alloc;
+            leafs = alloc.allocate(1);
+            alloc.construct(leafs, def);
+        }
+
+        ~RBT(){
+            
+        }
     
-        static pointer find_min(pointer right){
-            while (right->left != NULL){
-               // std::cout << "right " << right->content->first << std::endl;
+        pointer find_min(pointer right){
+            while (right->left != leafs)
                 right = right->left; 
-                //std::cout << "right " << right->content->first << std::endl;
-            }
             return (right);
         }
 
-        static pointer	find_max(pointer left){
-			while (left->right != NULL)
+        pointer	find_max(pointer left){
+			while (left->right != leafs)
                 left = left->right;
             return (left);
 		}
@@ -90,7 +97,7 @@ namespace ft
         void    rotate_left(pointer rot){
             pointer right = rot->right;
             rot->right = right->left;
-            if (right->left != NULL)
+            if (right->left != leafs)
                 right->left->parent = rot;
             right->parent = rot->parent;
             if (rot->parent == NULL)
@@ -106,7 +113,7 @@ namespace ft
         void    rotate_right(pointer rot){
             pointer left = rot->left;
             rot->left = left->right;
-            if (left->right != NULL)
+            if (left->right != leafs)
                 left->right->parent = rot;
             left->parent = rot->parent;
             if (rot->parent == NULL)
