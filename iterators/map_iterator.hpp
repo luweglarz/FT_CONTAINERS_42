@@ -25,6 +25,10 @@ namespace ft
             map_iterator &operator=(const map_iterator &src){_ptr = src._ptr;_rbt = src._rbt;return(*this);}
             ~map_iterator(){}
 
+            pointer	base(void) const{
+			    return (_ptr);
+		    }
+
             //overloads
             content         operator->()const {return (_ptr->content);}
             reference       operator*()const {return (*_ptr->content);}

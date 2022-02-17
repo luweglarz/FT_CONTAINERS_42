@@ -82,13 +82,13 @@ namespace ft
             
         }
     
-        pointer find_min(pointer right){
+        pointer find_min(pointer right) const{
             while (right->left != leafs)
                 right = right->left; 
             return (right);
         }
 
-        pointer	find_max(pointer left){
+        pointer	find_max(pointer left) const{
 			while (left->right != leafs)
                 left = left->right;
             return (left);

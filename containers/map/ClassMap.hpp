@@ -299,7 +299,7 @@ namespace ft
             (void)hint;
             pair<iterator, bool> ret;
             ret = insert(value);
-            return(ret->first);
+            return(ret.first);
         }
         
         template<class InputIterator>

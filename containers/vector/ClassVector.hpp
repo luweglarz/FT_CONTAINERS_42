@@ -423,28 +423,7 @@ namespace ft
         position: position of the element to remove
         ---------------------------------------------------------*/
         iterator erase(iterator position){
-            iterator    b = begin();
-            iterator    e = end();
-            difference_type idx;
-            value_type *store = NULL;
-            store = _vallocator.allocate(_capacity);
-            size_type i = 0;
-            while (b != e){
-                if (b == position){
-                    idx = std::distance(begin(), b);
-                    b++;
-                }
-                store[i] = *b;
-                b++;
-                i++;
-            }
-            iterator begin(&(store[0]));
-            iterator end(&(store[i]));
-            clear();
-            _vallocator.deallocate(_data, _capacity);
-            _data = store;
-            _size = i;
-            return (iterator(_data + idx));
+            return (erase(position, position + 1));
         }
 
         /*-------------------------------------------------------
@@ -454,26 +433,30 @@ namespace ft
         ---------------------------------------------------------*/
         iterator erase(iterator first, iterator last){
             iterator    b = begin();
-            iterator    e = end();
-            difference_type idx = _size - std::distance(begin(), first) - 1;
             value_type *store = NULL;
             store = _vallocator.allocate(_capacity);
             size_type i = 0;
-            while (b != e){
-                if (b == first)
-                    while (first != last){
-                        first++;
-                        b++;
-                    }
-                store[i] = *b;
-                b++;
-                i++;
+            size_type idx = first - begin();
+            
+            if (first != last){
+                while (b != end()){
+                    if (b == first)
+                        while (first != last){
+                            first++;
+                            b++;
+                        }
+                    if (b == end())
+                        break;
+                    store[i] = *b;
+                    b++;
+                    i++;
+                }
             }
             clear();
             _vallocator.deallocate(_data, _capacity);
             _data = store;
             _size = i;
-            return (iterator(_data + idx));
+            return (begin() + idx);
         }
 
         /*-------------------------------------------------------

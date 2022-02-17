@@ -30,7 +30,7 @@ namespace ft
         reverse_iterator(): _underlyingit() {}
         explicit reverse_iterator(iterator_type x):_underlyingit(x){}
         template<class U>
-        reverse_iterator(const reverse_iterator<U> &other) {*this = other;}
+        reverse_iterator(const reverse_iterator<U> &other) {_underlyingit = other.base();}
         reverse_iterator &operator=(const reverse_iterator &src){_underlyingit = src.base(); return (*this);}
         ~reverse_iterator() {};
 
@@ -65,8 +65,8 @@ namespace ft
         ---------------------------------------------------------*/
         reverse_iterator    operator+(difference_type n) const{reverse_iterator rev(*this); rev.base() -= n; return (rev);}
         reverse_iterator    operator-(difference_type n) const{reverse_iterator rev(*this); rev.base() += n; return (rev);}
-        reverse_iterator    &operator+=(difference_type n) const{_underlyingit -= n; return (*this);}
-        reverse_iterator    &operator-=(difference_type n) const{_underlyingit += n; return (*this);}
+        reverse_iterator    &operator+=(difference_type n){_underlyingit -= n; return (*this);}
+        reverse_iterator    &operator-=(difference_type n){_underlyingit += n; return (*this);}
     protected:
         iterator_type _underlyingit;
     };
@@ -99,7 +99,6 @@ namespace ft
     typename reverse_iterator<Iterator>::difference_type 
     operator-(const reverse_iterator<Iterator> &lhs,const reverse_iterator<Iterator> &rhs){
         return (rhs.base() - lhs.base());}
-
 };
 
 
