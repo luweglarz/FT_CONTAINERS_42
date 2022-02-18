@@ -3,6 +3,7 @@
 
 #include <iterator>
 #include "../containers/map/utility/StructRBT.hpp"
+
 namespace ft
 {
     /*-------------------------------------------------------
@@ -35,16 +36,22 @@ namespace ft
 
             //prefix
             map_iterator    &operator++(){
-                if(_ptr->right != _rbt->leafs){
+                if (_ptr == _rbt->find_max(_rbt->root) && _ptr->right == _rbt->leafs){
+                    _ptr = _rbt->leafs;
+                    return (*this);
+                }
+                if(_ptr->right != _rbt->leafs)
                     _ptr = _rbt->find_min(_ptr->right);
-                }
-                else if (_ptr != _rbt->root){
-                    pointer current = _ptr->parent;
-                    while (current && (_rbt->cmp(current->content->first, _ptr->content->first)))
-                        current = current->parent;
-                    if (current != _rbt->leafs)
-                        _ptr = current;
-                }
+                else{
+	    			pointer	parent = _ptr->parent;
+	    			pointer	current = _ptr;
+    				while ((parent != NULL) && (current == parent->right)){
+    					current = parent;
+    					parent = current->parent;
+    				}
+                    _ptr = parent;
+    				return (*this);
+    			}
                 return (*this);
             }
 		    map_iterator    operator++(int){map_iterator tmp = *this; ++*this; return tmp;}
@@ -65,16 +72,14 @@ namespace ft
             }
 		    map_iterator	operator--(int){map_iterator res; res._ptr = _ptr--; return(res);}
 
-            bool operator==(const map_iterator &rhs) const {
-                if (_ptr == rhs._ptr)
-                    return (true);
-                return (false);
-            }
-            bool operator!=(const map_iterator &rhs) const {
-                if (_ptr != rhs._ptr)
-                    return (true);
-                return (false);
-            }
+            operator map_iterator<const Tree>() const {
+			    return (map_iterator<const Tree>(_ptr, _rbt));
+		    }
+
+            friend bool		operator== (const map_iterator& lhs, const map_iterator& rhs) {
+				return lhs._ptr == rhs._ptr; }
+			friend bool 	operator!= (const map_iterator& lhs, const map_iterator& rhs) {
+				return lhs._ptr != rhs._ptr; }
         private:
             pointer _ptr;
             RBT     *_rbt;

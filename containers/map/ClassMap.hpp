@@ -8,6 +8,8 @@
 #include "../../iterators/map_iterator.hpp"
 #include "../../iterators/map_reverse_iterator.hpp"
 #include "utility/StructRBT.hpp"
+#include "../../SFINAE/enable_if.hpp"
+#include "../../SFINAE/is_integral.hpp"
 
 namespace ft
 {
@@ -39,8 +41,8 @@ namespace ft
     public:
         typedef ft::map_iterator<Tree>                              iterator;
         typedef ft::map_iterator<const Tree>                        const_iterator;
-        typedef ft::reverse_iterator<iterator>                      reverse_iterator;
-        typedef ft::reverse_iterator<const_iterator>                const_reverse_iterator;
+        typedef ft::map_reverse_iterator<iterator>                      reverse_iterator;
+        typedef ft::map_reverse_iterator<const_iterator>                const_reverse_iterator;
 
         //Constructors
         /*-------------------------------------------------------
@@ -156,6 +158,7 @@ namespace ft
         size_type max_size() const{
             return ((_nallocator.max_size()));
         }
+        
         //Element access
         mapped_key &operator[](const Key &key){
             iterator itret;
@@ -170,15 +173,68 @@ namespace ft
         }
 
         void erase(iterator pos){
-            erase(pos->first);
+            //check if key exists
+            iterator current = iterator(_RBT.first, &_RBT);
+            if (_size == 1){
+                _mallocator.destroy(current.base()->content);
+                _nallocator.destroy(current.base());
+                _mallocator.deallocate(current.base()->content, 1);
+                _nallocator.deallocate(current.base(), 1);
+                _size--;
+                return ; 
+            }
+            iterator itleafs = iterator(_RBT.leafs, &_RBT);
+            while (current != itleafs && current != pos)
+                current++;
+            //return 0 if key can't be found
+            if (current == itleafs)
+                return ;
+            //current == key node
+            ptrnode tmp1, tmp2;
+            tmp1 = current.base();
+            int tmp1_color = tmp1->color;
+            //if node to delete has only a right child or no child
+            if (current.base()->left == _RBT.leafs){
+                tmp2 = current.base()->right;
+                _RBT.transplant(current.base(), current.base()->right);
+            }
+            //if node to delete has only a left child
+            else if (current.base()->right == _RBT.leafs){
+                tmp2 = current.base()->left;
+                _RBT.transplant(current.base(), current.base()->left);
+            }
+            //if node to delete has 2 children
+            else{
+                tmp1 = _RBT.find_min(current.base()->right);
+                tmp1_color = tmp1->color;
+                tmp2 = tmp1->right;
+                if (tmp1->parent == current.base())
+                    tmp2->parent = tmp1;
+                else{
+                    _RBT.transplant(tmp1, tmp1->right);
+                    tmp1->right = current.base()->right;
+                    tmp1->right->parent = tmp1;
+                }
+                _RBT.transplant(current.base(), tmp1);
+                tmp1->left = current.base()->left;
+                tmp1->left->parent = tmp1;
+                tmp1->color = current.base()->color;
+            }
+            _mallocator.destroy(current.base()->content);
+            _nallocator.destroy(current.base());
+            _mallocator.deallocate(current.base()->content, 1);
+            _nallocator.deallocate(current.base(), 1);
+            if (tmp1_color == BLACK)
+                check_rules_delete(tmp2);
+            _size--;
+            _RBT.first = _RBT.find_min(_RBT.root);
         }
 
         void erase(iterator first, iterator last){
             iterator tmp = first;
             while (first != last){
                 tmp++;
-                erase(first->first);
-
+                erase(first);
                 first = tmp;
             }
         }
@@ -242,7 +298,6 @@ namespace ft
                 check_rules_delete(tmp2);
             _size--;
             _RBT.first = _RBT.find_min(_RBT.root);
-            _RBT.last = _RBT.find_max(_RBT.root);
             return (1);
         }
         /*-------------------------------------------------------
@@ -264,10 +319,12 @@ namespace ft
             if (_size == 0){
                 _RBT.root = newnode;
                 _RBT.first = newnode;
-                _RBT.last = newnode;
+                _RBT.last = _RBT.leafs;
                 _size++;
                 return (ft::make_pair(begin(),true));
             }
+            if (count(val.first) == 1)
+                return (ft::make_pair(find(val.first), false));
             //Go throught the tree to find the place of the new key then insert it 
             while (current != _RBT.leafs){
                 newnode_parent = current;
@@ -290,8 +347,6 @@ namespace ft
             check_rules_insert(newnode);
             if (_cmp(*newnode->content, *_RBT.first->content))
                 _RBT.first = newnode;
-            if (_cmp(*_RBT.last->content, *newnode->content))
-                _RBT.last = newnode;
             return (ft::make_pair(iterator(newnode, &_RBT),true));
         }
         
@@ -319,38 +374,35 @@ namespace ft
 
         // //Lookup
         size_type count(const Key &key) const{
-            iterator it = find(key);
-            if (it != iterator(NULL, _RBT))
+            if (find(key) != end())
                 return (1);
             return (0);
         }
 
         iterator find(const Key &key){
             ptrnode current = _RBT.root;
-            while (current != NULL && current->content->first != key){
-                //std::cout << "current: " << current->content->first << std::endl;
+            while (current != _RBT.leafs && current->content->first != key){
                 if (key < current->content->first)
                     current = current->left;
                 else
                     current = current->right;
-                //std::cout << "current2: " << current->content->first << std::endl;
             }
-            if (current == _RBT.root && key != _RBT.root->content->first)
-                return (iterator(NULL, _RBT));
-            return (iterator(current, _RBT));
+            if (current != _RBT.leafs)
+                return (iterator(current, &_RBT));
+			return (end());
         }
 
         const_iterator find(const Key &key) const{
             ptrnode current = _RBT.root;
-            while (current != NULL && current->content->first != key){
-                if (_cmp(key, current->content->first))
+            while (current != _RBT.leafs && current->content->first != key){
+                if (key < current->content->first)
                     current = current->left;
                 else
                     current = current->right;
             }
-            if (current == _RBT.root && key != _RBT.root->content->first)
-                return (const_iterator(NULL, _RBT));
-            return (const_iterator(current, _RBT));
+            if (current != _RBT.leafs)
+                return (const_iterator(current, &_RBT));
+			return (end());
         }
 
         ft::pair<iterator,iterator> equal_range(const Key &key){

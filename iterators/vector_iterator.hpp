@@ -52,7 +52,7 @@ namespace ft
 		    vector_iterator	operator--(int){vector_iterator res; res._ptr = _ptr--; return(res);}
 
             operator vector_iterator<const T>() const {
-			return (vector_iterator<const T>(this->_ptr));
+			    return (vector_iterator<const T>(this->_ptr));
 		    }
 
         private:
