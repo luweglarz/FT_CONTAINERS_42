@@ -9,16 +9,18 @@ namespace ft
     /*-------------------------------------------------------
         map_iterator (bidirectional_iterator)
     ---------------------------------------------------------*/
-    template <class Tree>
+    template <class Tree, class Pair>
     class map_iterator{
         public:
+            typedef Pair                                            content_value_type;
             typedef typename    std::bidirectional_iterator_tag     iterator_category;
             typedef typename    Tree::node                          value_type;
             typedef Tree                                            RBT;
             typedef typename    std::ptrdiff_t                      difference_type;
             typedef             value_type                          *pointer;
             typedef             value_type                          &reference;
-            typedef typename    Tree::value_type                    *content;
+            typedef    Pair                            *contentptr;
+            typedef    Pair                            &contentref;
 
             map_iterator(): _ptr(NULL), _rbt(){}
             map_iterator(pointer p, RBT *r): _ptr(p){_rbt = r;}
@@ -31,8 +33,8 @@ namespace ft
 		    }
 
             //overloads
-            content         operator->()const {return (_ptr->content);}
-            reference       operator*()const {return (*_ptr->content);}
+            contentptr      operator->()const {return (_ptr->content);}
+            contentref      operator*()const {return (*_ptr->content);}
 
             //prefix
             map_iterator    &operator++(){
@@ -54,26 +56,33 @@ namespace ft
     			}
                 return (*this);
             }
-		    map_iterator    operator++(int){map_iterator tmp = *this; ++*this; return tmp;}
+		    map_iterator    operator++(int){map_iterator ret = *this; ++*this; return ret;}
             //prefix
 		    map_iterator    &operator--(){
-                if (_ptr == _rbt->last)
-                    _ptr = _ptr->parent;
+                if (_ptr == _rbt->first){
+                    _ptr = _rbt->last;
+                    return (*this);
+                }
+                if (_ptr == _rbt->last){
+                    _ptr = _rbt->find_max(_rbt->root);
+                    return (*this);
+                }
                 else if (_ptr->left != _rbt->leafs)
                     _ptr = _rbt->find_max(_ptr->left);
-                else if (_ptr != _rbt->root){
+                else if (_ptr->parent != NULL){
                     pointer current = _ptr->parent;
-                    while (current && (_rbt->cmp(_ptr->content->first, current->content->first)))
-                        current = current->parent;
-                    if (current != _rbt->leafs)
+                    while (current != NULL && _ptr == current->left){
                         _ptr = current;
+                        current = current->parent;
+                    }
+                    _ptr = current;
                 }
                 return (*this);
             }
-		    map_iterator	operator--(int){map_iterator res; res._ptr = _ptr--; return(res);}
+		    map_iterator	operator--(int){map_iterator ret = *this; --*this; return ret;}
 
-            operator map_iterator<const Tree>() const {
-			    return (map_iterator<const Tree>(_ptr, _rbt));
+            operator map_iterator<const Tree, const Pair>() const {
+			    return (map_iterator<const Tree, const Pair>(_ptr, _rbt));
 		    }
 
             friend bool		operator== (const map_iterator& lhs, const map_iterator& rhs) {

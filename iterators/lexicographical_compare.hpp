@@ -16,5 +16,19 @@ namespace ft{
         }
         return ((first1== last1) && (first2 != last2));
     }
+
+    template<class Iter1, class Iter2, class Compare>
+	bool	lexicographical_compare(Iter1 first1, Iter1 last1, Iter2 first2, Iter2 last2, Compare cmp)
+	{
+		while (first1 != last1 && first2 != last2){
+            if (cmp(*first1 ,*first2))
+                return (true);
+            if (cmp(*first2, *first1))
+                return (false);
+            first1++;
+            first2++;
+        }
+		return ((first1 == last1) && (first2 != last2));
+	}
 }
 #endif

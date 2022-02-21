@@ -29,6 +29,14 @@ namespace ft
         ---------------------------------------------------------*/
         RBTNode(ncolor col, val_pointer cont,pointer par, pointer r, pointer l):
         color(col), content(cont), parent(par), right(r), left(l){}
+        
+        /*-------------------------------------------------------
+        copy constructor
+        ---------------------------------------------------------*/
+        RBTNode(const RBTNode &other){
+            *this = other;
+        }
+        
         /*-------------------------------------------------------
         Destructor
         ---------------------------------------------------------*/
@@ -76,10 +84,25 @@ namespace ft
             allocator_type alloc;
             leafs = alloc.allocate(1);
             alloc.construct(leafs, def);
+            leafs->content = NULL;
+            last = leafs;
+        }
+
+        RBT(const RBT &other){
+            *this = other;
         }
 
         ~RBT(){
             
+        }
+
+        RBT &operator=(const RBT &other){
+            root = other.root;
+            first = other.first;
+            last = other.last;
+            leafs = other.leafs;
+            cmp = other.cmp;
+            return (*this);
         }
     
         pointer find_min(pointer right) const{
