@@ -5,9 +5,6 @@
 
 namespace ft
 {
-    /*-------------------------------------------------------
-        vector_iterator (random_access_iterator)
-    ---------------------------------------------------------*/
     template <class T>
     class vector_iterator{
         public:
@@ -27,7 +24,6 @@ namespace ft
 			    return (_ptr);
 		    }
 
-            //overloads
             reference   operator*()const {return (*_ptr);}
             pointer     operator->()const {return (_ptr);}
             T   &operator[](const int idx) const {return *(_ptr + idx);}
@@ -46,9 +42,9 @@ namespace ft
 			friend vector_iterator	operator+(difference_type n, const vector_iterator& it) { return vector_iterator(it._ptr + n); }
 			friend vector_iterator	operator-(difference_type n, const vector_iterator& it) { return vector_iterator(it._ptr - n); }
 
-            vector_iterator &operator++(){++_ptr; return (*this);}//prefix
+            vector_iterator &operator++(){++_ptr; return (*this);}
 		    vector_iterator operator++(int){vector_iterator res; res._ptr = _ptr++; return(res);}
-		    vector_iterator	&operator--(){--_ptr; return (*this);}//prefix
+		    vector_iterator	&operator--(){--_ptr; return (*this);}
 		    vector_iterator	operator--(int){vector_iterator res; res._ptr = _ptr--; return(res);}
 
             operator vector_iterator<const T>() const {

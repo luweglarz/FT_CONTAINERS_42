@@ -5,7 +5,7 @@
 #include <memory>
 #include <limits>
 #include <stdexcept>
-#include "../../iterators/random_access_reverse_iterator.hpp"
+#include "../../iterators/vector_reverse_iterator.hpp"
 #include "../../iterators/vector_iterator.hpp"
 #include "../../SFINAE/enable_if.hpp"
 #include "../../SFINAE/is_integral.hpp"
@@ -16,9 +16,6 @@ namespace ft
     template <class T, class Alloc = std::allocator<T> >
     class vector{
     public:
-        /*-------------------------------------------------------
-        Defining types with typedef
-        ---------------------------------------------------------*/
         typedef T                                                   value_type;
         typedef Alloc                                               allocator_type;
 
@@ -33,21 +30,10 @@ namespace ft
         typedef ft::reverse_iterator<const_iterator>                const_reverse_iterator;
         typedef std::ptrdiff_t                                      difference_type;
         typedef size_t                                              size_type;
-        
-        //Constructors:
-        /*-------------------------------------------------------
-        Default constructor that creates an empty vector
-        alloc: the allocator object
-        ---------------------------------------------------------*/
+
         explicit vector(const allocator_type &alloc = allocator_type()): _vallocator(alloc), _size(0),_capacity(0), _data(NULL){
         }
 
-        /*-------------------------------------------------------
-        constructor that creates a vector of size n
-        n: initial size of the constructor
-        val: the value that the container will be filled with 
-        alloc: the allocator object
-        ---------------------------------------------------------*/
         explicit vector(size_type n, const value_type& val = value_type(), const allocator_type &alloc = allocator_type()):
         _vallocator(alloc), _size(n), _capacity(n), _data(_vallocator.allocate(_capacity)){
             for (size_type i = 0; i < n; i++){
@@ -55,14 +41,6 @@ namespace ft
             }
         }
 
-        /*-------------------------------------------------------
-        constructor that creates a vector between the range of first and last
-        n: initial size of the constructor
-        val: the that you the container will be filled with 
-        alloc: the allocator object
-        first: iterator that points on the first element of the range
-        last: iterator that points on the last element of the range
-        ---------------------------------------------------------*/
         template <typename InputIterator>
         vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
@@ -75,19 +53,11 @@ namespace ft
             }
         }
 
-        /*-------------------------------------------------------
-        Copy constructor from x
-        x: the copied instance
-        ---------------------------------------------------------*/
         vector (const vector& x):
         _vallocator(x._vallocator), _size(0), _capacity(0){
             *this = x;
         }
         
-        /*-------------------------------------------------------
-        Assignation operator from x
-        x: the copied instance
-        ---------------------------------------------------------*/
         vector &operator=(const vector &x){
             _vallocator = x._vallocator;
             _size = x._size;
@@ -98,19 +68,13 @@ namespace ft
             }
             return(*this);
         }
-        /*-------------------------------------------------------
-        vector destructor
-        ---------------------------------------------------------*/
+
         ~vector(){
             for (size_type i = 0; i < _size; i++)
                 _vallocator.destroy(&_data[i]);
             _vallocator.deallocate(_data, _capacity);
         }
-        //Iterators:
-        /*-------------------------------------------------------
-        begin function that returns an iterator of the beginning
-        of the vector
-        ---------------------------------------------------------*/
+
         iterator begin(){
             return (iterator(_data));
         }
@@ -119,10 +83,6 @@ namespace ft
             return (const_iterator(_data));
         }
 
-        /*-------------------------------------------------------
-        end function that returns an iterator of the end
-        of the vector (_size + 1)
-        ---------------------------------------------------------*/
         iterator end(){
             return (iterator(_data + _size));
         }
@@ -131,10 +91,6 @@ namespace ft
             return (const_iterator(_data + _size));
         }
 
-        /*-------------------------------------------------------
-        rbegin function that returns a reverse_iterator of the end
-        of the vector
-        ---------------------------------------------------------*/
         reverse_iterator rbegin(){
             return (reverse_iterator(_data + _size));
         }
@@ -143,10 +99,6 @@ namespace ft
             return (const_reverse_iterator(_data + _size));
         }
 
-        /*-------------------------------------------------------
-        rend function that returns a reverse_iterator of the beginning
-        of the vector
-        ---------------------------------------------------------*/
         reverse_iterator rend(){
             return (reverse_iterator(_data));
         }
@@ -155,28 +107,14 @@ namespace ft
             return (const_reverse_iterator(_data));
         }
 
-        //Capacity
-        /*-------------------------------------------------------
-        size function that returns the size of the vector
-        ---------------------------------------------------------*/
         size_type size() const{
             return (_size);
         }
 
-        /*-------------------------------------------------------
-        max_size function that returns the maximum size that a vector
-        can handle
-        ---------------------------------------------------------*/
         size_type max_size() const{
             return (_vallocator.max_size()); 
         }
 
-        /*-------------------------------------------------------
-        resize function that change the size of the vector, if the new 
-        new size is higher than the old size destroy the last (_size - n) elements
-        n: new size of the vector
-        val: the value that the vector will be filled with 
-        ---------------------------------------------------------*/
         void    resize(size_type n, value_type val = value_type()){
             if (n < _size){
                 while (_size != n){
@@ -192,30 +130,16 @@ namespace ft
             }
         }
 
-        /*-------------------------------------------------------
-        capacity function that returns the _capacity of the vector
-        (allocated memory)
-        ---------------------------------------------------------*/
         size_type capacity() const{
             return (_capacity);
         }
 
-        /*-------------------------------------------------------
-        empty function that returns true whether the vector is empty
-        and true if it is not
-        ---------------------------------------------------------*/
         bool    empty() const{
             if (_size == 0)
                 return (true);
             return (false);
         }
 
-        /*-------------------------------------------------------
-        reserve function that change the _capacity of the vector
-        if n is higher that the _capacity .
-        n: new _capacity of the vector
-        val: the value that the vector will be filled with 
-        ---------------------------------------------------------*/
         void    reserve(size_type n){
             if (n > max_size())
                 throw std::length_error("ft::vector::reserve");
@@ -233,11 +157,6 @@ namespace ft
             }
         }
 
-        //Element access
-        /*-------------------------------------------------------
-        operator overload on [] that returns the element at n position
-        n: position in the vector
-        ---------------------------------------------------------*/
         reference operator[](size_type n){
             return (_data[n]);
         }
@@ -262,9 +181,6 @@ namespace ft
             return (_data[n]);
         }
 
-        /*-------------------------------------------------------
-        front function that returns the first element of the vector
-        ---------------------------------------------------------*/
         reference front(){
             return (*begin());
         }
@@ -273,9 +189,6 @@ namespace ft
             return (*begin());
         }
 
-        /*-------------------------------------------------------
-        back function that returns the last element of the vector
-        ---------------------------------------------------------*/
         reference back(){
             return (*(--end()));
         }
@@ -284,13 +197,6 @@ namespace ft
             return (*(--end()));
         }
 
-        //Modifiers
-        /*-------------------------------------------------------
-        assign function that remove all the elements of the vector
-        and replace them with a range of element (first, last)
-        first: first element of the iterator
-        last: last element of the iterator
-        ---------------------------------------------------------*/
         template <class InputIterator>
         void    assign(InputIterator first, InputIterator last,
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
@@ -298,22 +204,11 @@ namespace ft
             insert(begin(), first, last);
         }
 
-        /*-------------------------------------------------------
-        assign function that remove all the elements of the vector
-        and replace with n elements of value val
-        n: number of elements assigned
-        val: value of the those elements
-        ---------------------------------------------------------*/
         void    assign(size_type n, const value_type &val){
             clear();
             insert(begin(), n, val);
         }
 
-        /*-------------------------------------------------------
-        push_back function that push a new element to the end of 
-        the vector
-        val: value of the new element
-        ---------------------------------------------------------*/
         void    push_back(const value_type &val){
             if (_capacity == 0){
                 reserve(1);
@@ -327,20 +222,11 @@ namespace ft
             _size +=1;
         }
 
-        /*-------------------------------------------------------
-        pop_back function that remove the last element of the vector 
-        ---------------------------------------------------------*/
         void    pop_back(){
             if (_size > 0)
                 _size--;
         }
 
-        /*-------------------------------------------------------
-        insert function that insert a new element to vector at the
-        specified position
-        position: position where the new element is inserted
-        val: value of the new element
-        ---------------------------------------------------------*/
         iterator    insert(iterator position, const value_type &val){
             difference_type diff = std::distance(begin(), position);
             iterator        insert_pos(begin() + diff);
@@ -361,14 +247,7 @@ namespace ft
             _size++;
             return (iterator(&_data[tmp_end]));
         }
-
-        /*-------------------------------------------------------
-        insert function that insert n new elements to vector at the
-        specified position
-        position: position where the new element is inserted
-        n: number of new elements
-        val: value of the new element
-        ---------------------------------------------------------*/
+    
         void    insert(iterator position, size_type n, const value_type &val){
             difference_type diff = std::distance(begin(), position);
             size_type new_size = n;
@@ -388,13 +267,6 @@ namespace ft
             _size += new_size;
         }
 
-        /*-------------------------------------------------------
-        insert function that insert the elements between (first, last)
-        at position
-        position: position where the new element is inserted
-        first: first element of the iterator
-        last: last element of the iterator
-        ---------------------------------------------------------*/
         template <class InputIterator>
         void    insert(iterator position, InputIterator first, InputIterator last,
         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0){
@@ -418,19 +290,10 @@ namespace ft
             _size += new_size;
         }
 
-        /*-------------------------------------------------------
-        erase function that removes the element at position
-        position: position of the element to remove
-        ---------------------------------------------------------*/
         iterator erase(iterator position){
             return (erase(position, position + 1));
         }
 
-        /*-------------------------------------------------------
-        erase function that removes the element between first and last
-        first: first element of the iterator
-        last: element of the iterator
-        ---------------------------------------------------------*/
         iterator erase(iterator first, iterator last){
             iterator    b = begin();
             value_type *store = NULL;
@@ -459,10 +322,6 @@ namespace ft
             return (begin() + idx);
         }
 
-        /*-------------------------------------------------------
-        swap function that swap the elements of *(this) with &x
-        x: vector to exchange the contents with
-        ---------------------------------------------------------*/
         void    swap(vector &x){
             allocator_type   tmp_allocator = _vallocator;
             size_type   tmp_size = _size;
@@ -478,9 +337,6 @@ namespace ft
             std::swap(_data, x._data);
         }
 
-        /*-------------------------------------------------------
-        clear function that removes all the elements of the vector
-        ---------------------------------------------------------*/
         void    clear(){
             for (size_type i = 0; i < _size; i++){
                 _vallocator.destroy(&(_data[i]));
@@ -488,10 +344,6 @@ namespace ft
             _size = 0;
         }
 
-        //allocator function
-        /*-------------------------------------------------------
-        get_allocator function that returns _vallocator
-        ---------------------------------------------------------*/
         allocator_type  get_allocator() const{
             return (_vallocator);
         }
@@ -502,10 +354,6 @@ namespace ft
         value_type      *_data;
     };
 
-    //Non-members functions
-    /*-------------------------------------------------------
-    swap function that swap two vectors together
-    ---------------------------------------------------------*/
     template<class T, class Alloc>
     void    swap(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs){
         lhs.swap(rhs);

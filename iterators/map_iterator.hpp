@@ -6,21 +6,18 @@
 
 namespace ft
 {
-    /*-------------------------------------------------------
-        map_iterator (bidirectional_iterator)
-    ---------------------------------------------------------*/
     template <class Tree, class Pair>
     class map_iterator{
         public:
-            typedef Pair                                            content_value_type;
+            typedef             Pair                                content_value_type;
             typedef typename    std::bidirectional_iterator_tag     iterator_category;
             typedef typename    Tree::node                          value_type;
-            typedef Tree                                            RBT;
+            typedef             Tree                                RBT;
             typedef typename    std::ptrdiff_t                      difference_type;
             typedef             value_type                          *pointer;
             typedef             value_type                          &reference;
-            typedef    Pair                            *contentptr;
-            typedef    Pair                            &contentref;
+            typedef             Pair                                *contentptr;
+            typedef             Pair                                &contentref;
 
             map_iterator(): _ptr(NULL), _rbt(){}
             map_iterator(pointer p, RBT *r): _ptr(p){_rbt = r;}
@@ -32,11 +29,9 @@ namespace ft
 			    return (_ptr);
 		    }
 
-            //overloads
             contentptr      operator->()const {return (_ptr->content);}
             contentref      operator*()const {return (*_ptr->content);}
 
-            //prefix
             map_iterator    &operator++(){
                 if (_ptr == _rbt->find_max(_rbt->root) && _ptr->right == _rbt->leafs){
                     _ptr = _rbt->leafs;
@@ -57,7 +52,7 @@ namespace ft
                 return (*this);
             }
 		    map_iterator    operator++(int){map_iterator ret = *this; ++*this; return ret;}
-            //prefix
+
 		    map_iterator    &operator--(){
                 if (_ptr == _rbt->first){
                     _ptr = _rbt->last;

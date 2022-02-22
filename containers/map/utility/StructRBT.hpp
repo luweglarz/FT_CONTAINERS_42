@@ -19,32 +19,17 @@ namespace ft
         typedef node                        &reference;
         typedef const node                  &const_reference;
 
-        /*-------------------------------------------------------
-        default constructor
-        ---------------------------------------------------------*/
         RBTNode():color(BLACK), content(NULL), parent(NULL),right(NULL), left(NULL){}
 
-        /*-------------------------------------------------------
-        fill constructor
-        ---------------------------------------------------------*/
         RBTNode(ncolor col, val_pointer cont,pointer par, pointer r, pointer l):
         color(col), content(cont), parent(par), right(r), left(l){}
-        
-        /*-------------------------------------------------------
-        copy constructor
-        ---------------------------------------------------------*/
+
         RBTNode(const RBTNode &other){
             *this = other;
         }
-        
-        /*-------------------------------------------------------
-        Destructor
-        ---------------------------------------------------------*/
+
         ~RBTNode(){}
 
-        /*-------------------------------------------------------
-        Assignation operator
-        ---------------------------------------------------------*/
         reference operator=(const_reference other){
             color = other.color;
             content = other.content;

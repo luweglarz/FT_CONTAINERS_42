@@ -10,7 +10,7 @@ FLAGS = -Wall -Wextra -Werror
 
 HEADERS = 	containers/vector/ClassVector.hpp containers/stack/ClassStack.hpp \
 			containers/map/ClassMap.hpp containers/map/utility/StructRBT.hpp \
-			iterators/vector_iterator.hpp iterators/iterator_traits.hpp iterators/random_access_reverse_iterator.hpp iterators/lexicographical_compare.hpp iterators/map_iterator.hpp \
+			iterators/vector_iterator.hpp iterators/iterator_traits.hpp iterators/vector_reverse_iterator.hpp iterators/lexicographical_compare.hpp iterators/map_iterator.hpp \
 			SFINAE/enable_if.hpp SFINAE/is_integral.hpp iterators/map_reverse_iterator.hpp\
 			tests/tests.hpp
 

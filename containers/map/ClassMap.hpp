@@ -10,6 +10,7 @@
 #include "utility/StructRBT.hpp"
 #include "../../SFINAE/enable_if.hpp"
 #include "../../SFINAE/is_integral.hpp"
+
 namespace ft
 {
 
@@ -17,9 +18,6 @@ namespace ft
 				class Alloc = std::allocator<ft::pair<const Key, T> > >
 	class map{
     public:
-        /*-------------------------------------------------------
-        Defining types with typedef
-        ---------------------------------------------------------*/
         typedef Key                                                 key_type;
         typedef T                                                   mapped_key;
         typedef ft::pair<const key_type, mapped_key>                value_type;
@@ -43,23 +41,10 @@ namespace ft
         typedef ft::map_reverse_iterator<iterator>                  reverse_iterator;
         typedef ft::map_reverse_iterator<const_iterator>            const_reverse_iterator;
 
-        //Constructors
-        /*-------------------------------------------------------
-        Default constructor that creates an empty map
-        comp: comparator object
-        alloc: the allocator object
-        ---------------------------------------------------------*/
         explicit map(const Compare &comp = key_compare(), const allocator_type &alloc = allocator_type()): _mallocator(alloc), _size(0), _cmp(comp), 
                     _RBT(), _nallocator(){
         }
 
-        /*-------------------------------------------------------
-        fill constructor that creates a map with a range of iterators
-        first: iterator that points on the first element of the range
-        last: iterator that points on the last element of the range
-        comp: comparator object
-        alloc: the allocator object
-        ---------------------------------------------------------*/
         template <class InputIterator>
         explicit map(InputIterator first, InputIterator last, const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
                     typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = 0):
@@ -67,10 +52,6 @@ namespace ft
             insert(first, last);
         }
 
-        /*-------------------------------------------------------
-        copy constructor that creates a map with a range of iterators
-        x: source map object to copy
-        ---------------------------------------------------------*/
         map(const map &x):_size(0), _RBT(){
             *this = x;
         }
@@ -99,12 +80,7 @@ namespace ft
             if (_size > 0)
                 erase(begin(), end());
         }
-    
-        //Iterators
-        /*-------------------------------------------------------
-        begin function that returns an iterator/const_iterator 
-        at the beginning of the map
-        ---------------------------------------------------------*/
+
         iterator begin(){
             return (iterator(_RBT.first, &_RBT));
         }
@@ -113,10 +89,6 @@ namespace ft
             return (const_iterator(_RBT.first, &_RBT));
         }
 
-        /*-------------------------------------------------------
-        end function that returns an iterator/const_iterator 
-        at the end of the map
-        ---------------------------------------------------------*/
         iterator end(){
             return (iterator(_RBT.last, &_RBT));
         }
@@ -125,10 +97,6 @@ namespace ft
             return (const_iterator(_RBT.last, &_RBT));
         }
 
-        /*-------------------------------------------------------
-        rbegin function that returns a reverse_iterator/const_reverse_iterator 
-        at the beginning of the map
-        ---------------------------------------------------------*/
         reverse_iterator rbegin(){
             return (reverse_iterator(iterator(_RBT.last, &_RBT)));
         }
@@ -137,10 +105,6 @@ namespace ft
             return (const_reverse_iterator(const_iterator(_RBT.last, &_RBT)));
         }
 
-        /*-------------------------------------------------------
-        rend function that returns a reverse_iterator/const_reverse_iterator 
-        at the end of the map
-        ---------------------------------------------------------*/
         reverse_iterator rend(){
             return (reverse_iterator(iterator(_RBT.first, &_RBT)));
         }
@@ -148,8 +112,7 @@ namespace ft
         const_reverse_iterator rend() const {
             return (const_reverse_iterator(const_iterator(_RBT.first, &_RBT)));
         }
-        
-        //Capacity
+
         allocator_type get_allocator() const{
             return (_mallocator);
         }
@@ -169,7 +132,6 @@ namespace ft
             return ((_nallocator.max_size()));
         }
 
-        //Element access
         mapped_key &operator[](const Key &key){
             iterator itret;
             if (_size > 0 && (itret = find(key)) != end())
@@ -177,71 +139,13 @@ namespace ft
             ft::pair<iterator, bool> ret = insert(ft::make_pair(key, mapped_key()));
             return (ret.first->second);
         }
-        //Modifiers
         void clear(){
             if (_size > 0)
                 erase(begin(), end());
         }
 
         void erase(iterator pos){
-            //check if key exists
-            iterator current = iterator(_RBT.first, &_RBT);
-            if (_size == 1){
-                _mallocator.destroy(current.base()->content);
-                _nallocator.destroy(current.base());
-                _mallocator.deallocate(current.base()->content, 1);
-                _nallocator.deallocate(current.base(), 1);
-                _size--;
-                _RBT.root = NULL;
-                _RBT.last = NULL;
-                _RBT.first = NULL;
-                return ; 
-            }
-            iterator itleafs = iterator(_RBT.leafs, &_RBT);
-            while (current != itleafs && current != pos)
-                current++;
-            //return 0 if key can't be found
-            if (current == itleafs)
-                return ;
-            //current == key node
-            ptrnode tmp1, tmp2;
-            tmp1 = current.base();
-            int tmp1_color = tmp1->color;
-            //if node to delete has only a right child or no child
-            if (current.base()->left == _RBT.leafs){
-                tmp2 = current.base()->right;
-                _RBT.transplant(current.base(), current.base()->right);
-            }
-            //if node to delete has only a left child
-            else if (current.base()->right == _RBT.leafs){
-                tmp2 = current.base()->left;
-                _RBT.transplant(current.base(), current.base()->left);
-            }
-            //if node to delete has 2 children
-            else{
-                tmp1 = _RBT.find_min(current.base()->right);
-                tmp1_color = tmp1->color;
-                tmp2 = tmp1->right;
-                if (tmp1->parent == current.base())
-                    tmp2->parent = tmp1;
-                else{
-                    _RBT.transplant(tmp1, tmp1->right);
-                    tmp1->right = current.base()->right;
-                    tmp1->right->parent = tmp1;
-                }
-                _RBT.transplant(current.base(), tmp1);
-                tmp1->left = current.base()->left;
-                tmp1->left->parent = tmp1;
-                tmp1->color = current.base()->color;
-            }
-            _mallocator.destroy(current.base()->content);
-            _nallocator.destroy(current.base());
-            _mallocator.deallocate(current.base()->content, 1);
-            _nallocator.deallocate(current.base(), 1);
-            if (tmp1_color == BLACK)
-                check_rules_delete(tmp2);
-            _size--;
-            _RBT.first = _RBT.find_min(_RBT.root);
+           erase(pos->first);
         }
 
         void erase(iterator first, iterator last){
@@ -254,7 +158,6 @@ namespace ft
         }
 
         size_type erase(const Key &key){
-            //check if key exists
             ptrnode current = _RBT.root;
             if (_size == 1){
                 _mallocator.destroy(current->content);
@@ -273,24 +176,19 @@ namespace ft
                 else
                     current = current->right;
             }
-            //return 0 if key can't be found
             if (current == _RBT.leafs)
                 return (0);
-            //current == key node
             ptrnode tmp1, tmp2;
             tmp1 = current;
             int tmp1_color = tmp1->color;
-            //if node to delete has only a right child or no child
             if (current->left == _RBT.leafs){
                 tmp2 = current->right;
                 _RBT.transplant(current, current->right);
             }
-            //if node to delete has only a left child
             else if (current->right == _RBT.leafs){
                 tmp2 = current->left;
                 _RBT.transplant(current, current->left);
             }
-            //if node to delete has 2 children
             else{
                 tmp1 = _RBT.find_min(current->right);
                 tmp1_color = tmp1->color;
@@ -317,12 +215,8 @@ namespace ft
             _RBT.first = _RBT.find_min(_RBT.root);
             return (1);
         }
-        /*-------------------------------------------------------
-        insert function that insert a new element to the map
-        val: value to insert (value_type)
-        ---------------------------------------------------------*/
+
         pair<iterator, bool> insert(const value_type &val){
-            //Allocate en set the new node
             node  def;
             ptrnode newnode = _nallocator.allocate(1);
             _nallocator.construct(newnode, def);
@@ -332,7 +226,6 @@ namespace ft
             ptrnode newnode_parent;
             newnode->content = _mallocator.allocate(1);
             _mallocator.construct(newnode->content, val);
-            // if tree is empty insert as root
             if (_size == 0){
                 _RBT.root = newnode;
                 _RBT.first = newnode;
@@ -341,7 +234,6 @@ namespace ft
             }
             if (count(val.first) == 1)
                 return (ft::make_pair(find(val.first), false));
-            //Go throught the tree to find the place of the new key then insert it 
             while (current != _RBT.leafs){
                 newnode_parent = current;
                 if (_cmp(*newnode->content, *current->content))
@@ -350,7 +242,6 @@ namespace ft
                     current = current->right;
             }
             newnode->parent = newnode_parent;
-            //set if newnode is at the left or right of its parent
             if (newnode_parent == _RBT.leafs)
                 _RBT.root = newnode;
             if (_cmp(*newnode->content, *newnode_parent->content))
@@ -359,7 +250,6 @@ namespace ft
                 newnode_parent->right = newnode;
             newnode->color = RED;
             _size++;
-            //Check if rules aren't compromised and fix the tree if it's the case
             check_rules_insert(newnode);
             if (_cmp(*newnode->content, *_RBT.first->content))
                 _RBT.first = newnode;
@@ -390,7 +280,6 @@ namespace ft
             std::swap(_size, other._size);
         }
 
-        // //Lookup
         size_type count(const Key &key) const{
             if (find(key) != end())
                 return (1);
@@ -483,7 +372,6 @@ namespace ft
             return (end());
         }
 
-        // //Observers
         class value_compare : public std::binary_function<value_type, value_type, bool>{
         public:
             value_compare(key_compare cmp = key_compare()): comp(cmp) {}
@@ -502,40 +390,29 @@ namespace ft
         }
 
     private:
-        //Map variables
         allocator_type      _mallocator;
         size_type           _size;
         value_compare       _cmp;
         Tree                _RBT;
         Nalloc              _nallocator;
     
-        //check rules functions
         void    check_rules_insert(ptrnode newnode){
             ptrnode def;
-            //If the newnode is the root or its direct children do nothing
             if (newnode->parent == NULL){
                 newnode->color = BLACK;
                 return ;
             }
             if (newnode->parent->parent == NULL)
                 return ;
-            //We don't want the parent of the newnode to be red so we make this while loop
             while (newnode->parent->color == RED){
-                //if the newnode's parent is at the right of newnode's grandparent:
-                //init def as the left of the newnode's grandparent
                 if (newnode->parent == newnode->parent->parent->right){
                     def = newnode->parent->parent->left;
-                    //if def != leaf && def->color is red
-                    //newnode's parent and left of newnode's granparent become black
-                    //newnode's grandparent become red, if it's the root it will be black
-                    //newnode = its grandparent until we reach the root
                     if (def && def->color == RED){
                         def->color = BLACK;
                         newnode->parent->color = BLACK;
                         newnode->parent->parent->color = RED;
                         newnode = newnode->parent->parent;
                     }
-                    //rotation case
                     else{
                         if (newnode == newnode->parent->left){
                             newnode = newnode->parent;
@@ -547,7 +424,6 @@ namespace ft
                     }
                 }
                 else{
-                    //reverse of the first if (if the right of the newnode's grandparent is red)
                     def = newnode->parent->parent->right;
                     if (def && def->color == RED){
                         def->color = BLACK;
@@ -574,7 +450,6 @@ namespace ft
         void    check_rules_delete(ptrnode deletednode){
             ptrnode tmp;
             while (deletednode != _RBT.root && deletednode->color == BLACK){
-                //if the deleted node is the left of its parent
                 if (deletednode == deletednode->parent->left){
                     tmp = deletednode->parent->right;
                     if (tmp->color == RED){
@@ -601,7 +476,6 @@ namespace ft
                         deletednode = _RBT.root;
                     }
                 }
-                //if the deleted node is the right of its parent
                 else{
                     tmp = deletednode->parent->left;
                     if (tmp->color == RED){
