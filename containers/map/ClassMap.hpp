@@ -71,15 +71,27 @@ namespace ft
         copy constructor that creates a map with a range of iterators
         x: source map object to copy
         ---------------------------------------------------------*/
-        map(const map &x){
+        map(const map &x):_size(0), _RBT(){
             *this = x;
         }
 
         map &operator=(const map &x){
             _mallocator = x._mallocator;
-            _size = x._size;
+            clear();
             _cmp = x._cmp;
-            _RBT = x._RBT;
+            const_iterator it = x.begin();
+            
+            node def;
+            _RBT.leafs = _nallocator.allocate(1);
+            _nallocator.construct(_RBT.leafs, def);
+            _RBT.leafs->content = NULL;
+            _RBT.last = _RBT.leafs;
+
+			while(it != x.end()){
+				insert(*it);
+                it++;
+			}
+            
             return (*this);
         }
 
@@ -118,11 +130,11 @@ namespace ft
         at the beginning of the map
         ---------------------------------------------------------*/
         reverse_iterator rbegin(){
-            return (reverse_iterator(iterator(_RBT.find_max(_RBT.root), &_RBT)));
+            return (reverse_iterator(iterator(_RBT.last, &_RBT)));
         }
 
         const_reverse_iterator rbegin() const{
-            return (const_reverse_iterator(const_iterator(_RBT.find_max(_RBT.root), &_RBT)));
+            return (const_reverse_iterator(const_iterator(_RBT.last, &_RBT)));
         }
 
         /*-------------------------------------------------------
@@ -130,11 +142,11 @@ namespace ft
         at the end of the map
         ---------------------------------------------------------*/
         reverse_iterator rend(){
-            return (reverse_iterator(iterator(_RBT.last, &_RBT)));
+            return (reverse_iterator(iterator(_RBT.first, &_RBT)));
         }
 
         const_reverse_iterator rend() const {
-            return (const_reverse_iterator(const_iterator(_RBT.last, &_RBT)));
+            return (const_reverse_iterator(const_iterator(_RBT.first, &_RBT)));
         }
         
         //Capacity
@@ -167,7 +179,8 @@ namespace ft
         }
         //Modifiers
         void clear(){
-            erase(begin(), end());
+            if (_size > 0)
+                erase(begin(), end());
         }
 
         void erase(iterator pos){
@@ -370,9 +383,11 @@ namespace ft
         }
 
         void swap(map &other){
-            Tree    tmp = other._RBT;
-            other._RBT = _RBT;
-            _RBT = tmp;
+            std::swap(_RBT.root, other._RBT.root);
+            std::swap(_RBT.leafs, other._RBT.leafs);
+            std::swap(_RBT.last, other._RBT.last);
+            std::swap(_RBT.first, other._RBT.first);
+            std::swap(_size, other._size);
         }
 
         // //Lookup
@@ -622,19 +637,16 @@ namespace ft
     bool operator==(const ft::map<Key, T, Compare, Alloc> &lhs,
                     const ft::map<Key, T, Compare, Alloc> &rhs){
         typename ft::map<Key, T>::const_iterator b1 = lhs.begin();
-        typename ft::map<Key, T>::const_iterator e1 = lhs.end();
         typename ft::map<Key, T>::const_iterator b2 = rhs.begin();
-        typename ft::map<Key, T>::const_iterator e2 = rhs.end();
-        if (lhs.size() == rhs.size()){
-            while (b1 != e1 && b2 != e2){
-                if (*b1 != *b2)
-                    return (false);
-                b1++;
-                b2++;
-            }
-            return (true);
+        if (lhs.size() != rhs.size())
+            return (false);
+        while (b1 != lhs.end() && b2 != rhs.end()){
+            if (*b1 != *b2)
+                return (false);
+            b1++;
+            b2++;
         }
-        return (false);
+        return (true);
     }
     template <class Key, class T, class Compare, class Alloc>
     bool operator!=(const ft::map<Key, T, Compare, Alloc> &lhs,
@@ -649,7 +661,7 @@ namespace ft
     template <class Key, class T, class Compare, class Alloc>
     bool operator<=(const ft::map<Key, T, Compare, Alloc> &lhs,
                     const ft::map<Key, T, Compare, Alloc> &rhs){
-        return (!(rhs < lhs));              
+        return (lhs == rhs || lhs < rhs);              
     }
     template <class Key, class T, class Compare, class Alloc>
     bool operator>(const ft::map<Key, T, Compare, Alloc> &lhs,
@@ -659,7 +671,7 @@ namespace ft
     template <class Key, class T, class Compare, class Alloc>
     bool operator>=(const ft::map<Key, T, Compare, Alloc> &lhs,
                     const ft::map<Key, T, Compare, Alloc> &rhs){
-        return (!(lhs < rhs));           
+        return (lhs == rhs || rhs < lhs);           
     }
 }
 

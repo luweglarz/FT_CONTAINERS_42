@@ -6,7 +6,7 @@ CC = clang++
 
 STD = -std=c++98 
 
-FLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror
 
 HEADERS = 	containers/vector/ClassVector.hpp containers/stack/ClassStack.hpp \
 			containers/map/ClassMap.hpp containers/map/utility/StructRBT.hpp \

@@ -136,11 +136,11 @@ namespace ft
         of the vector
         ---------------------------------------------------------*/
         reverse_iterator rbegin(){
-            return (reverse_iterator(_data + _size - 1));
+            return (reverse_iterator(_data + _size));
         }
 
         const_reverse_iterator rbegin() const {
-            return (const_reverse_iterator(_data + _size - 1));
+            return (const_reverse_iterator(_data + _size));
         }
 
         /*-------------------------------------------------------
@@ -148,11 +148,11 @@ namespace ft
         of the vector
         ---------------------------------------------------------*/
         reverse_iterator rend(){
-            return (reverse_iterator(_data - 1));
+            return (reverse_iterator(_data));
         }
 
         const_reverse_iterator rend() const{
-            return (const_reverse_iterator(_data - 1));
+            return (const_reverse_iterator(_data));
         }
 
         //Capacity

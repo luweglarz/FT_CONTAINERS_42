@@ -48,17 +48,17 @@ namespace ft
         []: returns a reference at specified position (n)
         ->: returns a pointer to previous _underlyingit (--_underlyingit)
         ---------------------------------------------------------*/
-        contentptr operator->() const {return(_underlyingit.base()->content);}
-        contentref  operator*() const {return (*_underlyingit);}
+        contentptr operator->() const {return(&(operator*()));}
+        contentref  operator*() const {iterator_type ret = base(); --ret; return (*ret);}
 
         /*-------------------------------------------------------
         Binary operator overloads
         increments and decrements operators on _underliyngit
         ---------------------------------------------------------*/
-        map_reverse_iterator    &operator++(){--_underlyingit;return (*this);}//prefix
-		map_reverse_iterator    operator++(int){map_reverse_iterator res(*this); res._underlyingit = _underlyingit--; return(res);}
-		map_reverse_iterator    &operator--(){++_underlyingit; return (*this);}//prefix
-		map_reverse_iterator	operator--(int){map_reverse_iterator res(*this); res._underlyingit = _underlyingit++; return(res);}
+        map_reverse_iterator    &operator++(){_underlyingit.operator--();return (*this);}//prefix
+		map_reverse_iterator    operator++(int){map_reverse_iterator res = *this; _underlyingit.operator--(); return (res);}
+		map_reverse_iterator    &operator--(){_underlyingit.operator++(); return (*this);}//prefix
+		map_reverse_iterator	operator--(int){map_reverse_iterator res = *this; _underlyingit.operator++(); return (res);}
 
     protected:
         iterator_type _underlyingit;

@@ -81,9 +81,8 @@ namespace ft
 
         RBT():root(NULL), first(NULL), last(NULL){
             node def;
-            allocator_type alloc;
-            leafs = alloc.allocate(1);
-            alloc.construct(leafs, def);
+            leafs = _alloc.allocate(1);
+            _alloc.construct(leafs, def);
             leafs->content = NULL;
             last = leafs;
         }
@@ -93,7 +92,8 @@ namespace ft
         }
 
         ~RBT(){
-            
+            _alloc.destroy(leafs);
+            _alloc.deallocate(leafs, 1);
         }
 
         RBT &operator=(const RBT &other){
@@ -158,6 +158,8 @@ namespace ft
                 a->parent->right = b;
             b->parent = a->parent;
         }
+    private:
+        allocator_type _alloc;
     };
 }
 

@@ -18,12 +18,12 @@ namespace ft{
     }
 
     template<class Iter1, class Iter2, class Compare>
-	bool	lexicographical_compare(Iter1 first1, Iter1 last1, Iter2 first2, Iter2 last2, Compare cmp)
-	{
+	bool	lexicographical_compare(Iter1 first1, Iter1 last1, Iter2 first2, Iter2 last2, Compare cmp){
+        (void)cmp;
 		while (first1 != last1 && first2 != last2){
-            if (cmp(*first1 ,*first2))
+            if (first1->second < first2->second)
                 return (true);
-            if (cmp(*first2, *first1))
+            if (first2->second < first1->second)
                 return (false);
             first1++;
             first2++;
