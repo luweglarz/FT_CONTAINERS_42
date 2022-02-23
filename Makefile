@@ -1,6 +1,11 @@
-NAME = ft_containers
+STD_MAP = std_map
+FT_MAP = ft_map
 
-LIB = tests.a
+STD_VECTOR = std_vector
+FT_VECTOR = ft_vector
+
+STD_STACK = std_stack
+FT_STACK = ft_stack
 
 CC = clang++
 
@@ -14,24 +19,36 @@ HEADERS = 	containers/vector/ClassVector.hpp containers/stack/ClassStack.hpp \
 			SFINAE/enable_if.hpp SFINAE/is_integral.hpp iterators/map_reverse_iterator.hpp\
 			tests/tests.hpp
 
-SRCS = 	tests/iterator_tests.cpp tests/vector/modifier_tests.cpp tests/vector/capacity_tests.cpp tests/vector/element_access_tests.cpp \
-		tests/vector/constructor_tests.cpp tests/stack/stack_tests.cpp tests/vector/non_members_functions.cpp
-
-OBJS = $(SRCS:.cpp=.o)
+SRCS = 	tests/ft_map_main.cpp tests/std_map_main.cpp \
+		tests/ft_vector_main.cpp std_vector_main.cpp \
+		tests/ft_stack_main.cpp std_stack_main.cpp
 
 RM = rm -f
 
-all: $(NAME)
+all: $(FT_MAP) $(STD_MAP) $(FT_VECTOR) $(STD_VECTOR) $(FT_STACK) $(STD_STACK) $(HEADERS)
 	
-$(NAME): main.cpp $(HEADERS) $(OBJS)
-	$(CC) $(STD) $(FLAGS) main.cpp $(OBJS) -o $(NAME)
+$(FT_MAP): tests/ft_map_main.cpp 
+	$(CC) $(STD) $(FLAGS) tests/ft_map_main.cpp -o $(FT_MAP)
+$(STD_MAP): tests/std_map_main.cpp 
+	$(CC) $(STD) $(FLAGS) tests/std_map_main.cpp -o $(STD_MAP)
 
-clean:
-	$(RM) $(OBJS)
+$(FT_VECTOR): tests/ft_vector_main.cpp 
+	$(CC) $(STD) $(FLAGS) tests/ft_vector_main.cpp -o $(FT_VECTOR)
+$(STD_VECTOR): tests/std_vector_main.cpp 
+	$(CC) $(STD) $(FLAGS) tests/std_vector_main.cpp -o $(STD_VECTOR)
+
+$(FT_STACK): tests/ft_stack_main.cpp 
+	$(CC) $(STD) $(FLAGS) tests/ft_map_main.cpp -o $(FT_STACK)
+$(STD_STACK): tests/std_stack_main.cpp 
+	$(CC) $(STD) $(FLAGS) tests/std_stack_main.cpp -o $(STD_STACK)
 
 fclean:
-	$(RM) $(NAME)
-	$(RM) $(LIB)
+	$(RM) $(STD_MAP)
+	$(RM) $(FT_MAP)
+	$(RM) $(STD_VECTOR)
+	$(RM) $(FT_VECTOR)
+	$(RM) $(STD_STACK)
+	$(RM) $(FT_STACK)
 	$(RM) $(OBJS)
 	
 re: fclean all

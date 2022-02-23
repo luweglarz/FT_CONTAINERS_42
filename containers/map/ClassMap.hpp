@@ -10,6 +10,7 @@
 #include "utility/StructRBT.hpp"
 #include "../../SFINAE/enable_if.hpp"
 #include "../../SFINAE/is_integral.hpp"
+#include "../../iterators/lexicographical_compare.hpp"
 
 namespace ft
 {
