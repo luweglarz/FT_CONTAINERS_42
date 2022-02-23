@@ -38,7 +38,7 @@ $(STD_VECTOR): tests/std_vector_main.cpp
 	$(CC) $(STD) $(FLAGS) tests/std_vector_main.cpp -o $(STD_VECTOR)
 
 $(FT_STACK): tests/ft_stack_main.cpp 
-	$(CC) $(STD) $(FLAGS) tests/ft_map_main.cpp -o $(FT_STACK)
+	$(CC) $(STD) $(FLAGS) tests/ft_stack_main.cpp -o $(FT_STACK)
 $(STD_STACK): tests/std_stack_main.cpp 
 	$(CC) $(STD) $(FLAGS) tests/std_stack_main.cpp -o $(STD_STACK)
 
