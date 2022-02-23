@@ -54,18 +54,12 @@ namespace ft
         }
 
         vector (const vector& x):
-        _vallocator(x._vallocator), _size(0), _capacity(0){
+        _size(0), _capacity(0), _data(NULL){
             *this = x;
         }
         
         vector &operator=(const vector &x){
-            _vallocator = x._vallocator;
-            _size = x._size;
-            _capacity = x._capacity;
-            _data = _vallocator.allocate(_capacity);
-            for (size_type i = 0; i < _size;i++){
-                _vallocator.construct(&_data[i], x._data[i]);
-            }
+            assign(x.begin(), x.end());
             return(*this);
         }
 
@@ -165,10 +159,6 @@ namespace ft
             return (_data[n]);
         }
 
-        /*-------------------------------------------------------
-        at function that returns the element at n position
-        n: position in the vector
-        ---------------------------------------------------------*/
         reference at(size_type n){
             if (n >= _size)
                 throw std::out_of_range("out of vector's range");
@@ -278,6 +268,7 @@ namespace ft
                 reserve(_capacity * 2);
             else if (_size + n > _capacity * 2)
                 reserve(_size + n);
+
             if (_size > 0){
                 for (difference_type i = (_size - 1); i >= diff; i--)
                     _vallocator.construct(&_data[i + new_size], _data[i]);
@@ -300,7 +291,7 @@ namespace ft
             store = _vallocator.allocate(_capacity);
             size_type i = 0;
             size_type idx = first - begin();
-            
+
             if (first != last){
                 while (b != end()){
                     if (b == first)
@@ -310,7 +301,7 @@ namespace ft
                         }
                     if (b == end())
                         break;
-                    store[i] = *b;
+                    _vallocator.construct(store + i, *b);
                     b++;
                     i++;
                 }
