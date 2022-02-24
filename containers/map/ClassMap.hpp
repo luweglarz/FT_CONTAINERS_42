@@ -62,12 +62,6 @@ namespace ft
             clear();
             _cmp = x._cmp;
             const_iterator it = x.begin();
-            
-            node def;
-            _RBT.leafs = _nallocator.allocate(1);
-            _nallocator.construct(_RBT.leafs, def);
-            _RBT.leafs->content = NULL;
-            _RBT.last = _RBT.leafs;
 
 			while(it != x.end()){
 				insert(*it);
@@ -153,7 +147,7 @@ namespace ft
             iterator tmp = first;
             while (first != last){
                 tmp++;
-                erase(first);
+                erase(first->first);
                 first = tmp;
             }
         }
@@ -167,8 +161,7 @@ namespace ft
                 _nallocator.deallocate(current, 1);
                 _size--;
                 _RBT.root = NULL;
-                _RBT.last = NULL;
-                _RBT.first = NULL;
+                _RBT.first = _RBT.leafs;
                 return (1);
             }
             while (current != _RBT.leafs && current->content->first != key){
@@ -233,8 +226,13 @@ namespace ft
                 _size++;
                 return (ft::make_pair(begin(),true));
             }
-            if (count(val.first) == 1)
+            if (count(val.first) == 1){
+                _mallocator.destroy(newnode->content);
+                _nallocator.destroy(newnode);
+                _mallocator.deallocate(newnode->content, 1);
+                _nallocator.deallocate(newnode, 1);
                 return (ft::make_pair(find(val.first), false));
+            }
             while (current != _RBT.leafs){
                 newnode_parent = current;
                 if (_cmp(*newnode->content, *current->content))
