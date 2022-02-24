@@ -164,12 +164,8 @@ namespace ft
                 _RBT.first = _RBT.leafs;
                 return (1);
             }
-            while (current != _RBT.leafs && current->content->first != key){
-                if (key < current->content->first)
-                    current = current->left;
-                else
-                    current = current->right;
-            }
+            iterator it = find(key);
+            current = it.base();
             if (current == _RBT.leafs)
                 return (0);
             ptrnode tmp1, tmp2;
@@ -287,8 +283,9 @@ namespace ft
 
         iterator find(const Key &key){
             ptrnode current = _RBT.root;
+            ft::pair<key_type, mapped_key> pair = ft::make_pair(key, mapped_key());
             while (current != _RBT.leafs && current->content->first != key){
-                if (key < current->content->first)
+                if (_cmp(pair, *current->content))
                     current = current->left;
                 else
                     current = current->right;
