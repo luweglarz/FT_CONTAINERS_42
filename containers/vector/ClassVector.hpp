@@ -213,8 +213,7 @@ namespace ft
         }
 
         void    pop_back(){
-            if (_size > 0)
-                _size--;
+            erase(--end());
         }
 
         iterator    insert(iterator position, const value_type &val){
