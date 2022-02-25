@@ -54,7 +54,7 @@ namespace ft
         }
 
         vector (const vector& x):
-        _size(0), _capacity(0), _data(NULL){
+        _size(0), _capacity(x._capacity), _data(_vallocator.allocate(_capacity)){
             *this = x;
         }
         
